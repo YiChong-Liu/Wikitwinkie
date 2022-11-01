@@ -1,7 +1,8 @@
 import express from "express";
 import logger from "morgan";
-// import cors from "cors";
-// import axios from "axios";
+import cors from "cors";
+import axios from "axios";
+import redis from "redis";
 
 const PORT = 4001;
 
@@ -9,7 +10,15 @@ const app = express();
 
 app.use(logger("dev"));
 app.use(express.json());
-// app.use(cors());
+app.use(cors());
+
+const db = redis.createClient({
+    socket: {
+        host: "",
+        port: 6379
+    }
+    // password: '<password>'
+});
 
 // const posts = {};
 
