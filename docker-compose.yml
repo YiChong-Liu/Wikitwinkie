@@ -1,0 +1,9 @@
+services:
+  sessions:
+    build: sessions
+    ports:
+      - "4001:4001"
+  sessionsdb:
+    image: "redis:alpine"
+    ports:
+      - "6379:6379"
