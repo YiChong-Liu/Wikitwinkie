@@ -8,22 +8,24 @@ const PORT = 4001;
 
 const app = express();
 
+interface Session {
+  sessionId: string,
+  username: string,
+  expiry: string
+}
+
 app.use(logger("dev"));
 app.use(express.json());
 app.use(cors());
 
 const db = redis.createClient({
-    socket: {
-        host: "",
-        port: 6379
-    }
-    // password: '<password>'
+  socket: {
+    host: "sessionsdb",
+    port: 6379
+  }
 });
-// await db.connect();
 
-// const posts = {};
-
-app.get("/posts", (req, res) => {
+app.get("/login", (req, res) => {
   res.status(200).send("yes").end();
 });
 
@@ -52,7 +54,7 @@ app.get("/posts", (req, res) => {
 //   res.send({});
 // });
 
-
+await db.connect();
 app.listen(PORT, () => {
   console.log(`Listening on port ${PORT}`);
 });
