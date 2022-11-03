@@ -1,7 +1,7 @@
 import express from "express";
 import logger from "morgan";
 import cors from "cors";
-import axios from "axios";
+// import axios from "axios";
 import redis from "redis";
 
 const PORT = 4001;
@@ -19,6 +19,7 @@ const db = redis.createClient({
     }
     // password: '<password>'
 });
+// await db.connect();
 
 // const posts = {};
 
@@ -50,6 +51,7 @@ app.get("/posts", (req, res) => {
 //   console.log(req.body.type);
 //   res.send({});
 // });
+
 
 app.listen(PORT, () => {
   console.log(`Listening on port ${PORT}`);
