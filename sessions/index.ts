@@ -1,18 +1,27 @@
 import express from "express";
 import logger from "morgan";
 import cors from "cors";
-// import axios from "axios";
+import axios from "axios";
 import redis from "redis";
+import Ajv, { JTDSchemaType } from "ajv/dist/jtd"
 
 const PORT = 4001;
 
 const app = express();
+const ajv = new Ajv()
 
 interface Session {
   sessionId: string,
   username: string,
   expiry: string
 }
+const validateSchemaSession = ajv.compile({
+  properties: {
+    sessionId: {type: "string"},
+    username: {type: "string"},
+    expiry: {type: "string"},
+  }
+} as JTDSchemaType<Session>)
 
 app.use(logger("dev"));
 app.use(express.json());
@@ -25,7 +34,9 @@ const db = redis.createClient({
   }
 });
 
-app.get("/login", (req, res) => {
+app.get("/login", async (req, res) => {
+  // todo: move this route in accountmanagement to a different port that is not publicly exposed
+  await axios.post("http://accountmanagement:4001/checkpassword", );
   res.status(200).send("yes").end();
 });
 

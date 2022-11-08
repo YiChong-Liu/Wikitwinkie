@@ -1,4 +1,8 @@
 services:
+  accountmanagement:
+    build: accountmanagement
+    ports:
+      - "4002:4002"
   sessions:
     build: sessions
     ports:
