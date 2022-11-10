@@ -3,12 +3,13 @@ import logger from "morgan";
 import cors from "cors";
 import axios from "axios";
 import redis from "redis";
-import Ajv, { JTDSchemaType } from "ajv/dist/jtd"
+import Ajv from "ajv/dist/jtd.js";
+import type { JTDSchemaType }  from "ajv/dist/jtd";
 
 const PORT = 4001;
 
 const app = express();
-const ajv = new Ajv()
+const ajv = new Ajv();
 
 interface Session {
   sessionId: string,
