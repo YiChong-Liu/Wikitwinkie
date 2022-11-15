@@ -1,9 +1,11 @@
 FROM node:alpine
 
-WORKDIR /usr/app
+USER node
+WORKDIR /home/node/app
 
-COPY ./package.json ./
+COPY sessions/package.json ./
 RUN npm install
-COPY ./ ./
+COPY sessions/ ./
+COPY utils/ ./utils/
 
 CMD ["npm", "start"]

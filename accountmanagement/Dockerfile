@@ -3,9 +3,9 @@ FROM node:alpine
 USER node
 WORKDIR /home/node/app
 
-COPY comments/package.json ./
+COPY accountmanagement/package.json ./
 RUN npm install
-COPY comments/ ./
+COPY accountmanagement/ ./
 COPY utils/ ./utils/
 
-CMD ["node", "index.ts"]
+CMD ["npm", "start"]

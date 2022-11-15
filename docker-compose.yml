@@ -1,6 +1,14 @@
 services:
+  accountmanagement:
+    build:
+      context: .
+      dockerfile: accountmanagement/Dockerfile
+    ports:
+      - "4002:4002"
   sessions:
-    build: sessions
+    build:
+      context: .
+      dockerfile: sessions/Dockerfile
     ports:
       - "4001:4001"
   sessionsdb:
