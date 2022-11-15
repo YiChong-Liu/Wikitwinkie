@@ -14,12 +14,20 @@ Group Project for Fall 2022 COMPSCI 497S Scalable Web Systems @UMass Amherst
 
 ### Microservices
 
-- Article editing / edit history service
-- Article serving service
-- Account management service
-- Session management service
-- Image management service
-- Search engine service
-- Comment service
-- Comment vote service
-- Article vote service
+- Article editing / edit history service **(Neil Gupta)**
+- Article serving service **(Neil Gupta)**
+- Session Management Service **(Neil Gupta)**
+
+- Account management service **(Yichong Liu)**
+
+- Image management service **(Yichong Liu)**
+
+- Article Vote Service **(Yichong Liu)**
+
+- Search engine service **(Keith Pham)**
+
+- Comment service **(Keith Pham)**
+
+- Comment vote service **(Keith Pham)**
+
+  
