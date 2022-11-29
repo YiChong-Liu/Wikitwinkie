@@ -2,9 +2,8 @@
   "name": "comments",
   "version": "1.0.0",
   "main": "index.ts",
-  "type": "module",
   "scripts": {
-    "start": "nodemon index.ts"
+    "start": "node --loader ts-node/esm index.ts"
   },
   "keywords": [],
   "author": "",
