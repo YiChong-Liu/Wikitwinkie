@@ -5,6 +5,7 @@ import axios from "axios";
 import redis from "redis";
 import Ajv from "ajv/dist/jtd.js";
 import type { JTDSchemaType }  from "ajv/dist/jtd";
+import { asyncRoute } from "./utils/utils.js";
 
 const PORT = 4001;
 
@@ -35,11 +36,11 @@ const db = redis.createClient({
   }
 });
 
-app.get("/login", async (req, res) => {
+app.get("/login", asyncRoute(async (req, res) => {
   // todo: move this route in accountmanagement to a different port that is not publicly exposed
   await axios.post("http://accountmanagement:4001/checkpassword", );
   res.status(200).send("yes").end();
-});
+}));
 
 // app.post("/posts", async (req, res) => {
 //   const id = randomBytes(4).toString("hex");
