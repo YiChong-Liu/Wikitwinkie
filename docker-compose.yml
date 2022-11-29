@@ -5,6 +5,18 @@ services:
       dockerfile: accountmanagement/Dockerfile
     ports:
       - "4002:4002"
+  image_management:
+    build:
+      context: .
+      dockerfile: image_management/Dockerfile
+    ports:
+      - "4003:4003"
+  article_vote:
+    build:
+      context: .
+      dockerfile: article_vote/Dockerfile
+    ports:
+      - "4004:4004"
   sessions:
     build:
       context: .
