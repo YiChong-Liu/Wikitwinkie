@@ -1,6 +1,7 @@
 import type { Request, Response } from "express";
 import Ajv from "ajv/dist/jtd.js";
 import type { JTDSchemaType, JTDDataType } from "ajv/dist/jtd";
+import type { DefinedError } from "ajv";
 import type * as expressCore from "express-serve-static-core";
 
 const ajv = new Ajv();
@@ -17,11 +18,12 @@ export const NLPRoute = <T>(
                          : ajv.compile(config.bodyScehma as JTDSchemaType<JTDDataType<T>>);
   return (request: Request, response: Response, next=console.error) => {
     if (validateSchema !== null) {
+      if (!request.is("application/json")) {
+        response.status(400).send("Content-Type must be application/json\n");
+        return;
+      }
       if (!validateSchema(request.body)) {
-        response.status(400);
-        console.log(`Error in request body: ${validateSchema.errors}`)
-        // response.send(`Error in body: ${error}\n`);
-        // // send automatically ends the response
+        response.status(400).send(`Error in body: ${(validateSchema.errors as DefinedError[])[0].message}\n`);
         return;
       }
     }

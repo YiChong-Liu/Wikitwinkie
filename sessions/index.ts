@@ -86,15 +86,33 @@ app.post("/validate", NLPRoute({
     }
   }
 } as const, async (req, res) => {
-  // todo
-  res.status(200).send("todo").end();
+  const sessionStr = await db.get(req.body.sessionId);
+  if (sessionStr === null) {
+    // session does not exist
+    res.status(200).send({ sessionValid: false });
+    return;
+  }
+
+  const session = JSON.parse(sessionStr);
+
+  // check if session is expired
+  if (new Date() >= new Date(session.expiry)) {
+    await db.del(req.body.sessionId);
+    res.status(200).send({ sessionValid: false });
+    return;
+  }
+
+  // return true only if username matches
+  res.status(200).send({
+    sessionValid: session.username === req.body.username
+  });
 }));
 
 app.post("/logout", NLPRoute({
   sessionCookieRequired: true
 }, async (req, res) => {
   // todo
-  res.status(200).send("todo").end();
+  res.status(200).send("todo");
 }));
 
 await db.connect();
