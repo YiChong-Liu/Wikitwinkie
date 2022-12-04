@@ -3,58 +3,30 @@ import logger from "morgan";
 import cors from "cors";
 import axios from "axios";
 import redis from "redis";
-import Ajv from "ajv/dist/jtd.js";
-import type { JTDSchemaType, JTDDataType }  from "ajv/dist/jtd";
+// import Ajv from "ajv/dist/jtd.js";
+// import type { JTDSchemaType, JTDDataType }  from "ajv/dist/jtd";
 import { asyncRoute, asyncRouteWithBody } from "./utils/utils.js";
 
 const PORT = 4001;
 
 const app = express();
-const ajv = new Ajv();
 
-interface Session {
-  sessionId: string,
-  username: string,
-  expiry: string
-}
-const validateSchemaSession = ajv.compile({
-  properties: {
-    sessionId: {type: "string"},
-    username: {type: "string"},
-    expiry: {type: "string"},
-  }
-} as JTDSchemaType<Session>)
+// const ajv = new Ajv();
 
-if (validateSchemaSession({})) {
-  console.log("success")
-} else {
-  console.log(validateSchemaSession.errors);
-}
-if (validateSchemaSession({a: true})) {
-  console.log("success")
-} else {
-  console.log(validateSchemaSession.errors);
-}
+// interface Session {
+//   sessionId: string,
+//   username: string,
+//   expiry: string
+// }
+// const validateSchemaSession = ajv.compile({
+//   properties: {
+//     sessionId: {type: "string"},
+//     username: {type: "string"},
+//     expiry: {type: "string"},
+//   }
+// } as JTDSchemaType<Session>)
 
-const schema = {
-  properties: {
-    sessionId: {type: "string"},
-    username: {type: "string"},
-    expiry: {type: "string"},
-  }
-} as const
-
-const x = asyncRouteWithBody({
-  properties: {
-    sessionId: {type: "string"},
-    username: {type: "string"},
-    expiry: {type: "string"},
-  }
-} as const, async (req, res) => {
-  const x = req.body;
-});
-
-type MyData = JTDDataType<typeof schema>
+// type MyData = JTDDataType<typeof schema>
 
 app.use(logger("dev"));
 app.use(express.json());
@@ -67,36 +39,31 @@ const db = redis.createClient({
   }
 });
 
-app.get("/login", asyncRoute(async (req, res) => {
+app.post("/login", asyncRouteWithBody({
+  properties: {
+    username: {type: "string"},
+    password: {type: "string"}
+  }
+} as const, async (req, res) => {
   // todo: move this route in accountmanagement to a different port that is not publicly exposed
   await axios.post("http://accountmanagement:4001/checkpassword", );
-  res.status(200).send("yes").end();
+  res.status(200).send("todo").end();
 }));
 
-// app.post("/posts", async (req, res) => {
-//   const id = randomBytes(4).toString("hex");
-//   const { title } = req.body;
+app.post("/validate", asyncRouteWithBody({
+  properties: {
+    sessionId: {type: "string"},
+    username: {type: "string"}
+  }
+} as const, async (req, res) => {
+  // todo
+  res.status(200).send("todo").end();
+}));
 
-//   posts[id] = {
-//     id,
-//     title,
-//   };
-
-//   await axios.post("http://eventbus:4005/events", {
-//     type: "PostCreated",
-//     data: {
-//       id,
-//       title,
-//     },
-//   });
-
-//   res.status(201).send(posts[id]);
-// });
-
-// app.post("/events", (req, res) => {
-//   console.log(req.body.type);
-//   res.send({});
-// });
+app.post("/logout", asyncRoute(async (req, res) => {
+  // todo
+  res.status(200).send("todo").end();
+}));
 
 await db.connect();
 app.listen(PORT, () => {
