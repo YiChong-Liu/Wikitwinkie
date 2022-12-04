@@ -4,8 +4,8 @@ import cors from "cors";
 import axios from "axios";
 import redis from "redis";
 import Ajv from "ajv/dist/jtd.js";
-import type { JTDSchemaType }  from "ajv/dist/jtd";
-import { asyncRoute } from "./utils/utils.js";
+import type { JTDSchemaType, JTDDataType }  from "ajv/dist/jtd";
+import { asyncRoute, asyncRouteWithBody } from "./utils/utils.js";
 
 const PORT = 4001;
 
@@ -24,6 +24,37 @@ const validateSchemaSession = ajv.compile({
     expiry: {type: "string"},
   }
 } as JTDSchemaType<Session>)
+
+if (validateSchemaSession({})) {
+  console.log("success")
+} else {
+  console.log(validateSchemaSession.errors);
+}
+if (validateSchemaSession({a: true})) {
+  console.log("success")
+} else {
+  console.log(validateSchemaSession.errors);
+}
+
+const schema = {
+  properties: {
+    sessionId: {type: "string"},
+    username: {type: "string"},
+    expiry: {type: "string"},
+  }
+} as const
+
+const x = asyncRouteWithBody({
+  properties: {
+    sessionId: {type: "string"},
+    username: {type: "string"},
+    expiry: {type: "string"},
+  }
+} as const, async (req, res) => {
+  const x = req.body;
+});
+
+type MyData = JTDDataType<typeof schema>
 
 app.use(logger("dev"));
 app.use(express.json());
