@@ -2,9 +2,12 @@ import "./App.css";
 
 function App() {
   return <div className="App">
-    <p>
-      This is some text
-    </p>
+    <h1>
+      This is the title
+    </h1>
+    <div className="page-body">
+      This is text in the body
+    </div>
   </div>;
 }
 
