@@ -24,5 +24,6 @@ services:
       - "4401:4401"
   commentsdb:
     image: "redis:alpine"
+    command: --port 4402
     ports:
       - "4402:4402"
