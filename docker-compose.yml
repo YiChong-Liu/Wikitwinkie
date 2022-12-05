@@ -15,3 +15,14 @@ services:
     image: "redis:alpine"
     ports:
       - "6379:6379"
+
+  comments:
+    build:
+      context: .
+      dockerfile: comments/Dockerfile
+    ports:
+      - "4401:4401"
+  commentsdb:
+    image: "redis:alpine"
+    ports:
+      - "4402:4402"
