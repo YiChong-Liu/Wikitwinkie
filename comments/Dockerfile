@@ -6,6 +6,6 @@ WORKDIR /home/node/app
 COPY comments/package.json ./
 RUN npm install
 COPY comments/ ./
-COPY utils/ ./utils/
+# COPY utils/ ./utils/
 
-CMD ["node", "index.ts"]
+CMD ["npm", "start"]

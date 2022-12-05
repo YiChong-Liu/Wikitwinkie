@@ -1,3 +1,5 @@
+import * as redis from 'redis';
+
 export const Type = {
     POST_CREATED : 'PostCreated',
     COMMENT_CREATED : 'CommentCreated',
@@ -12,14 +14,39 @@ export interface Comment {
     content: string,
 }
 
-export function createComment(comment: Comment) {
-    return;
-}
+export class db {
+    static client = redis.createClient({
+        socket: {
+            host: 'commentsdb',
+            port: 4402
+        }
+    });
 
-export function editComment(comment: Comment) {
-    return;
-}
+    static async getCommentByID(id: string) {
+        await this.client.connect();
 
-export function  deleteComment(comment: Comment) {
-    return;
+        const res = await this.client.get(id);
+
+        await this.client.disconnect();
+        return res;
+    }
+
+    static async createComment(comment: Comment) {
+        this.client.on('error', (err) => console.log('Redis Client Error', err));
+        await this.client.connect();
+
+        await this.client.set('foo', 'bar');
+        const fooValue = await this.client.get('foo');
+        console.log(fooValue)
+
+        await this.client.disconnect();
+    }
+    
+    static async editComment(comment: Comment) {
+        return;
+    }
+    
+    static async deleteComment(comment: Comment) {
+        return;
+    }
 }
