@@ -1,0 +1,11 @@
+.App {
+  text-align: center;
+}
+
+.page-body {
+  background-color: white;
+  width: 80%;
+  margin: auto;
+  padding: 3em;
+  text-align: left;
+}

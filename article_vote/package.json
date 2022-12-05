@@ -1,9 +1,9 @@
 {
-  "name": "accountmanagement",
+  "name": "article_vote",
   "version": "1.0.0",
   "description": "",
-  "main": "index.ts",
   "type": "module",
+  "main": "index.ts",
   "scripts": {
     "start": "node --loader ts-node/esm index.ts"
   },
@@ -15,11 +15,6 @@
     "@types/node": "^18.11.9",
     "@types/react": "^18.0.25",
     "@types/react-dom": "^18.0.9",
-    "axios": "^1.1.3",
-    "cors": "^2.8.5",
-    "express": "^4.18.2",
-    "morgan": "^1.10.0",
-    "nodemon": "^2.0.20",
     "typescript": "^4.9.3"
   }
 }
