@@ -44,7 +44,7 @@ const db = redis.createClient({
 });
 
 app.post("/login", NLPRoute({
-  bodyScehma: {
+  bodySchema: {
     properties: {
       username: { type: "string" },
       password: { type: "string" }
@@ -79,7 +79,7 @@ app.post("/login", NLPRoute({
 }));
 
 app.post("/validate", NLPRoute({
-  bodyScehma: {
+  bodySchema: {
     properties: {
       sessionId: { type: "string" },
       username: { type: "string" }
