@@ -3,7 +3,8 @@ import logger from 'morgan';
 import cors from 'cors';
 import axios from 'axios';
 import { randomBytes } from 'crypto';
-import { Comment, db } from './utils';
+import { Comment, CommentReq, ErrorMessage, instaceOfErrorMessage, instanceOfComment } from './utils';
+import { db } from './db';
 
 const app: express.Express = express();
 
@@ -12,22 +13,46 @@ app.use(express.json());
 app.use(cors());
 
 const commentsByPostId: { [key: string]: Comment[]} = {};
+const database = new db();
 
-app.get('/posts/:id/comments', async (req: express.Request, res: express.Response) => {
-  const comment = await db.getCommentByID(req.params.id);
-  res.status(201).send(comment);
+// app.get('/articles/:articleId/comments/:commentId', async (req: express.Request, res: express.Response) => {
+//   const comment: Comment | ErrorMessage = await db.getCommentByIds(req.params.postId, req.params.commentId);
+//   if (instanceOfComment(comment)) {
+//     res.status(201).send(comment);
+//   }
+//   else {
+//     res.status(404).send(comment);
+//   }
+// });
+
+app.get('/articles/:articleId/comments', async (req: express.Request, res: express.Response) => {
+  const comment: Comment[] | ErrorMessage = await database.getCommentsByArticleId(req.params.articleId);
+  if (instanceOfComment(comment)) {
+    res.status(201).send(comment);
+  }
+  else {
+    res.status(404).send(comment);
+  }
 });
 
-app.post('/posts/:id/comments', async (req: express.Request, res: express.Response) => {
-  const comment: Comment = req.body;
-  await db.createComment(comment);
-  res.status(200).send(comment);
-  // const comment: Comment = { 
-  //   commentId: randomBytes(4).toString('hex'),
-  //   content: req.body.content,
-  //   articleId: req.params.id,
-  //   username: req.body.username
-  // };
+app.post('/articles/:articleId/comments', async (req: express.Request, res: express.Response) => {
+  const comment: Comment = { 
+    commentId: randomBytes(4).toString('hex'),
+    content: req.body.content,
+    articleId: req.params.articleId,
+    username: req.body.username
+  };
+
+  try {
+    const data = await database.createComment(comment);
+    res.status(200).send(data);
+  }
+  catch(e) {
+    console.log(e)
+    res.status(500).send(e);
+  }
+  
+  
   // const comments = commentsByPostId[req.params.id] || [];
 
   // if (comment.content === undefined) {

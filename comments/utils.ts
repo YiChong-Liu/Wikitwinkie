@@ -1,11 +1,11 @@
-import * as redis from 'redis';
+import express from 'express';
 
-export const Type = {
-    POST_CREATED : 'PostCreated',
-    COMMENT_CREATED : 'CommentCreated',
-    COMMENT_MODERATED : 'CommentModerated',
-    COMMENT_VOTED : 'CommentVoted'
-}
+// export const Type = {
+//     POST_CREATED : 'PostCreated',
+//     COMMENT_CREATED : 'CommentCreated',
+//     COMMENT_MODERATED : 'CommentModerated',
+//     COMMENT_VOTED : 'CommentVoted'
+// }
 
 export interface Comment {
     commentId: string,
@@ -14,39 +14,31 @@ export interface Comment {
     content: string,
 }
 
-export class db {
-    static client = redis.createClient({
-        socket: {
-            host: 'commentsdb',
-            port: 4402
-        }
-    });
-
-    static async getCommentByID(id: string) {
-        await this.client.connect();
-
-        const res = await this.client.get(id);
-
-        await this.client.disconnect();
-        return res;
-    }
-
-    static async createComment(comment: Comment) {
-        this.client.on('error', (err) => console.log('Redis Client Error', err));
-        await this.client.connect();
-
-        await this.client.set('foo', 'bar');
-        const fooValue = await this.client.get('foo');
-        console.log(fooValue)
-
-        await this.client.disconnect();
-    }
-    
-    static async editComment(comment: Comment) {
-        return;
-    }
-    
-    static async deleteComment(comment: Comment) {
-        return;
-    }
+export interface ErrorMessage {
+    message: any
 }
+
+export function instaceOfErrorMessage(object: any): object is ErrorMessage {
+    return 'message' in object;
+}
+
+export function instanceOfComment(object: any): object is Comment {
+    return 'commentId' in object;
+}
+
+export function instanceOfComments(object: any): object is Comment[] {
+    let isComments: boolean = true;
+    if (Array.isArray(object)) {
+        object.forEach(function (x: any) {
+            isComments = isComments && instanceOfComment(x);
+        });
+    }
+    else {
+        return false;
+    }
+    
+    return isComments;
+}
+
+export interface CommentReq <ReqBody = Comment> extends express.Request {}
+
