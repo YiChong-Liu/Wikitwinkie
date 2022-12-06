@@ -1,9 +1,13 @@
+import React from "react";
+import { Link } from "react-router-dom";
 import App from "../lib/App";
 
-import React from "react";
-
 const Home = () => {
-  return <App>This is text on the home page</App>
+  return <App title="Placeholder Title">
+    This is text on the home page
+    <br/>
+    <Link to="/login">Log in</Link>
+  </App>;
 }
 
 export default Home;
