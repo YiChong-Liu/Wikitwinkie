@@ -12,18 +12,7 @@ app.use(logger('dev'));
 app.use(express.json());
 app.use(cors());
 
-const commentsByPostId: { [key: string]: Comment[]} = {};
 const database = new db();
-
-// app.get('/articles/:articleId/comments/:commentId', async (req: express.Request, res: express.Response) => {
-//   const comment: Comment | ErrorMessage = await db.getCommentByIds(req.params.postId, req.params.commentId);
-//   if (instanceOfComment(comment)) {
-//     res.status(201).send(comment);
-//   }
-//   else {
-//     res.status(404).send(comment);
-//   }
-// });
 
 app.get('/articles/:articleId/comments', async (req: express.Request, res: express.Response) => {
   const comment: Comment[] | ErrorMessage = await database.getCommentsByArticleId(req.params.articleId);
@@ -51,18 +40,7 @@ app.post('/articles/:articleId/comments', async (req: express.Request, res: expr
     console.log(e)
     res.status(500).send(e);
   }
-  
-  
-  // const comments = commentsByPostId[req.params.id] || [];
-
-  // if (comment.content === undefined) {
-  //   res.status(500).send("No content value");
-  //   return;
-  // }
-  
-  // comments.push(comment);
-  // commentsByPostId[req.params.id] = comments;
-
+ 
   // const payload = {
   //   type: Type.COMMENT_CREATED,
   //   data: comment

@@ -45,3 +45,15 @@ services:
     command: --port 4402
     ports:
       - "4402:4402"
+
+  comment_votes:
+    build:
+      context: .
+      dockerfile: comment_votes/Dockerfile
+    ports:
+      - "4403:4403"
+  comment_votesdb:
+    image: "redis:alpine"
+    command: --port 4404
+    ports:
+      - "4404:4404"

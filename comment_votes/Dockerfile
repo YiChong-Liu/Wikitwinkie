@@ -1,9 +1,11 @@
 FROM node:alpine
 
-WORKDIR /usr/app
+USER node
+WORKDIR /home/node/app
 
-COPY ./package.json ./
+COPY comment_votes/package.json ./
 RUN npm install
-COPY ./ ./
+COPY comment_votes/ ./
+# COPY utils/ ./utils/
 
-CMD ["node", "index.ts"]
+CMD ["npm", "start"]
