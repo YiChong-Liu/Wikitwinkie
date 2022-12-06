@@ -9,13 +9,13 @@ const ajv = new Ajv();
 export const NLPRoute = <T>(
   config: {
     sessionCookieRequired?: boolean,
-    bodyScehma?: T
+    bodySchema?: T
   },
   routeHandler: (req: Request<expressCore.ParamsDictionary, any, JTDDataType<T>>,
                  res: Response) => Promise<void>
 ) => {
-  const validateSchema = config.bodyScehma === undefined ? null
-                         : ajv.compile(config.bodyScehma as JTDSchemaType<JTDDataType<T>>);
+  const validateSchema = config.bodySchema === undefined ? null
+                         : ajv.compile(config.bodySchema as JTDSchemaType<JTDDataType<T>>);
   return (request: Request, response: Response, next=console.error) => {
     if (validateSchema !== null) {
       if (!request.is("application/json")) {
