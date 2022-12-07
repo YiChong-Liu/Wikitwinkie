@@ -20,7 +20,7 @@ export function instaceOfErrorMessage(object: any): object is ErrorMessage {
 }
 
 export function instanceOfCommentVote(object: any): object is CommentVote {
-    return 'commentId' in object;
+    return 'commentId' && 'articleId' && 'vote' in object;
 }
 
 export function instanceOfCommentVotes(object: any): object is CommentVote[] {

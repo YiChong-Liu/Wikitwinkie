@@ -15,10 +15,11 @@ export class db {
     }
     
 
-    async getVoteById(articleId: string, commentId: string): Promise<CommentVote[] | ErrorMessage> {
+    async getVoteById(articleId: string, commentId: string): Promise<CommentVote | ErrorMessage> {
         let res: string | null = null;
+        const key = articleId + "," + commentId;
         try {
-            res = await this.client.get(JSON.stringify(articleId));
+            res = await this.client.get(JSON.stringify(key));
         }
         catch(e) {
             return { message: e };
@@ -29,39 +30,53 @@ export class db {
                 return JSON.parse(res);
             }
             catch (e) {
-                return { message: e };
+                console.log(e)
+                return { message: "Failed" };
             }
         }
         else {
-            return { message: "comment not found" }; 
+            return { message: "vote not found" }; 
         }
     }
 
-    async createComment(comment: CommentVote): Promise<Comment | ErrorMessage> {
-        // const votes: CommentVote[] | ErrorMessage = await this.getVoteById(comment.articleId, comment.commentId)
-        // if (instanceOfCommentVotes(votes)) {
-        //     comments.push(comment);
+    async initVote(articleId: string, commentId: string): Promise<CommentVote | ErrorMessage> {
+        const key = articleId + ',' + commentId;
+        const vote: CommentVote = { 'articleId': articleId, 'commentId': commentId, 'vote': 0 };
 
-        //     try {
-        //         await this.client.set(JSON.stringify(comment.articleId), JSON.stringify(comments));
-        //     }
-        //     catch (e) {
-        //         return { message: e };
-        //     }
-        // }
+        try {
+            await this.client.set(JSON.stringify(key), JSON.stringify(vote));
+        }
+        catch {
+            return { message: 'Failed to init vote' };
+        }
 
-        // else {
-        //     try {
-        //         await this.client.set(JSON.stringify(comment.articleId), JSON.stringify([comment]));
-        //     }
-        //     catch (e) {
-        //         return { message: e };
-        //     }     
-        // }
-
-        // return comment;
-        return { message: "" };
-
+        return vote;
+        
     }
+
+    // async updateVote(comment: CommentVote): Promise<Comment | ErrorMessage> {
+    //     const votes: CommentVote[] | ErrorMessage = await this.getVoteById(comment.articleId, comment.commentId)
+    //     if (instanceOfCommentVotes(votes)) {
+    //         comments.push(comment);
+
+    //         try {
+    //             await this.client.set(JSON.stringify(comment.articleId), JSON.stringify(comments));
+    //         }
+    //         catch (e) {
+    //             return { message: e };
+    //         }
+    //     }
+
+    //     else {
+    //         try {
+    //             await this.client.set(JSON.stringify(comment.articleId), JSON.stringify([comment]));
+    //         }
+    //         catch (e) {
+    //             return { message: e };
+    //         }     
+    //     }
+
+    //     return comment;
+    // }
 
 }

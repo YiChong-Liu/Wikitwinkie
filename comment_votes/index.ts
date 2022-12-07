@@ -40,7 +40,7 @@ app.use(cors());
 const database = new db();
 
 app.get('/articles/:articleId/comments/:commentId/votes', async (req: express.Request, res: express.Response) => {
-  const vote: Comment[] | ErrorMessage = await database.getCommentsByArticleId(req.params.articleId);
+  const vote: CommentVote | ErrorMessage = await database.getVoteById(req.params.articleId, req.params.commentId);
   if (instanceOfCommentVote(vote)) {
     res.status(201).send(vote);
   }
@@ -50,25 +50,32 @@ app.get('/articles/:articleId/comments/:commentId/votes', async (req: express.Re
 });
 
 app.post('/articles/:articleId/comments/:commentId/votes', async (req: express.Request, res: express.Response) => {
+  const vote: CommentVote | ErrorMessage = await database.initVote(req.params.articleId, req.params.commentId);
+  if (instanceOfCommentVote(vote)) {
+    res.status(201).send(vote);
+  }
+  else {
+    res.status(404).send(vote);
+  }
 });
 
-app.put('/articles/:articleId/comments/:commentId/votes', async (req: express.Request, res: express.Response) => {
-  const vote: CommentVote = { 
-    commentId: req.params.commentId,
-    articleId: req.params.articleId,
-    vote: req.body.vote
-  };
+// app.put('/articles/:articleId/comments/:commentId/votes', async (req: express.Request, res: express.Response) => {
+//   const vote: CommentVote = { 
+//     commentId: req.params.commentId,
+//     articleId: req.params.articleId,
+//     vote: req.body.vote
+//   };
 
-  try {
-    const data = await database.createComment(vote);
-    res.status(200).send(data);
-  }
-  catch(e) {
-    console.log(e)
-    res.status(500).send(e);
-  }
+//   try {
+//     const data = await database.createComment(vote);
+//     res.status(200).send(data);
+//   }
+//   catch(e) {
+//     console.log(e)
+//     res.status(500).send(e);
+//   }
  
-});
+// });
 
 app.post('/events', (req: express.Request, res: express.Response) => {
   console.log(req.body.type);
