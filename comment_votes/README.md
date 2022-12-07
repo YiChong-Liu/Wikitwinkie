@@ -1,15 +1,15 @@
-# Comment Service
+# Comment Vote Service
 
 ## System Design
 Link: https://docs.google.com/document/d/16Upk8h3mSBbqCPcpqjEV3224Noz2sLAB0JTWROl__yU/edit
 
 ## Data Model:
-- Comment: {"commentId": string, "articleId": string, "username": string, "content": string} 
-- Comments: Comment[]
+- CommentVote: {"commentId": string, "articleId": string, "vote": number} 
+- CommentVotes: CommentVote[]
 
 ## Data Structure in Redis:
-- key<postId: string>
-- value<comments: Comments>
+- key<articleId: string>
+- value<commentvotes: CommentVotes>
 
 ## File Structure:
 - index.ts: contains comments service endpoints
