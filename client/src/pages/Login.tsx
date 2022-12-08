@@ -1,10 +1,15 @@
-// import React from "react";
+import axios from 'axios';
 import App from "../lib/App";
 
-const loginSubmit = () => {
+const loginSubmit = async () => {
   // TODO: request
-  console.log((document.getElementById("username") as HTMLInputElement).value);
-  console.log((document.getElementById("password") as HTMLInputElement).value);
+  const username = (document.getElementById("username") as HTMLInputElement).value;
+  const password = (document.getElementById("password") as HTMLInputElement).value;
+  const response = await axios.post('http://localhost:4002/login', {
+    username: username,
+    password: password
+  });
+  console.log(response);
 };
 
 const Login = () => <App title="Log In">
