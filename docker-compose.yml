@@ -57,3 +57,22 @@ services:
     command: --port 4404
     ports:
       - "4404:4404"
+
+  search_engine:
+    build:
+      context: .
+      dockerfile: search_engine/Dockerfile
+    ports:
+      - "4405:4405"
+  search_enginedb:
+    image: "redis:alpine"
+    command: --port 4406
+    ports:
+      - "4406:4406"
+
+  event_bus:
+    build:
+      context: .
+      dockerfile: event_bus/Dockerfile
+    ports:
+      - "2000:2000"
