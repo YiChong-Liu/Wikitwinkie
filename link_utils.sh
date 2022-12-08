@@ -14,7 +14,7 @@ REPO_ROOT=$(cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd)
 
 SERVICES=("accountmanagement" "article_vote" "comment_votes" "comments" "image_management" "sessions")
 
-UTILS_FILES=("utils.ts")
+UTILS_FILES=("utils.ts" "interfaces.ts")
 
 if [ "$1" = clean ]; then
     # delete the links

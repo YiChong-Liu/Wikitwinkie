@@ -11,7 +11,7 @@ const signupSubmit = async () => {
   console.log(response);
 };
 
-const Register = () => <App title="Log In">
+const Register = () => <App title="Sign Up">
   <label className  ="labels" htmlFor="user">Username: </label>
   {/* <br/> */}
   <input className="textBoxes" type="text" id="username" placeholder="Enter Username"/>
