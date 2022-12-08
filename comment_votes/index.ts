@@ -29,7 +29,7 @@ import cors from 'cors';
 import axios from 'axios';
 import { randomBytes } from 'crypto';
 import { db } from './db';
-import { CommentVote, ErrorMessage, instanceOfCommentVote } from './utils';
+import { CommentVote, ErrorMessage, instanceOfCommentVote, VoteKey } from './utils';
 
 const app: express.Express = express();
 
@@ -40,7 +40,9 @@ app.use(cors());
 const database = new db();
 
 app.get('/articles/:articleId/comments/:commentId/votes', async (req: express.Request, res: express.Response) => {
-  const vote: CommentVote | ErrorMessage = await database.getVoteById(req.params.articleId, req.params.commentId);
+  const key: VoteKey = { 'articleId': req.params.articleId, 'commentId': req.params.commentId } 
+  const vote: CommentVote | ErrorMessage = await database.getVoteById(key);
+
   if (instanceOfCommentVote(vote)) {
     res.status(201).send(vote);
   }
@@ -50,7 +52,9 @@ app.get('/articles/:articleId/comments/:commentId/votes', async (req: express.Re
 });
 
 app.post('/articles/:articleId/comments/:commentId/votes', async (req: express.Request, res: express.Response) => {
-  const vote: CommentVote | ErrorMessage = await database.initVote(req.params.articleId, req.params.commentId);
+  const key: VoteKey = { 'articleId': req.params.articleId, 'commentId': req.params.commentId }
+  const vote: CommentVote | ErrorMessage = await database.initVote(key);
+
   if (instanceOfCommentVote(vote)) {
     res.status(201).send(vote);
   }
@@ -59,23 +63,19 @@ app.post('/articles/:articleId/comments/:commentId/votes', async (req: express.R
   }
 });
 
-// app.put('/articles/:articleId/comments/:commentId/votes', async (req: express.Request, res: express.Response) => {
-//   const vote: CommentVote = { 
-//     commentId: req.params.commentId,
-//     articleId: req.params.articleId,
-//     vote: req.body.vote
-//   };
+app.put('/articles/:articleId/comments/:commentId/votes', async (req: express.Request, res: express.Response) => {
+  const key: VoteKey = { 'articleId': req.params.articleId, 'commentId': req.params.commentId }
 
-//   try {
-//     const data = await database.createComment(vote);
-//     res.status(200).send(data);
-//   }
-//   catch(e) {
-//     console.log(e)
-//     res.status(500).send(e);
-//   }
+  try {
+    const data = await database.updateVote(key, req.body.vote);
+    res.status(200).send(data);
+  }
+  catch(e) {
+    console.log(e)
+    res.status(500).send(e);
+  }
  
-// });
+});
 
 app.post('/events', (req: express.Request, res: express.Response) => {
   console.log(req.body.type);
