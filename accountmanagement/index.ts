@@ -4,7 +4,7 @@ import logger from "morgan";
 import cors from "cors";
 import axios from "axios";
 import bcrypt from "bcrypt"
-import { NLPRoute } from "./utils/utils";
+import { NLPRoute } from "./utils/utils.js";
 import { addAbortSignal } from "stream";
 
 const app = express();
@@ -32,17 +32,17 @@ app.post("/createUser", NLPRoute({
     },
     sessionCookieRequired: false
 } as const, async(req, res) => {
-    
-    // Check if the username is duplicate 
+
+    // Check if the username is duplicate
     const userName = await db.get(req.body.username);
     // username does not exist
     if(userName === null) {
 
         await db.set(req.body.username, await bcrypt.hash(req.body.password, saltRounds));
         res.status(200).send({
-            "success": true, 
-            "username": req.body.username, 
-            "sessionId": await axios.post(`http://${window.location.hostname}:4001/login`)
+            "success": true,
+            "username": req.body.username,
+            "sessionId": await axios.post(`http://sessions:4001/login`)
         })
     }
     else {
@@ -80,7 +80,7 @@ app.post('/checkpassword',NLPRoute({
         }
     },
 } as const, async (req, res) => {
-    
+
     const value = await db.get(req.body.username);
     if(value === null) {
         res.status(200).send({
@@ -105,9 +105,14 @@ app.post('/checkpassword',NLPRoute({
             username: { type: "string" },
             password: { type: "string" }
         }
-    }, 
+    },
 } as const, async (req, res) => {
     // check if username exists
     const value = await db.get(req.body.username);
 
 }))*/
+
+await db.connect();
+app.listen(PORT, () => {
+  console.log(`Listening on port ${PORT}`);
+});
