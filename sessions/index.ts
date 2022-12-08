@@ -53,7 +53,7 @@ app.post("/login", NLPRoute({
   sessionCookieRequired: true
 } as const, async (req, res) => {
   // todo: move this route in accountmanagement to a different port that is not publicly exposed
-  const checkPassResponse = await axios.post("http://accountmanagement:4001/checkpassword", {
+  const checkPassResponse = await axios.post("http://accountmanagement:4002/checkpassword", {
     username: req.body.username,
     password: req.body.password
   });
