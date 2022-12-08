@@ -4,9 +4,9 @@ import logger from "morgan";
 import cors from "cors";
 import axios from "axios";
 import redis from "redis";
-// import Ajv from "ajv/dist/jtd.js";
-// import type { JTDSchemaType, JTDDataType }  from "ajv/dist/jtd";
+import type { AxiosResponse } from "axios";
 import { NLPRoute } from "./utils/utils.js";
+import type { AccountManagementCheckPasswordResponse } from "./utils/interfaces.js";
 
 const PORT = 4001;
 
@@ -53,10 +53,13 @@ app.post("/login", NLPRoute({
   sessionCookieRequired: true
 } as const, async (req, res) => {
   // todo: move this route in accountmanagement to a different port that is not publicly exposed
-  const checkPassResponse = await axios.post("http://accountmanagement:4002/checkpassword", {
-    username: req.body.username,
-    password: req.body.password
-  });
+  const checkPassResponse: AxiosResponse<AccountManagementCheckPasswordResponse> = await axios.post(
+    "http://accountmanagement:4002/checkpassword",
+    {
+      username: req.body.username,
+      password: req.body.password
+    }
+  );
   if (checkPassResponse.data.success) {
 
     // create a new session
