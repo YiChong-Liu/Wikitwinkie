@@ -1,17 +1,17 @@
 import axios from "axios";
 import App from "../lib/App";
 
-const loginSubmit = async () => {
+const signupSubmit = async () => {
   const username = (document.getElementById("username") as HTMLInputElement).value;
   const password = (document.getElementById("password") as HTMLInputElement).value;
-  const response = await axios.post(`http://${window.location.hostname}:4001/login`, {
+  const response = await axios.post(`http://${window.location.hostname}:4002/createUser`, {
     username: username,
     password: password
   });
   console.log(response);
 };
 
-const Login = () => <App title="Log In">
+const Register = () => <App title="Log In">
   <label className  ="labels" htmlFor="user">Username: </label>
   {/* <br/> */}
   <input className="textBoxes" type="text" id="username" placeholder="Enter Username"/>
@@ -20,10 +20,7 @@ const Login = () => <App title="Log In">
   {/* <br/> */}
   <input className="textBoxes" type="password" id="password" placeholder="Enter Password"/>
   <br/>
-  <input className="button" id="login" type="button" value="Login" onClick={loginSubmit}/>
-  <br/>
-  <br/>
-  <label className="minilabels"><a href="/register">Sign up</a></label>
+  <input className="button" id="signup" type="button" value="Sign Up" onClick={signupSubmit}/>
 </App>;
 
-export default Login;
+export default Register;
