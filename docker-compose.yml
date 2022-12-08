@@ -5,24 +5,14 @@ services:
       dockerfile: client/Dockerfile
     ports:
       - "3000:3000"
-  accountmanagement:
-    build:
-      context: .
-      dockerfile: accountmanagement/Dockerfile
-    ports:
-      - "4002:4002"
-  image_management:
-    build:
-      context: .
-      dockerfile: image_management/Dockerfile
-    ports:
-      - "4003:4003"
-  article_vote:
-    build:
-      context: .
-      dockerfile: article_vote/Dockerfile
-    ports:
-      - "4004:4004"
+
+  # event_bus:
+  #   build:
+  #     context: .
+  #     dockerfile: event_bus/Dockerfile
+  #   ports:
+  #     - "2000:2000"
+
   sessions:
     build:
       context: .
@@ -33,6 +23,27 @@ services:
     image: "redis:alpine"
     ports:
       - "6379:6379"
+
+  accountmanagement:
+    build:
+      context: .
+      dockerfile: accountmanagement/Dockerfile
+    ports:
+      - "4002:4002"
+
+  image_management:
+    build:
+      context: .
+      dockerfile: image_management/Dockerfile
+    ports:
+      - "4003:4003"
+
+  article_vote:
+    build:
+      context: .
+      dockerfile: article_vote/Dockerfile
+    ports:
+      - "4004:4004"
 
   comments:
     build:
@@ -58,21 +69,14 @@ services:
     ports:
       - "4404:4404"
 
-  search_engine:
-    build:
-      context: .
-      dockerfile: search_engine/Dockerfile
-    ports:
-      - "4405:4405"
-  search_enginedb:
-    image: "redis:alpine"
-    command: --port 4406
-    ports:
-      - "4406:4406"
-
-  event_bus:
-    build:
-      context: .
-      dockerfile: event_bus/Dockerfile
-    ports:
-      - "2000:2000"
+  # search_engine:
+  #   build:
+  #     context: .
+  #     dockerfile: search_engine/Dockerfile
+  #   ports:
+  #     - "4405:4405"
+  # search_enginedb:
+  #   image: "redis:alpine"
+  #   command: --port 4406
+  #   ports:
+  #     - "4406:4406"

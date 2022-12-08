@@ -1,11 +1,11 @@
-import axios from 'axios';
+import axios from "axios";
 import App from "../lib/App";
 
 const loginSubmit = async () => {
   // TODO: request
   const username = (document.getElementById("username") as HTMLInputElement).value;
   const password = (document.getElementById("password") as HTMLInputElement).value;
-  const response = await axios.post('http://localhost:4002/login', {
+  const response = await axios.post(`http://${window.location.hostname}:4001/login`, {
     username: username,
     password: password
   });
