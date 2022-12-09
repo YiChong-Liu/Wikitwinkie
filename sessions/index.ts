@@ -90,7 +90,7 @@ app.post("/login", NLPRoute({
 } as const, async (req, res) => {
   // todo: move this route in accountmanagement to a different port that is not publicly exposed
   const checkPassResponse: AxiosResponse<AccountManagementCheckPasswordResponse> = await axios.post(
-    "http://accountmanagement:4002/checkpassword",
+    "http://accountmanagement:4102/checkpassword",
     {
       username: req.body.username,
       password: req.body.password
@@ -105,7 +105,7 @@ app.post("/login", NLPRoute({
       expiry: new Date(Date.now() + SESSION_EXPIRY_MS).toISOString()
     }))
 
-    res.status(200).send({
+    res.status(200).cookie("sessionId", sessionId).send({
       success: true,
       sessionId: sessionId
     });
