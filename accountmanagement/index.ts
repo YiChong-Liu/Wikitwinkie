@@ -41,11 +41,9 @@ app.post("/createUser", NLPRoute({
         await db.set(req.body.username, await bcrypt.hash(req.body.password, saltRounds));
 
         const checkLoginResponse: AxiosResponse<SessionsLoginResponseSuccessful> = await axios.post(
-            "http://session:4001/login", {
+            "http://sessions:4001/login", {
                 username: req.body.username,
-                password: req.body.password,
-                success: true,
-                sessionId: undefined
+                password: req.body.password
         });
         if (checkLoginResponse.data.success) {
             res.status(200).send({
