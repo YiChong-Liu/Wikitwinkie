@@ -12,7 +12,8 @@
 
 REPO_ROOT=$(cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd)
 
-SERVICES=("accountmanagement" "article_vote" "comment_votes" "comments" "image_management" "sessions")
+SERVICES=("accountmanagement" "article_vote" "client/src" "comment_votes" "comments" "event_bus"
+          "image_management" "sessions")
 
 UTILS_FILES=("utils.ts" "interfaces.ts")
 
