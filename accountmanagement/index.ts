@@ -51,10 +51,10 @@ app.post("/createUser", NLPRoute({
             password: req.body.password
         });
         if (checkLoginResponse.data.success) {
-            res.status(200).send({
-                "success": true,
-                "username": req.body.username,
-                "sessionId": checkLoginResponse.data.sessionId
+            res.status(200).cookie("sessionId", checkLoginResponse.data.sessionId).send({
+                success: true,
+                username: req.body.username,
+                sessionId: checkLoginResponse.data.sessionId
             })
         }
     }
