@@ -13,7 +13,12 @@ const PORT = 4002;
 
 app.use(logger("dev"));
 app.use(express.json());
-app.use(cors());
+app.use(cors({ origin: "http://localhost:3000", credentials: true }));
+
+const SERVER_FACING_PORT = 4102;
+const serverFacingApp = express();
+serverFacingApp.use(logger("dev"));
+serverFacingApp.use(express.json());
 
 const saltRounds = 10;
 
@@ -42,8 +47,8 @@ app.post("/createUser", NLPRoute({
 
         const checkLoginResponse: AxiosResponse<SessionsLoginResponseSuccessful> = await axios.post(
             "http://sessions:4001/login", {
-                username: req.body.username,
-                password: req.body.password
+            username: req.body.username,
+            password: req.body.password
         });
         if (checkLoginResponse.data.success) {
             res.status(200).send({
@@ -81,7 +86,7 @@ app.post('/editUser', NLPRoute({
     res.status(204).end();
 }))
 
-app.post('/checkpassword', NLPRoute({
+serverFacingApp.post('/checkpassword', NLPRoute({
     bodySchema: {
         properties: {
             username: { type: "string" },
@@ -124,3 +129,7 @@ await db.connect();
 app.listen(PORT, () => {
     console.log(`Listening on port ${PORT}`);
 });
+
+serverFacingApp.listen(SERVER_FACING_PORT, () => {
+    console.log(`Listening on port ${SERVER_FACING_PORT}`);
+})
