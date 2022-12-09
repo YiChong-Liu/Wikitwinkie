@@ -101,8 +101,7 @@ app.post('/checkpassword', NLPRoute({
             success: true
         })
     }
-
-    res.status(200).send({
+    else res.status(200).send({
         success: false
     })
 }))
