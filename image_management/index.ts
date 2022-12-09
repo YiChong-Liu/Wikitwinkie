@@ -20,4 +20,9 @@ const db = redis.createClient({
     }
 })
 
+app.post("/image/{name}", NLPRoute({
+
+} as const, async (req, res) => {
+    
+}))
 
