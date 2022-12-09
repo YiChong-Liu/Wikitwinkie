@@ -23,9 +23,12 @@ app.put("/articleVote", NLPRoute({
     bodySchema: {
         properties: {
             articleId: { type: "string" },
-            vote: { type: "integer" }
+            upvote: { type: "integer" },
+            downvote: {type: "integer"}
         }
     },
 } as const, async (req, res) => {
+    const article = await db.get(req.body.articleId);
 
+    
 }))
