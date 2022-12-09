@@ -55,5 +55,3 @@ The account management service will interact with the sessions management servic
 From the *accountmanagement* directory run `npm start`
 
 The service then should run at [http://localhost:4002](http://localhost:4002/) in the browser.
-
-<details class="details-reset details-overlay details-overlay-dark" id="jumpto-line-details-dialog" style="box-sizing: border-box; display: block;"><summary data-hotkey="l" aria-label="Jump to line" role="button" style="box-sizing: border-box; display: list-item; cursor: pointer; list-style: none; transition: color 80ms cubic-bezier(0.33, 1, 0.68, 1) 0s, background-color, box-shadow, border-color;"></summary></details>
