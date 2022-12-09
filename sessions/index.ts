@@ -32,7 +32,7 @@ const PORT = 4001;
 const app = express();
 app.use(logger("dev"));
 app.use(express.json());
-app.use(cors({origin: "localhost:4201", credentials: true}));
+app.use(cors({origin: "http://localhost:3000", credentials: true}));
 
 const SERVER_FACING_PORT = 4101;
 const serverFacingApp = express();
