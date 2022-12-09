@@ -11,7 +11,8 @@ const signupSubmit = async () => {
     {
       username: username,
       password: password
-    }
+    },
+    {withCredentials: true}
   );
   console.log(response);
   if (response.data.success) {
