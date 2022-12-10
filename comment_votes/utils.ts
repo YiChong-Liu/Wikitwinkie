@@ -1,3 +1,10 @@
+export const Type = {
+    COMMENT_CREATED : 'CommentCreated',
+    COMMENT_VOTED : 'CommentVoted',
+    COMMENT_VOTE_INIT: 'CommentVoteInited',
+    COMMENT_VOTE_GET: 'CommentVoteGet',
+}
+
 export interface CommentVote {
     commentId: string,
     articleId: string,
@@ -7,6 +14,11 @@ export interface CommentVote {
 export interface VoteKey {
     commentId: string,
     articleId: string
+}
+
+export interface IEvent {
+    type: string
+    data: any
 }
 
 export interface ErrorMessage {
@@ -24,3 +36,5 @@ export function instanceOfCommentVote(object: any): object is CommentVote {
 export function parsedKey(key: VoteKey): string {
     return key.articleId + "," + key.commentId;
 }
+
+
