@@ -1,5 +1,5 @@
 import * as redis from 'redis';
-import { Comment, ErrorMessage, instanceOfComment, instanceOfComments } from './utils';
+import { Comment, CommentKey, ErrorMessage, instanceOfComment, instanceOfComments } from './utils';
 
 export class db {
     client: redis.RedisClientType;
@@ -62,34 +62,53 @@ export class db {
         return comment;
 
     }
-
-    // static async getCommentByIds(postId: string, commentId: string): Promise<Comment | ErrorMessage> {
-        // await this.client.connect();
-        // const res = await this.client.get(postId);
-        // await this.client.disconnect();
-
-        // if (res) {
-        //     const comments = JSON.parse(res);
-        //     if (commentId in comments) {
-        //         return comments[commentId];
-        //     }
-        //     else {
-        //         const error: ErrorMessage = { message: "comment not found" }
-        //         return error;  
-        //     }
-        // }
-
-        // else {
-        //     const error: ErrorMessage = { message: "comment not found" }
-        //     return error; 
-        // }
-    // }
     
     async editComment(comment: Comment) {
-        return;
+        const comments: Comment[] | ErrorMessage = await this.getCommentsByArticleId(comment.articleId)
+        if (instanceOfComments(comments)) {
+            comments.forEach(x => {
+                if (x.commentId == comment.commentId) {
+                    x.content = comment.content
+                }
+            });
+
+            try {
+                await this.client.set(JSON.stringify(comment.articleId), JSON.stringify(comments));
+            }
+            catch (e) {
+                return { message: e };
+            }
+        }
+
+        else {
+            return { message: "Invalid CommentId or ArticleId" };
+        }
+
+        return comment;
     }
     
-    async deleteComment(comment: Comment) {
-        return;
+    async deleteComment(key: CommentKey) {
+        const comments: Comment[] | ErrorMessage = await this.getCommentsByArticleId(key.articleId)
+        if (instanceOfComments(comments)) {
+            const newComments: Comment[] = [];
+            comments.forEach(x => {
+                if (x.commentId != key.commentId) {
+                    newComments.push(x);
+                }
+            });
+
+            try {
+                await this.client.set(JSON.stringify(key.articleId), JSON.stringify(newComments));
+            }
+            catch (e) {
+                return { message: 'Failed to set comment' };
+            }
+        }
+
+        else {
+            return { message: "Invalid CommentId or ArticleId" };
+        }
+
+        return key;
     }
 }

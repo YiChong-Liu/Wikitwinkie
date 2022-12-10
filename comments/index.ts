@@ -3,7 +3,7 @@ import logger from 'morgan';
 import cors from 'cors';
 import axios from 'axios';
 import { randomBytes } from 'crypto';
-import { Comment, CommentReq, ErrorMessage, instaceOfErrorMessage, instanceOfComment } from './utils';
+import { Comment, CommentKey, ErrorMessage, instanceOfComment, Type } from './utils';
 import { db } from './db';
 
 const app: express.Express = express();
@@ -14,6 +14,7 @@ app.use(cors());
 
 const database = new db();
 
+// GET COMMENT BY ARTICLE ID
 app.get('/articles/:articleId/comments', async (req: express.Request, res: express.Response) => {
   const comment: Comment[] | ErrorMessage = await database.getCommentsByArticleId(req.params.articleId);
   if (instanceOfComment(comment)) {
@@ -22,8 +23,15 @@ app.get('/articles/:articleId/comments', async (req: express.Request, res: expre
   else {
     res.status(404).send(comment);
   }
+
+  const payload = {
+    type: Type.COMMENT_GET,
+    data: comment
+  }
+  await axios.post('http://eventbus:2000/events', payload);
 });
 
+// GENERATE COMMENT
 app.post('/articles/:articleId/comments', async (req: express.Request, res: express.Response) => {
   const comment: Comment = { 
     commentId: randomBytes(4).toString('hex'),
@@ -41,14 +49,60 @@ app.post('/articles/:articleId/comments', async (req: express.Request, res: expr
     res.status(500).send(e);
   }
  
-  // const payload = {
-  //   type: Type.COMMENT_CREATED,
-  //   data: comment
-  // }
-  // await axios.post('http://eventbus:4005/events', payload);
-
-  // res.status(201).send(comments);
+  const payload = {
+    type: Type.COMMENT_CREATED,
+    data: comment
+  }
+  await axios.post('http://eventbus:2000/events', payload);
 });
+
+// EDIT COMMENT
+app.put('/articles/:articleId/comments/:commentId', async (req: express.Request, res: express.Response) => {
+  const comment: Comment = { 
+    commentId: req.params.commentId,
+    content: req.body.content,
+    articleId: req.params.articleId,
+    username: req.body.username
+  };
+
+  try {
+    const data = await database.editComment(comment);
+    res.status(200).send(data);
+  }
+  catch(e) {
+    console.log(e)
+    res.status(500).send(e);
+  }
+ 
+  const payload = {
+    type: Type.COMMENT_EDITED,
+    data: comment
+  }
+  await axios.post('http://eventbus:2000/events', payload);
+});
+
+// DELETE COMMENT
+app.post('/articles/:articleId/comments/:commentId', async (req: express.Request, res: express.Response) => {
+  const key: CommentKey = { 
+    articleId: req.params.articleId,
+    commentId: req.params.commentId
+  }
+  try {
+    const data = await database.deleteComment(key);
+    res.status(200).send(data);
+  }
+  catch(e) {
+    console.log(e)
+    res.status(500).send(e);
+  }
+ 
+  const payload = {
+    type: Type.COMMENT_DELETED,
+    data: key
+  }
+  await axios.post('http://eventbus:2000/events', payload);
+});
+
 
 app.post('/events', (req: express.Request, res: express.Response) => {
   console.log(req.body.type);

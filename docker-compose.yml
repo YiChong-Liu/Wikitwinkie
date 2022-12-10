@@ -6,12 +6,12 @@ services:
     ports:
       - "3000:3000"
 
-  # event_bus:
-  #   build:
-  #     context: .
-  #     dockerfile: event_bus/Dockerfile
-  #   ports:
-  #     - "2000:2000"
+  eventbus:
+    build:
+      context: .
+      dockerfile: event_bus/Dockerfile
+    ports:
+      - "2000:2000"
 
   sessions:
     build:

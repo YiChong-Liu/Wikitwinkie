@@ -1,15 +1,15 @@
-import express from 'express';
+export const Type = {
+    COMMENT_CREATED : 'CommentCreated',
+    COMMENT_GET: 'CommentGet',
+    COMMENT_EDITED: 'CommentEdited',
+    COMMENT_DELETED: 'CommentDeleted'
+}
 
-// export const Type = {
-//     POST_CREATED : 'PostCreated',
-//     COMMENT_CREATED : 'CommentCreated',
-//     COMMENT_MODERATED : 'CommentModerated',
-//     COMMENT_VOTED : 'CommentVoted'
-// }
-
-export interface Comment {
+export interface CommentKey {
     commentId: string,
-    articleId: string,
+    articleId: string
+}
+export interface Comment extends CommentKey {
     username: string,
     content: string,
 }
@@ -39,6 +39,3 @@ export function instanceOfComments(object: any): object is Comment[] {
     
     return isComments;
 }
-
-export interface CommentReq <ReqBody = Comment> extends express.Request {}
-
