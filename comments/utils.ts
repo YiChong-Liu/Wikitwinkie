@@ -1,13 +1,15 @@
 export const Type = {
     COMMENT_CREATED : 'CommentCreated',
     COMMENT_GET: 'CommentGet',
-    COMMENT_EDITED: 'CommentEdited'
+    COMMENT_EDITED: 'CommentEdited',
+    COMMENT_DELETED: 'CommentDeleted'
 }
 
-
-export interface Comment {
+export interface CommentKey {
     commentId: string,
-    articleId: string,
+    articleId: string
+}
+export interface Comment extends CommentKey {
     username: string,
     content: string,
 }

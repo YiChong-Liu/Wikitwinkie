@@ -1,5 +1,5 @@
 import * as redis from 'redis';
-import { Comment, ErrorMessage, instanceOfComment, instanceOfComments } from './utils';
+import { Comment, CommentKey, ErrorMessage, instanceOfComment, instanceOfComments } from './utils';
 
 export class db {
     client: redis.RedisClientType;
@@ -87,7 +87,28 @@ export class db {
         return comment;
     }
     
-    async deleteComment(comment: Comment) {
-        return;
+    async deleteComment(key: CommentKey) {
+        const comments: Comment[] | ErrorMessage = await this.getCommentsByArticleId(key.articleId)
+        if (instanceOfComments(comments)) {
+            const newComments: Comment[] = [];
+            comments.forEach(x => {
+                if (x.commentId != key.commentId) {
+                    newComments.push(x);
+                }
+            });
+
+            try {
+                await this.client.set(JSON.stringify(key.articleId), JSON.stringify(newComments));
+            }
+            catch (e) {
+                return { message: 'Failed to set comment' };
+            }
+        }
+
+        else {
+            return { message: "Invalid CommentId or ArticleId" };
+        }
+
+        return key;
     }
 }

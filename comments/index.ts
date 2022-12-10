@@ -3,7 +3,7 @@ import logger from 'morgan';
 import cors from 'cors';
 import axios from 'axios';
 import { randomBytes } from 'crypto';
-import { Comment, ErrorMessage, instanceOfComment, Type } from './utils';
+import { Comment, CommentKey, ErrorMessage, instanceOfComment, Type } from './utils';
 import { db } from './db';
 
 const app: express.Express = express();
@@ -80,6 +80,29 @@ app.put('/articles/:articleId/comments/:commentId', async (req: express.Request,
   }
   await axios.post('http://eventbus:2000/events', payload);
 });
+
+// DELETE COMMENT
+app.post('/articles/:articleId/comments/:commentId', async (req: express.Request, res: express.Response) => {
+  const key: CommentKey = { 
+    articleId: req.params.articleId,
+    commentId: req.params.commentId
+  }
+  try {
+    const data = await database.deleteComment(key);
+    res.status(200).send(data);
+  }
+  catch(e) {
+    console.log(e)
+    res.status(500).send(e);
+  }
+ 
+  const payload = {
+    type: Type.COMMENT_DELETED,
+    data: key
+  }
+  await axios.post('http://eventbus:2000/events', payload);
+});
+
 
 app.post('/events', (req: express.Request, res: express.Response) => {
   console.log(req.body.type);
