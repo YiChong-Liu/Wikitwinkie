@@ -14,3 +14,7 @@ export interface Article {
 export interface SearchResult {
     articleId: string[]
 }
+
+export function instanceofSearchResult(object: any): object is SearchResult {
+    return 'articleId' in object;
+}
