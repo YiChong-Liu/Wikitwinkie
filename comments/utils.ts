@@ -1,6 +1,7 @@
 export const Type = {
     COMMENT_CREATED : 'CommentCreated',
-    COMMENT_GET: 'CommentGet'
+    COMMENT_GET: 'CommentGet',
+    COMMENT_EDITED: 'CommentEdited'
 }
 
 

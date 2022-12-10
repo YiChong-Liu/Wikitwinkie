@@ -3,6 +3,7 @@ export const Type = {
     COMMENT_VOTED : 'CommentVoted',
     COMMENT_VOTE_INIT: 'CommentVoteInited',
     COMMENT_VOTE_GET: 'CommentVoteGet',
+    COMMENT_VOTE_CHANGED: 'CommentVoteChanged'
 }
 
 export interface CommentVote {

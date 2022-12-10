@@ -91,7 +91,7 @@ app.put('/articles/:articleId/comments/:commentId/votes', async (req: express.Re
   }
 
   const payload: IEvent = {
-    type: Type.COMMENT_VOTE_INIT,
+    type: Type.COMMENT_VOTE_CHANGED,
     data: data
   }
   await axios.post('http://eventbus:2000/events', payload);
