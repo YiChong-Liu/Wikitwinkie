@@ -8,7 +8,7 @@ import axios from "axios";
 import { NLPRoute } from "./utils/utils.js";
 
 const app = express();
-const port = 4003;
+const PORT = 4003;
 
 app.use(logger("dev"));
 app.use(express.json());
@@ -16,7 +16,7 @@ app.use(cors());
 
 const db = redis.createClient({
     socket: {
-        host: "imagemanagementdb",
+        host: "image_managementdb",
         port: 6379
     }
 })
@@ -39,4 +39,9 @@ app.post("/image/{name}", NLPRoute({
         res.status(404).sendFile("default.png", { root: "./img" });
     }
 }))
+
+await db.connect();
+app.listen(PORT, () => {
+    console.log(`Listening on port ${PORT}`);
+});
 
