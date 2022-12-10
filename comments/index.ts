@@ -3,7 +3,7 @@ import logger from 'morgan';
 import cors from 'cors';
 import axios from 'axios';
 import { randomBytes } from 'crypto';
-import { Comment, CommentReq, ErrorMessage, instaceOfErrorMessage, instanceOfComment } from './utils';
+import { Comment, ErrorMessage, instanceOfComment, Type } from './utils';
 import { db } from './db';
 
 const app: express.Express = express();
@@ -22,6 +22,12 @@ app.get('/articles/:articleId/comments', async (req: express.Request, res: expre
   else {
     res.status(404).send(comment);
   }
+
+  const payload = {
+    type: Type.COMMENT_GET,
+    data: comment
+  }
+  await axios.post('http://eventbus:2000/events', payload);
 });
 
 app.post('/articles/:articleId/comments', async (req: express.Request, res: express.Response) => {
@@ -41,13 +47,11 @@ app.post('/articles/:articleId/comments', async (req: express.Request, res: expr
     res.status(500).send(e);
   }
  
-  // const payload = {
-  //   type: Type.COMMENT_CREATED,
-  //   data: comment
-  // }
-  // await axios.post('http://eventbus:4005/events', payload);
-
-  // res.status(201).send(comments);
+  const payload = {
+    type: Type.COMMENT_CREATED,
+    data: comment
+  }
+  await axios.post('http://eventbus:2000/events', payload);
 });
 
 app.post('/events', (req: express.Request, res: express.Response) => {
