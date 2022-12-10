@@ -1,10 +1,10 @@
-## Account Management Service
+# Account Management Service
 
-#### Author
+### Author
 
 Yichong Liu ([@YiChong_Liu](https://github.com/YiChong-Liu))
 
-#### Description
+### Description
 
 The account management service allows the users to:
 
@@ -12,9 +12,11 @@ The account management service allows the users to:
 - create and change password
 - delete account
 
-#### Service Interaction
+### Service Interaction
 
-#### API Endpoints
+The account management service will interact with the sessions management service: After the user creates an account with an unique username and logs into the application automatically,  a session with a random session id will be created and sent to the client to store the cookies.
+
+### API Endpoints
 
 - Create User
   - URL: /createUser
@@ -48,4 +50,8 @@ The account management service allows the users to:
   - Response:
     - 200 OK {"success": boolean}
 
-#### Tutorial
+### Tutorial
+
+From the *accountmanagement* directory run `npm start`
+
+The service then should run at [http://localhost:4002](http://localhost:4002/) in the browser.

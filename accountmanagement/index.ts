@@ -13,7 +13,12 @@ const PORT = 4002;
 
 app.use(logger("dev"));
 app.use(express.json());
-app.use(cors());
+app.use(cors({ origin: "http://localhost:3000", credentials: true }));
+
+const SERVER_FACING_PORT = 4102;
+const serverFacingApp = express();
+serverFacingApp.use(logger("dev"));
+serverFacingApp.use(express.json());
 
 const saltRounds = 10;
 
@@ -41,17 +46,15 @@ app.post("/createUser", NLPRoute({
         await db.set(req.body.username, await bcrypt.hash(req.body.password, saltRounds));
 
         const checkLoginResponse: AxiosResponse<SessionsLoginResponseSuccessful> = await axios.post(
-            "http://session:4001/login", {
-                username: req.body.username,
-                password: req.body.password,
-                success: true,
-                sessionId: undefined
+            "http://sessions:4001/login", {
+            username: req.body.username,
+            password: req.body.password
         });
         if (checkLoginResponse.data.success) {
-            res.status(200).send({
-                "success": true,
-                "username": req.body.username,
-                "sessionId": checkLoginResponse.data.sessionId
+            res.status(200).cookie("sessionId", checkLoginResponse.data.sessionId).send({
+                success: true,
+                username: req.body.username,
+                sessionId: checkLoginResponse.data.sessionId
             })
         }
     }
@@ -83,7 +86,7 @@ app.post('/editUser', NLPRoute({
     res.status(204).end();
 }))
 
-app.post('/checkpassword', NLPRoute({
+serverFacingApp.post('/checkpassword', NLPRoute({
     bodySchema: {
         properties: {
             username: { type: "string" },
@@ -103,8 +106,7 @@ app.post('/checkpassword', NLPRoute({
             success: true
         })
     }
-
-    res.status(200).send({
+    else res.status(200).send({
         success: false
     })
 }))
@@ -127,3 +129,7 @@ await db.connect();
 app.listen(PORT, () => {
     console.log(`Listening on port ${PORT}`);
 });
+
+serverFacingApp.listen(SERVER_FACING_PORT, () => {
+    console.log(`Listening on port ${SERVER_FACING_PORT}`);
+})

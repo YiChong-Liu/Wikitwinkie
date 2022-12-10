@@ -1,19 +1,25 @@
 ## Article Vote Service
 
-#### Author
+### Author
 
 Yichong Liu ([@YiChong_Liu](https://github.com/YiChong-Liu))
 
-#### Description
+### Description
 
 Each reader is able to click "upvote" and "downvote" after reading the article.
 
-#### Service Interaction
+### Service Interaction
 
 
 
-#### API Endpoints
+### API Endpoints
 
+- Vote on article
+  - URL: /articleVote
+  - Method: PUT
+  - Request Body: {"articleId": string, "upvote": integer, "downvote": integer}
+  - Response: 
+    - 200 OK {"articleId": string, "upvote": integer, "downvote": integer}
+    - 404 NOT FOUND Invalid article
 
-
-#### Tutorial
+### Tutorial
