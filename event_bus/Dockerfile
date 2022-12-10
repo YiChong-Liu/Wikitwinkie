@@ -1,9 +1,11 @@
 FROM node:alpine
 
-WORKDIR /usr/app
+USER node
+WORKDIR /home/node/app
 
-COPY ./package.json ./
+COPY event_bus/package.json ./
 RUN npm install
-COPY ./ ./
+COPY event_bus/ ./
+# COPY utils/ ./utils/
 
 CMD ["npm", "start"]

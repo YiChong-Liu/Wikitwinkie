@@ -41,6 +41,6 @@ app.post('/events', (req: express.Request, res: express.Response) => {
   res.send({});
 });
 
-app.listen(4005, () => {
-  console.log('Listening on 4005');
+app.listen(2000, () => {
+  console.log('Listening on 2000');
 });
