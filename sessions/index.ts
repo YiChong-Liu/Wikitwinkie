@@ -1,33 +1,16 @@
 import { randomUUID } from "crypto";
-import express from "express";
-import logger from "morgan";
-import cors from "cors";
 import axios from "axios";
-import redis from "redis";
 import type { AxiosResponse } from "axios";
+import express from "express";
+import cookieParser from "cookie-parser";
+import cors from "cors";
+import logger from "morgan";
+import redis from "redis";
 import { NLPRoute } from "./utils/utils.js";
 import type { AccountManagementCheckPasswordResponse } from "./utils/interfaces.js";
-import cookieParser from "cookie-parser";
 
 // session expiry in milliseconds
 const SESSION_EXPIRY_MS = 24 * 3600 * 1000
-
-// const ajv = new Ajv();
-
-// interface Session {
-//   sessionId: string,
-//   username: string,
-//   expiry: string
-// }
-// const validateSchemaSession = ajv.compile({
-//   properties: {
-//     sessionId: {type: "string"},
-//     username: {type: "string"},
-//     expiry: {type: "string"},
-//   }
-// } as JTDSchemaType<Session>)
-
-// type MyData = JTDDataType<typeof schema>
 
 const PORT = 4001;
 const app = express();
@@ -108,11 +91,11 @@ app.post("/login", NLPRoute({
     }))
 
     res.status(200).cookie("username", req.body.username)
-      .cookie("sessionId", sessionId)
-      .send({
-        success: true,
-        sessionId: sessionId
-      });
+                   .cookie("sessionId", sessionId)
+                   .send({
+      success: true,
+      sessionId: sessionId
+    });
   } else {
     res.status(200).send({
       success: false,

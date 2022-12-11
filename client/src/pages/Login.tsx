@@ -1,5 +1,5 @@
 import axios from "axios";
-import App from "../lib/App";
+import NLPPage from "../lib/NLPPage";
 
 const loginSubmit = async () => {
   const username = (document.getElementById("username") as HTMLInputElement).value;
@@ -11,7 +11,7 @@ const loginSubmit = async () => {
   console.log(response);
 };
 
-const Login = () => <App title="Log In">
+const Login = () => <NLPPage title="Log In">
   <label className  ="labels" htmlFor="user">Username: </label>
   {/* <br/> */}
   <input className="textBoxes" type="text" id="username" placeholder="Enter Username"/>
@@ -24,6 +24,6 @@ const Login = () => <App title="Log In">
   <br/>
   <br/>
   <label className="minilabels"><a href="/register">Sign up</a></label>
-</App>;
+</NLPPage>;
 
 export default Login;

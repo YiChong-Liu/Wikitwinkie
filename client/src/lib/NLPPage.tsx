@@ -1,9 +1,9 @@
 import React from "react";
 import { Fragment } from "react";
 import { Link } from "react-router-dom";
-import "./App.css";
+import "./NLPPage.css";
 
-const App = (props: {children: React.ReactNode, title: string}) => <Fragment>
+const NLPPage = (props: {children: React.ReactNode, title: string}) => <Fragment>
   <Link to="/">Home</Link>
   <h1 className="app-title">
     {props.title}
@@ -13,4 +13,4 @@ const App = (props: {children: React.ReactNode, title: string}) => <Fragment>
   </main>
 </Fragment>;
 
-export default App;
+export default NLPPage;

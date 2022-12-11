@@ -1,6 +1,6 @@
 import axios from "axios";
 import type { AxiosResponse } from "axios";
-import App from "../lib/App";
+import NLPPage from "../lib/NLPPage";
 import type { AccountManagementCreateUserResponse } from "../utils/interfaces";
 
 const signupSubmit = async () => {
@@ -22,7 +22,7 @@ const signupSubmit = async () => {
   }
 };
 
-const Register = () => <App title="Sign Up">
+const Register = () => <NLPPage title="Sign Up">
   <label className  ="labels" htmlFor="user">Username: </label>
   {/* <br/> */}
   <input className="textBoxes" type="text" id="username" placeholder="Enter Username"/>
@@ -32,6 +32,6 @@ const Register = () => <App title="Sign Up">
   <input className="textBoxes" type="password" id="password" placeholder="Enter Password"/>
   <br/>
   <input className="button" id="signup" type="button" value="Sign Up" onClick={signupSubmit}/>
-</App>;
+</NLPPage>;
 
 export default Register;
