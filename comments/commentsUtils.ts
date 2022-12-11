@@ -1,10 +1,3 @@
-export const Type = {
-    COMMENT_CREATED : 'CommentCreated',
-    COMMENT_GET: 'CommentGet',
-    COMMENT_EDITED: 'CommentEdited',
-    COMMENT_DELETED: 'CommentDeleted'
-}
-
 export interface CommentKey {
     commentId: string,
     articleId: string
@@ -36,6 +29,6 @@ export function instanceOfComments(object: any): object is Comment[] {
     else {
         return false;
     }
-    
+
     return isComments;
 }

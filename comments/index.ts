@@ -3,8 +3,9 @@ import logger from 'morgan';
 import cors from 'cors';
 import axios from 'axios';
 import { randomBytes } from 'crypto';
-import { Comment, CommentKey, ErrorMessage, instanceOfComment, Type } from './commentsUtils.js';
+import { Comment, CommentKey, ErrorMessage, instanceOfComment } from './commentsUtils.js';
 import { db } from './db.js';
+import { EventType } from './utils/interfaces.js';
 
 const app: express.Express = express();
 
@@ -25,7 +26,7 @@ app.get('/articles/:articleId/comments', async (req: express.Request, res: expre
   }
 
   const payload = {
-    type: Type.COMMENT_GET,
+    type: EventType.COMMENT_GET,
     data: comment
   }
   await axios.post('http://eventbus:2000/events', payload);
@@ -50,7 +51,7 @@ app.post('/articles/:articleId/comments', async (req: express.Request, res: expr
   }
 
   const payload = {
-    type: Type.COMMENT_CREATED,
+    type: EventType.COMMENT_CREATED,
     data: comment
   }
   await axios.post('http://eventbus:2000/events', payload);
@@ -75,7 +76,7 @@ app.put('/articles/:articleId/comments/:commentId', async (req: express.Request,
   }
 
   const payload = {
-    type: Type.COMMENT_EDITED,
+    type: EventType.COMMENT_EDITED,
     data: comment
   }
   await axios.post('http://eventbus:2000/events', payload);
@@ -97,7 +98,7 @@ app.post('/articles/:articleId/comments/:commentId', async (req: express.Request
   }
 
   const payload = {
-    type: Type.COMMENT_DELETED,
+    type: EventType.COMMENT_DELETED,
     data: key
   }
   await axios.post('http://eventbus:2000/events', payload);

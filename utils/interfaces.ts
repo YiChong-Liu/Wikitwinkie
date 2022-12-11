@@ -1,10 +1,13 @@
 // eventbus
 export enum EventType {
   COMMENT_CREATED = "CommentCreated",
+  COMMENT_GET = "CommentGet",
+  COMMENT_EDITED = "CommentEdited",
+  COMMENT_DELETED = "CommentDeleted",
   COMMENT_VOTED = "CommentVoted"
 }
 export interface IEvent {
-  type: string
+  type: EventType,
   data: any
 }
 
