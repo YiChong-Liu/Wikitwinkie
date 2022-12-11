@@ -2,7 +2,7 @@ import axios from "axios";
 import type { AxiosResponse } from "axios";
 import { useNavigate } from "react-router-dom";
 import NLPPage from "../lib/NLPPage";
-import type { AccountManagementCreateUserResponse } from "../utils/interfaces";
+import type { SessionsLoginResponse } from "../utils/interfaces";
 
 const Register = () => {
   const navigate = useNavigate();
@@ -10,20 +10,20 @@ const Register = () => {
   const signupSubmit = async () => {
     const username = (document.getElementById("username") as HTMLInputElement).value;
     const password = (document.getElementById("password") as HTMLInputElement).value;
-    const response: AxiosResponse<AccountManagementCreateUserResponse> = await axios.post(
+    const response: AxiosResponse<SessionsLoginResponse> = await axios.post(
       `http://${window.location.hostname}:4002/createUser`,
-      {
+      { // body
         username: username,
         password: password
       },
-      {withCredentials: true}
+      {withCredentials: true} // send and/or set cookies
     );
     console.log(response);
     if (response.data.success) {
-      console.log(response.data.sessionId);
       navigate("/");
     } else {
-      console.log(response.data.error);
+      const registerError = document.getElementById("registerError") as HTMLSpanElement;
+      registerError.textContent = response.data.error;
     }
   };
 
@@ -38,7 +38,8 @@ const Register = () => {
       <br/>
       <input className="button" id="signup" type="button" value="Sign Up" onClick={signupSubmit}/>
     </form>
+    <span id="registerError" className="errorSpan"></span>
   </NLPPage>;
-}
+};
 
 export default Register;
