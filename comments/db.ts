@@ -1,5 +1,5 @@
 import * as redis from 'redis';
-import { Comment, CommentKey, ErrorMessage, instanceOfComment, instanceOfComments } from './utils';
+import { Comment, CommentKey, ErrorMessage, instanceOfComment, instanceOfComments } from './commentsUtils.js';
 
 export class db {
     client: redis.RedisClientType;
@@ -13,7 +13,6 @@ export class db {
 
         this.client.connect();
     }
-    
 
     async getCommentsByArticleId(articleId: string): Promise<Comment[] | ErrorMessage> {
         let res: string | null = null;
@@ -23,7 +22,7 @@ export class db {
         catch(e) {
             return { message: e };
         }
-        
+
         if (res) {
             try {
                 return JSON.parse(res);
@@ -33,7 +32,7 @@ export class db {
             }
         }
         else {
-            return { message: "comment not found" }; 
+            return { message: "comment not found" };
         }
     }
 
@@ -56,13 +55,13 @@ export class db {
             }
             catch (e) {
                 return { message: e };
-            }     
+            }
         }
 
         return comment;
 
     }
-    
+
     async editComment(comment: Comment) {
         const comments: Comment[] | ErrorMessage = await this.getCommentsByArticleId(comment.articleId)
         if (instanceOfComments(comments)) {
@@ -86,7 +85,7 @@ export class db {
 
         return comment;
     }
-    
+
     async deleteComment(key: CommentKey) {
         const comments: Comment[] | ErrorMessage = await this.getCommentsByArticleId(key.articleId)
         if (instanceOfComments(comments)) {

@@ -3,8 +3,8 @@ import logger from 'morgan';
 import cors from 'cors';
 import axios from 'axios';
 import { randomBytes } from 'crypto';
-import { Comment, CommentKey, ErrorMessage, instanceOfComment, Type } from './utils';
-import { db } from './db';
+import { Comment, CommentKey, ErrorMessage, instanceOfComment, Type } from './commentsUtils.js';
+import { db } from './db.js';
 
 const app: express.Express = express();
 
@@ -33,7 +33,7 @@ app.get('/articles/:articleId/comments', async (req: express.Request, res: expre
 
 // GENERATE COMMENT
 app.post('/articles/:articleId/comments', async (req: express.Request, res: express.Response) => {
-  const comment: Comment = { 
+  const comment: Comment = {
     commentId: randomBytes(4).toString('hex'),
     content: req.body.content,
     articleId: req.params.articleId,
@@ -48,7 +48,7 @@ app.post('/articles/:articleId/comments', async (req: express.Request, res: expr
     console.log(e)
     res.status(500).send(e);
   }
- 
+
   const payload = {
     type: Type.COMMENT_CREATED,
     data: comment
@@ -58,7 +58,7 @@ app.post('/articles/:articleId/comments', async (req: express.Request, res: expr
 
 // EDIT COMMENT
 app.put('/articles/:articleId/comments/:commentId', async (req: express.Request, res: express.Response) => {
-  const comment: Comment = { 
+  const comment: Comment = {
     commentId: req.params.commentId,
     content: req.body.content,
     articleId: req.params.articleId,
@@ -73,7 +73,7 @@ app.put('/articles/:articleId/comments/:commentId', async (req: express.Request,
     console.log(e)
     res.status(500).send(e);
   }
- 
+
   const payload = {
     type: Type.COMMENT_EDITED,
     data: comment
@@ -83,7 +83,7 @@ app.put('/articles/:articleId/comments/:commentId', async (req: express.Request,
 
 // DELETE COMMENT
 app.post('/articles/:articleId/comments/:commentId', async (req: express.Request, res: express.Response) => {
-  const key: CommentKey = { 
+  const key: CommentKey = {
     articleId: req.params.articleId,
     commentId: req.params.commentId
   }
@@ -95,7 +95,7 @@ app.post('/articles/:articleId/comments/:commentId', async (req: express.Request
     console.log(e)
     res.status(500).send(e);
   }
- 
+
   const payload = {
     type: Type.COMMENT_DELETED,
     data: key
