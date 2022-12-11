@@ -21,25 +21,23 @@ export class db {
 
         // x: word
         arr.forEach(async x => {
-            let res: SearchResult | null = null;
+            let res: string | null = null;
             try {
-                res = JSON.parse(await this.client.get(JSON.stringify(x)));
+                res = await this.client.get(JSON.stringify(x));
             }
             catch(e) {
                 return { message: e };
             }
-            
-            if (instanceofSearchResult(res)) {
-                res.articleId.push(article.articleId);
-
+            if (res) {
+                const arr = JSON.parse(res);
+                arr.push(article.articleId);
                 try {
-                    await this.client.set(JSON.stringify(x), JSON.stringify(res));
+                    await this.client.set(JSON.stringify(x), JSON.stringify(arr));
                 }
                 catch (e) {
                     return { message: e };
                 }
             }
-
             else {
                 try {
                     await this.client.set(JSON.stringify(x), JSON.stringify([article.articleId]));
@@ -47,8 +45,7 @@ export class db {
                 catch (e) {
                     return { message: e };
                 }     
-            }
-        
+            } 
         });
         return article;
     }
@@ -58,22 +55,22 @@ export class db {
         const arr: string[] = stemmer.stemming();
         const sr: SearchResult = { articleId: [] };
 
-        arr.forEach(async x => {
-            let res: SearchResult | null = null;
+        for (const x of arr) {
+            let res: string | null = null;
             try {
-                res = JSON.parse(await this.client.get(JSON.stringify(x)));
+                res = await this.client.get(JSON.stringify(x));
             }
             catch(e) {
                 return { message: e };
             }
             
-            if (instanceofSearchResult(res)) {
-                res.articleId.forEach(x => {
+            if (res) {
+                const store: string[] = JSON.parse(res);
+                store.forEach(x => {
                     sr.articleId.push(x);
                 });
             } 
-        });
-
+        }
         return sr;
     }
 }

@@ -14,13 +14,23 @@ app.use(cors());
 const database = new db();
 
 // Search by article content
-app.get('/search/:content', async (req: express.Request, res: express.Response) => {
-  
+app.post('/search/:content', async (req: express.Request, res: express.Response) => {
+  try {
+    res.status(200).send(await database.searchContent(req.params.content));
+  }
+  catch(e) {
+    res.status(404).send( { message: e });
+  }
 });
 
 // Inverted indexing
 app.post('/search/indexing', async (req: express.Request, res: express.Response) => {
-  
+  try {
+    res.status(200).send(await database.indexing(req.body));
+  }
+  catch(e) {
+    res.status(404).send( { message: e });
+  }
 });
 
 app.post('/events', (req: express.Request, res: express.Response) => {
