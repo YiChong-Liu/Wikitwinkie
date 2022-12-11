@@ -1,4 +1,5 @@
 import axios from "axios";
+import { Link } from "react-router-dom";
 import NLPPage from "../lib/NLPPage";
 
 const loginSubmit = async () => {
@@ -12,18 +13,18 @@ const loginSubmit = async () => {
 };
 
 const Login = () => <NLPPage title="Log In">
-  <label className  ="labels" htmlFor="user">Username: </label>
-  {/* <br/> */}
-  <input className="textBoxes" type="text" id="username" placeholder="Enter Username"/>
+  <form>
+    {/* TODO: use html form submit instead of button onclick */}
+    <label className  ="labels" htmlFor="user">Username: </label>
+    <input className="textBoxes" type="text" id="username" placeholder="Enter Username"/>
+    <br/>
+    <label className= "labels" htmlFor="password">Password: </label>
+    <input className="textBoxes" type="password" id="password" placeholder="Enter Password"/>
+    <br/>
+    <input className="button" id="login" type="button" value="Login" onClick={loginSubmit}/>
+  </form>
   <br/>
-  <label className= "labels" htmlFor="password">Password: </label>
-  {/* <br/> */}
-  <input className="textBoxes" type="password" id="password" placeholder="Enter Password"/>
-  <br/>
-  <input className="button" id="login" type="button" value="Login" onClick={loginSubmit}/>
-  <br/>
-  <br/>
-  <label className="minilabels"><a href="/register">Sign up</a></label>
+  <label className="minilabels"><Link to="/register">Sign up</Link></label>
 </NLPPage>;
 
 export default Login;

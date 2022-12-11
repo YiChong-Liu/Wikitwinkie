@@ -23,15 +23,16 @@ const signupSubmit = async () => {
 };
 
 const Register = () => <NLPPage title="Sign Up">
-  <label className  ="labels" htmlFor="user">Username: </label>
-  {/* <br/> */}
-  <input className="textBoxes" type="text" id="username" placeholder="Enter Username"/>
-  <br/>
-  <label className= "labels" htmlFor="password">Password: </label>
-  {/* <br/> */}
-  <input className="textBoxes" type="password" id="password" placeholder="Enter Password"/>
-  <br/>
-  <input className="button" id="signup" type="button" value="Sign Up" onClick={signupSubmit}/>
+  <form>
+    {/* TODO: use html form submit instead of button onclick */}
+    <label className  ="labels" htmlFor="user">Username: </label>
+    <input className="textBoxes" type="text" id="username" placeholder="Enter Username"/>
+    <br/>
+    <label className= "labels" htmlFor="password">Password: </label>
+    <input className="textBoxes" type="password" id="password" placeholder="Enter Password"/>
+    <br/>
+    <input className="button" id="signup" type="button" value="Sign Up" onClick={signupSubmit}/>
+  </form>
 </NLPPage>;
 
 export default Register;
