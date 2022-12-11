@@ -1,16 +1,16 @@
-import express = require('express');
-import logger = require('morgan');
-import axios, { AxiosError } from 'axios';
+import express from "express";
+import logger from "morgan";
+import axios, { AxiosError } from "axios";
 import  { IEvent, Type } from './enum'
 
+const PORT = 2000;
 const app = express();
-
-app.use(logger('dev'));
+app.use(logger("dev"));
 app.use(express.json());
 
 function commentEvent(event: IEvent) {
   try {
-    axios.post('http://comments:4401/events', event).catch((err: Error | AxiosError) => {
+    axios.post("http://comments:4401/events", event).catch((err: Error | AxiosError) => {
       console.log(err.message);
     });
     axios.post
@@ -18,12 +18,12 @@ function commentEvent(event: IEvent) {
   catch (err) {
     console.log(err);
   }
- 
+
 }
 
 function commentVoteEvent(event: IEvent) {
   try {
-    axios.post('http://comment_votes:4403/events', event).catch((err: Error | AxiosError) => {
+    axios.post("http://comment_votes:4403/events", event).catch((err: Error | AxiosError) => {
       console.log(err.message);
     });
   }
@@ -32,7 +32,7 @@ function commentVoteEvent(event: IEvent) {
   }
 }
 
-app.post('/events', (req: express.Request, res: express.Response) => {
+app.post("/events", (req: express.Request, res: express.Response) => {
   const event: IEvent = req.body;
 
   commentEvent(event);
@@ -41,6 +41,6 @@ app.post('/events', (req: express.Request, res: express.Response) => {
   res.send({});
 });
 
-app.listen(2000, () => {
-  console.log('Listening on 2000');
+app.listen(PORT, () => {
+  console.log(`Listening on port ${PORT}`);
 });

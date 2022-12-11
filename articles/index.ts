@@ -19,6 +19,68 @@ const db = redis.createClient({
   }
 });
 
+app.post("/create", NLPRoute({
+  bodySchema: {
+    properties: {
+      articleId: { type: "string" },
+      title: { type: "string" },
+      content: { type: "string" }
+    }
+  },
+  sessionCookie: "required"
+}, async (req, res) => {
+  // TODO
+  res.status(200).end();
+}));
+
+app.post("/edit", NLPRoute({
+  bodySchema: {
+    properties: {
+      articleId: { type: "string" },
+      title: { type: "string" },
+      content: { type: "string" }
+    }
+  },
+  sessionCookie: "required"
+}, async (req, res) => {
+  // TODO
+  res.status(200).end();
+}));
+
+app.post("/delete", NLPRoute({
+  bodySchema: {
+    properties: {
+      articleId: { type: "string" },
+      title: { type: "string" },
+      content: { type: "string" }
+    }
+  },
+  sessionCookie: "required"
+}, async (req, res) => {
+  // TODO
+  res.status(200).end();
+}));
+
+app.post("/restore", NLPRoute({
+  bodySchema: {
+    properties: {
+      articleId: { type: "string" },
+      title: { type: "string" },
+      content: { type: "string" }
+    }
+  },
+  sessionCookie: "required"
+}, async (req, res) => {
+  // TODO
+  res.status(200).end();
+}));
+
+app.get("/:name/comments", NLPRoute({}, async (req, res) => {
+  console.log(req.params.name);
+  // TODO
+  res.status(200).end();
+}));
+
 await db.connect();
 app.listen(PORT, () => {
   console.log(`Listening on port ${PORT}`);

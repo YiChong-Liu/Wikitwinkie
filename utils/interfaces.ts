@@ -1,3 +1,12 @@
+// eventbus
+export enum EventType {
+  COMMENT_CREATED = "CommentCreated",
+  COMMENT_VOTED = "CommentVoted"
+}
+export interface IEvent {
+  type: string
+  data: any
+}
 
 // sessions
 export interface SessionsLoginResponseSuccessful {
