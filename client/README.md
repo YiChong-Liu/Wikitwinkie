@@ -14,15 +14,20 @@ The Front-end Service, implemented using the React library, is the user interfac
 
 ### Components
 
-* Home page (including search bar) **(Yichong Liu)**
+* Home page **(Yichong Liu)**
 * Sign up + Log in **(Neil Gupta)**
 * Change password / delete account **(Neil Gupta)**
 * Navigation bar **(Neil Gupta / Yichong Liu)**
 * Article rendering **(Neil Gupta)**
 * Article edit / create **(Neil Gupta)**
 * Comments **(Keith Pham)**
+* Comment Vote  **(Keith Pham)**
 * Search results **(Keith Pham)**
+* Search bar **(Keith Pham)**
 * Image upload page  **(Yichong Liu)**
 * Image list page  **(Yichong Liu)**
+
+### External Library
+Bootstrap UI
 
 ### Tutorial
