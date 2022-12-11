@@ -40,6 +40,15 @@ services:
   image_managementdb:
     image: "redis:alpine"
 
+  articles:
+    build:
+      context: .
+      dockerfile: articles/Dockerfile
+    ports:
+      - "4005:4005"
+  articlesdb:
+    image: "redis:alpine"
+
   # article_vote:
   #   build:
   #     context: .
