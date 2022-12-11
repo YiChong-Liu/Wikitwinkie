@@ -1,7 +1,7 @@
 import express from "express";
 import logger from "morgan";
 import axios, { AxiosError } from "axios";
-import  { IEvent, Type } from './enum'
+import type { IEvent } from "./utils/interfaces.js";
 
 const PORT = 2000;
 const app = express();
@@ -14,8 +14,7 @@ function commentEvent(event: IEvent) {
       console.log(err.message);
     });
     axios.post
-  }
-  catch (err) {
+  } catch (err) {
     console.log(err);
   }
 
@@ -26,8 +25,7 @@ function commentVoteEvent(event: IEvent) {
     axios.post("http://comment_votes:4403/events", event).catch((err: Error | AxiosError) => {
       console.log(err.message);
     });
-  }
-  catch (err) {
+  } catch (err) {
     console.log(err);
   }
 }
