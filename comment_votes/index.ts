@@ -29,7 +29,9 @@ import cors from 'cors';
 import axios from 'axios';
 import { randomBytes } from 'crypto';
 import { db } from './db.js';
-import { CommentVote, ErrorMessage, IEvent, instanceOfCommentVote, Type, VoteKey } from './utils.js';
+import { CommentVote, ErrorMessage, instanceOfCommentVote, VoteKey } from './utils.js';
+import { EventType } from './utils/interfaces.js';
+import type { IEvent } from './utils/interfaces.js';
 
 const app: express.Express = express();
 
@@ -52,7 +54,7 @@ app.get('/articles/:articleId/comments/:commentId/votes', async (req: express.Re
   }
 
   const payload: IEvent = {
-    type: Type.COMMENT_VOTE_GET,
+    type: EventType.COMMENT_VOTE_GET,
     data: vote
   }
   await axios.post('http://eventbus:2000/events', payload);
@@ -71,7 +73,7 @@ app.post('/articles/:articleId/comments/:commentId/votes', async (req: express.R
   }
 
   const payload: IEvent = {
-    type: Type.COMMENT_VOTE_INIT,
+    type: EventType.COMMENT_VOTE_INIT,
     data: vote
   }
   await axios.post('http://eventbus:2000/events', payload);
@@ -91,7 +93,7 @@ app.put('/articles/:articleId/comments/:commentId/votes', async (req: express.Re
   }
 
   const payload: IEvent = {
-    type: Type.COMMENT_VOTE_CHANGED,
+    type: EventType.COMMENT_VOTE_CHANGED,
     data: data
   }
   await axios.post('http://eventbus:2000/events', payload);
@@ -100,7 +102,7 @@ app.put('/articles/:articleId/comments/:commentId/votes', async (req: express.Re
 app.post('/events', (req: express.Request, res: express.Response) => {
   const event: IEvent = req.body;
   switch (event.type) {
-    case Type.COMMENT_CREATED:
+    case EventType.COMMENT_CREATED:
       const comment_vote: CommentVote = {
         articleId: event.data.articleId,
         commentId: event.data.commentId,

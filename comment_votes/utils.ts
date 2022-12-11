@@ -1,11 +1,3 @@
-export const Type = {
-    COMMENT_CREATED : 'CommentCreated',
-    COMMENT_VOTED : 'CommentVoted',
-    COMMENT_VOTE_INIT: 'CommentVoteInited',
-    COMMENT_VOTE_GET: 'CommentVoteGet',
-    COMMENT_VOTE_CHANGED: 'CommentVoteChanged'
-}
-
 export interface CommentVote {
     commentId: string,
     articleId: string,
@@ -15,11 +7,6 @@ export interface CommentVote {
 export interface VoteKey {
     commentId: string,
     articleId: string
-}
-
-export interface IEvent {
-    type: string
-    data: any
 }
 
 export interface ErrorMessage {

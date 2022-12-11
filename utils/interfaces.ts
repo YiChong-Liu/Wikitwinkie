@@ -4,7 +4,10 @@ export enum EventType {
   COMMENT_GET = "CommentGet",
   COMMENT_EDITED = "CommentEdited",
   COMMENT_DELETED = "CommentDeleted",
-  COMMENT_VOTED = "CommentVoted"
+  COMMENT_VOTED = "CommentVoted",
+  COMMENT_VOTE_INIT = "CommentVoteInited",
+  COMMENT_VOTE_GET = "CommentVoteGet",
+  COMMENT_VOTE_CHANGED = "CommentVoteChanged"
 }
 export interface IEvent {
   type: EventType,
