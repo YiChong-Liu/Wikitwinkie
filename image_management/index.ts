@@ -8,7 +8,7 @@ import axios from "axios";
 import { NLPRoute } from "./utils/utils.js";
 
 const app = express();
-const port = 4003;
+const PORT = 4003;
 
 app.use(logger("dev"));
 app.use(express.json());
@@ -16,7 +16,7 @@ app.use(cors());
 
 const db = redis.createClient({
     socket: {
-        host: "imagemanagementdb",
+        host: "image_managementdb",
         port: 6379
     }
 })
@@ -31,16 +31,17 @@ app.post("/image/{name}", NLPRoute({
 
     const img = await db.get(req.body.name);
 
-    if(img !== null) {
-        res.writeHead(200, {"Content-Type": "image/png"});
-        var buff = new Buffer(img, 'binary');
-        res.end(buff);
-    }
-    else {
-        // return a placeholder image
-        // res.writeHead(404, {"Content-Type": "image/png"});
-        // var buff = new Buffer(img, 'binary');
-        // res.end(buff);
+    // if image exists in db, return 200 OK with image
+    if (img) {
+        res.status(200).send(img);
+    } else {
+        // if image does not exist, return 404 Not Found with the default.png image in the img folder
+        res.status(404).sendFile("default.png", { root: "./img" });
     }
 }))
+
+await db.connect();
+app.listen(PORT, () => {
+    console.log(`Listening on port ${PORT}`);
+});
 

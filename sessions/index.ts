@@ -1,38 +1,23 @@
 import { randomUUID } from "crypto";
-import express from "express";
-import logger from "morgan";
-import cors from "cors";
 import axios from "axios";
-import redis from "redis";
 import type { AxiosResponse } from "axios";
+import express from "express";
+import cookieParser from "cookie-parser";
+import cors from "cors";
+import logger from "morgan";
+import redis from "redis";
 import { NLPRoute } from "./utils/utils.js";
 import type { AccountManagementCheckPasswordResponse } from "./utils/interfaces.js";
 
 // session expiry in milliseconds
 const SESSION_EXPIRY_MS = 24 * 3600 * 1000
 
-// const ajv = new Ajv();
-
-// interface Session {
-//   sessionId: string,
-//   username: string,
-//   expiry: string
-// }
-// const validateSchemaSession = ajv.compile({
-//   properties: {
-//     sessionId: {type: "string"},
-//     username: {type: "string"},
-//     expiry: {type: "string"},
-//   }
-// } as JTDSchemaType<Session>)
-
-// type MyData = JTDDataType<typeof schema>
-
 const PORT = 4001;
 const app = express();
 app.use(logger("dev"));
 app.use(express.json());
-app.use(cors({origin: "http://localhost:3000", credentials: true}));
+app.use(cors({ origin: "http://localhost:3000", credentials: true }));
+app.use(cookieParser());
 
 const SERVER_FACING_PORT = 4101;
 const serverFacingApp = express();
@@ -86,7 +71,7 @@ app.post("/login", NLPRoute({
       password: { type: "string" }
     }
   },
-  sessionCookieRequired: true
+  // sessionCookieRequired: true
 } as const, async (req, res) => {
   // todo: move this route in accountmanagement to a different port that is not publicly exposed
   const checkPassResponse: AxiosResponse<AccountManagementCheckPasswordResponse> = await axios.post(
@@ -105,7 +90,9 @@ app.post("/login", NLPRoute({
       expiry: new Date(Date.now() + SESSION_EXPIRY_MS).toISOString()
     }))
 
-    res.status(200).cookie("sessionId", sessionId).send({
+    res.status(200).cookie("username", req.body.username)
+                   .cookie("sessionId", sessionId)
+                   .send({
       success: true,
       sessionId: sessionId
     });
@@ -118,7 +105,7 @@ app.post("/login", NLPRoute({
 }));
 
 app.post("/logout", NLPRoute({
-  sessionCookieRequired: true
+  // sessionCookieRequired: true
 }, async (req, res) => {
   // todo
   res.status(200).send("todo");

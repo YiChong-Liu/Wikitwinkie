@@ -31,12 +31,14 @@ services:
   accountmanagementdb:
     image: "redis:alpine"
 
-  # image_management:
-  #   build:
-  #     context: .
-  #     dockerfile: image_management/Dockerfile
-  #   ports:
-  #     - "4003:4003"
+  image_management:
+    build:
+      context: .
+      dockerfile: image_management/Dockerfile
+    ports:
+      - "4003:4003"
+  image_managementdb:
+    image: "redis:alpine"
 
   # article_vote:
   #   build:
@@ -80,3 +82,4 @@ services:
     command: --port 4406
     ports:
       - "4406:4406"
+

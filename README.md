@@ -18,7 +18,7 @@ Group Project for Fall 2022 COMPSCI 497S Scalable Web Systems @UMass Amherst
 - Article serving service **(Neil Gupta)**
 - Session Management Service **(Neil Gupta)**
 
-- Account management service **(Yichong Liu)**
+- Account management service **(Yichong Liu)** 
 
 - Image management service **(Yichong Liu)**
 

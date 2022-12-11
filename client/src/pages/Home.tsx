@@ -1,13 +1,12 @@
-import React from "react";
 import { Link } from "react-router-dom";
-import App from "../lib/App";
+import NLPPage from "../lib/NLPPage";
 
 const Home = () => {
-  return <App title="Placeholder Title">
+  return <NLPPage title="Placeholder Title">
     This is text on the home page
     <br/>
     <Link to="/login">Log in</Link>
-  </App>;
+  </NLPPage>;
 }
 
 export default Home;

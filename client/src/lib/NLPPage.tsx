@@ -1,10 +1,10 @@
 import React from "react";
 import { Fragment } from "react";
-import { Link } from "react-router-dom";
-import "./App.css";
+import Navbar from "./Navbar";
+import "./NLPPage.css";
 
-const App = (props: {children: React.ReactNode, title: string}) => <Fragment>
-  <Link to="/">Home</Link>
+const NLPPage = (props: {children: React.ReactNode, title: string}) => <Fragment>
+  <Navbar searchbar={false}/>
   <h1 className="app-title">
     {props.title}
   </h1>
@@ -13,4 +13,4 @@ const App = (props: {children: React.ReactNode, title: string}) => <Fragment>
   </main>
 </Fragment>;
 
-export default App;
+export default NLPPage;

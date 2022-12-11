@@ -35,8 +35,7 @@ app.post("/createUser", NLPRoute({
             username: { type: "string" },
             password: { type: "string" }
         }
-    },
-    sessionCookieRequired: false
+    }
 } as const, async (req, res) => {
 
     // Check if the username is duplicate
@@ -51,7 +50,9 @@ app.post("/createUser", NLPRoute({
             password: req.body.password
         });
         if (checkLoginResponse.data.success) {
-            res.status(200).cookie("sessionId", checkLoginResponse.data.sessionId).send({
+            res.status(200).cookie("username", req.body.username)
+                           .cookie("sessionId", checkLoginResponse.data.sessionId)
+                           .send({
                 success: true,
                 username: req.body.username,
                 sessionId: checkLoginResponse.data.sessionId

@@ -9,3 +9,7 @@
   padding: 3em;
   text-align: left;
 }
+
+.errorSpan {
+  color: red;
+}

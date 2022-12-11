@@ -31,3 +31,6 @@ else
         done
     done
 fi
+
+# we don't want utils.ts in client, only interfaces.ts
+rm "$REPO_ROOT/client/src/utils/utils.ts"
