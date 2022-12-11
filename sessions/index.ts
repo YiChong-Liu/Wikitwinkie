@@ -7,6 +7,7 @@ import redis from "redis";
 import type { AxiosResponse } from "axios";
 import { NLPRoute } from "./utils/utils.js";
 import type { AccountManagementCheckPasswordResponse } from "./utils/interfaces.js";
+import cookieParser from "cookie-parser";
 
 // session expiry in milliseconds
 const SESSION_EXPIRY_MS = 24 * 3600 * 1000
@@ -32,7 +33,8 @@ const PORT = 4001;
 const app = express();
 app.use(logger("dev"));
 app.use(express.json());
-app.use(cors({origin: "http://localhost:3000", credentials: true}));
+app.use(cors({ origin: "http://localhost:3000", credentials: true }));
+app.use(cookieParser());
 
 const SERVER_FACING_PORT = 4101;
 const serverFacingApp = express();
@@ -86,7 +88,7 @@ app.post("/login", NLPRoute({
       password: { type: "string" }
     }
   },
-  sessionCookieRequired: true
+  // sessionCookieRequired: true
 } as const, async (req, res) => {
   // todo: move this route in accountmanagement to a different port that is not publicly exposed
   const checkPassResponse: AxiosResponse<AccountManagementCheckPasswordResponse> = await axios.post(
@@ -105,10 +107,12 @@ app.post("/login", NLPRoute({
       expiry: new Date(Date.now() + SESSION_EXPIRY_MS).toISOString()
     }))
 
-    res.status(200).cookie("sessionId", sessionId).send({
-      success: true,
-      sessionId: sessionId
-    });
+    res.status(200).cookie("username", req.body.username)
+      .cookie("sessionId", sessionId)
+      .send({
+        success: true,
+        sessionId: sessionId
+      });
   } else {
     res.status(200).send({
       success: false,
@@ -118,7 +122,7 @@ app.post("/login", NLPRoute({
 }));
 
 app.post("/logout", NLPRoute({
-  sessionCookieRequired: true
+  // sessionCookieRequired: true
 }, async (req, res) => {
   // todo
   res.status(200).send("todo");
