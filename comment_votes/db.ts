@@ -1,5 +1,5 @@
 import * as redis from 'redis';
-import { CommentVote, ErrorMessage, instanceOfCommentVote, parsedKey, VoteKey } from './utils';
+import { CommentVote, ErrorMessage, instanceOfCommentVote, parsedKey, VoteKey } from './utils.js';
 
 export class db {
     client: redis.RedisClientType;
@@ -13,7 +13,7 @@ export class db {
 
         this.client.connect();
     }
-    
+
     async getVoteById(key: VoteKey): Promise<CommentVote | ErrorMessage> {
         let res: string | null = null;
         try {
@@ -22,7 +22,7 @@ export class db {
         catch(e) {
             return { message: e };
         }
-        
+
         if (res) {
             try {
                 return JSON.parse(res);
@@ -33,7 +33,7 @@ export class db {
             }
         }
         else {
-            return { message: "vote not found" }; 
+            return { message: "vote not found" };
         }
     }
 
@@ -48,7 +48,7 @@ export class db {
         }
 
         return vote;
-        
+
     }
 
     async updateVote(key: VoteKey, value: number): Promise<CommentVote | ErrorMessage> {
@@ -64,9 +64,9 @@ export class db {
         }
 
         else {
-            return { message: 'Invalid articleId or commentId'}  
+            return { message: 'Invalid articleId or commentId'}
         }
-        
+
         return vote;
     }
 

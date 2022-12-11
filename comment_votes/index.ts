@@ -6,7 +6,7 @@
 //   const { vote } = req.body;
 
 //   // Change vote number if there is vote number, set to new vote if there is None
-//   const votes = voteByPostidCommentid[(req.params.postid, req.params.commentid)] ? 
+//   const votes = voteByPostidCommentid[(req.params.postid, req.params.commentid)] ?
 //     voteByPostidCommentid[(req.params.postid, req.params.commentid)] + vote : vote;
 //   voteByPostidCommentid[(req.params.postid, req.params.commentid)] = votes;
 
@@ -28,8 +28,8 @@ import logger from 'morgan';
 import cors from 'cors';
 import axios from 'axios';
 import { randomBytes } from 'crypto';
-import { db } from './db';
-import { CommentVote, ErrorMessage, IEvent, instanceOfCommentVote, Type, VoteKey } from './utils';
+import { db } from './db.js';
+import { CommentVote, ErrorMessage, IEvent, instanceOfCommentVote, Type, VoteKey } from './utils.js';
 
 const app: express.Express = express();
 
@@ -41,7 +41,7 @@ const database = new db();
 
 // GET COMMENT VOTE
 app.get('/articles/:articleId/comments/:commentId/votes', async (req: express.Request, res: express.Response) => {
-  const key: VoteKey = { 'articleId': req.params.articleId, 'commentId': req.params.commentId } 
+  const key: VoteKey = { 'articleId': req.params.articleId, 'commentId': req.params.commentId }
   const vote: CommentVote | ErrorMessage = await database.getVoteById(key);
 
   if (instanceOfCommentVote(vote)) {
@@ -118,7 +118,7 @@ app.post('/events', (req: express.Request, res: express.Response) => {
         return;
       }
   }
-  
+
   res.send({});
 });
 
