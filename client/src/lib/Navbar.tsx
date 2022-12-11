@@ -1,9 +1,10 @@
 import axios from "axios";
 import Cookies from "js-cookie";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import "./Navbar.css";
 
 const NavBar = (props: {searchbar: boolean}) => {
+  const navigate = useNavigate();
   const username = Cookies.get("username");
   const navbarAccountManagement = username === undefined ? (
     <Link to="/login"><div className="navbarAccountManagement">Log in</div></Link>
@@ -15,6 +16,7 @@ const NavBar = (props: {searchbar: boolean}) => {
         {withCredentials: true} // send and/or set cookies
       );
       console.log(response);
+      navigate("/");
     }} className="navbarAccountManagement">Log out</button>
   );
   return <div className="navbar">

@@ -31,19 +31,11 @@ const db = redis.createClient({
   }
 });
 
-serverFacingApp.post("/validate", NLPRoute({
-  bodySchema: {
-    properties: {
-      sessionId: { type: "string" },
-      username: { type: "string" }
-    }
-  }
-} as const, async (req, res) => {
-  const sessionStr = await db.get(req.body.sessionId);
+const validateSession = async (sessionId: string, username: string) => {
+  const sessionStr = await db.get(sessionId);
   if (sessionStr === null) {
     // session does not exist
-    res.status(200).send({ sessionValid: false });
-    return;
+    return false;
   }
 
   const session = JSON.parse(sessionStr);
@@ -52,15 +44,25 @@ serverFacingApp.post("/validate", NLPRoute({
   if (new Date() >= new Date(session.expiry)) {
 
     // delete the expired session from the database
-    await db.del(req.body.sessionId);
+    await db.del(sessionId);
 
-    res.status(200).send({ sessionValid: false });
-    return;
+    return false;
   }
 
   // return true only if username matches
+  return session.username === username;
+};
+
+serverFacingApp.post("/validate", NLPRoute({
+  bodySchema: {
+    properties: {
+      sessionId: { type: "string" },
+      username: { type: "string" }
+    }
+  }
+} as const, async (req, res) => {
   res.status(200).send({
-    sessionValid: session.username === req.body.username
+    sessionValid: await validateSession(req.body.sessionId, req.body.username)
   });
 }));
 
@@ -83,12 +85,17 @@ app.post("/login", NLPRoute({
   );
   if (checkPassResponse.data.success) {
 
+    // delete old session if the user is already logged in
+    if (req.cookies.sessionId !== undefined) {
+      await db.del(req.cookies.sessionId);
+    }
+
     // create a new session
     const sessionId = randomUUID();
     await db.set(sessionId, JSON.stringify({
       username: req.body.username,
       expiry: new Date(Date.now() + SESSION_EXPIRY_MS).toISOString()
-    }))
+    }));
 
     res.status(200).cookie("username", req.body.username)
                    .cookie("sessionId", sessionId)
@@ -104,11 +111,24 @@ app.post("/login", NLPRoute({
   }
 }));
 
-app.post("/logout", NLPRoute({
-  // sessionCookieRequired: true
-}, async (req, res) => {
-  // todo
-  res.status(200).send("todo");
+app.post("/logout", NLPRoute({}, async (req, res) => {
+  if (req.cookies.sessionId === undefined) {
+    res.status(200);
+    if (req.cookies.username !== undefined) {
+      res.clearCookie("username");
+    }
+    res.end();
+  } else {
+    // we want to delete the session without checking the username
+    // even if the username is wrong, the session should be deleted
+    //     if someone is trying to log it out
+    await db.del(req.cookies.sessionId);
+    res.status(200).clearCookie("sessionId");
+    if (req.cookies.username !== undefined) {
+      res.clearCookie("username");
+    }
+    res.end();
+  }
 }));
 
 await db.connect();
