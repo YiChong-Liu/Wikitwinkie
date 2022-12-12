@@ -5,7 +5,7 @@ import Cookies from "js-cookie";
 import { Navigate, useNavigate } from "react-router-dom";
 import NLPPage from "../lib/NLPPage";
 import type { ArticleCreateResponse } from "../utils/interfaces";
-import "./CreateArticle.css";
+import "./EditArticle.css";
 
 const CreateArticle = () => {
   const navigate = useNavigate();
