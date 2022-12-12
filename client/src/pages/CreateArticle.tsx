@@ -10,7 +10,7 @@ import "./CreateArticle.css";
 const CreateArticle = () => {
   const navigate = useNavigate();
 
-  // TODO: redirect to home page if not logged in
+  // redirect to home page if not logged in
   if (Cookies.get("username") === undefined) {
     return  <Navigate replace to="/"/>;
   }
@@ -30,14 +30,19 @@ const CreateArticle = () => {
       );
     } catch (e) {
       console.error(e);
-      const registerError = document.getElementById("createArticleError") as HTMLSpanElement;
+      const errorSpan = document.getElementById("createArticleError") as HTMLSpanElement;
       if (e instanceof AxiosError && e.response) {
-        registerError.textContent = `There was an error ${JSON.stringify(e.response.data)}. Please try again.`;
+        errorSpan.textContent = `There was an error ${JSON.stringify(e.response.data)}. Please try again.`;
       } else {
-        registerError.textContent = "There was an unknown error.";
+        errorSpan.textContent = "There was an unknown error.";
       }
       return;
     }
+    const loadingSpan = document.getElementById("createArticleLoading") as HTMLSpanElement;
+    loadingSpan.textContent = "Creating article...";
+    // wait for the event bus to move data from the articles service to the article serving service
+    await new Promise(r => setTimeout(r, 1000));
+    // loadingSpan.textContent = "";
     navigate(`/article/${response.data.articleId}`);
   };
 
@@ -52,6 +57,7 @@ const CreateArticle = () => {
       <textarea id="articleContent" placeholder="Enter content (Markdown)"/>
       <input className="button" type="button" value="Create Article" onClick={createArticleSubmit}/>
     </form>
+    <span id="createArticleLoading"></span>
     <span id="createArticleError" className="errorSpan"></span>
   </NLPPage>;
 }

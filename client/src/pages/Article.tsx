@@ -1,8 +1,10 @@
 // Author: Neil Gupta (nog642)
 import axios from "axios";
-import { AxiosError } from "axios";
+import { AxiosError, AxiosResponse } from "axios";
 import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
+import { ArticleStatus } from "../utils/interfaces";
+import type { ArticleServingResponse } from "../utils/interfaces";
 import NLPPage from "../lib/NLPPage";
 import "./CreateArticle.css";
 
@@ -16,7 +18,7 @@ const Article = () => {
   const [contents, setContents] = useState("Loading...");
 
   useEffect(() => {(async () => {
-    let response;
+    let response: AxiosResponse<ArticleServingResponse>
     try {
       response = await axios.get(`http://${window.location.hostname}:4006/${articleName}`);
     } catch (e) {
@@ -34,7 +36,14 @@ const Article = () => {
       }
       return;
     }
-    console.log(response);
+    setTitle(response.data.title);
+    if (response.data.status === ArticleStatus.ACTIVE) {
+      setContents(response.data.content);
+    } else if (response.data.status === ArticleStatus.DELETED) {
+      setContents("This article has been deleted")
+    } else {
+      console.error(`Unrecognized article status: ${response.data.status}`);
+    }
   })()}, [articleName]);
 
   return <NLPPage title={title}>

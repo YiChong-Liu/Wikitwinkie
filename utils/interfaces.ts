@@ -62,3 +62,10 @@ export enum ArticleStatus {
 export interface ArticleCreateResponse {
   articleId: string
 }
+
+// article serving
+export interface ArticleServingResponse {
+  title: string,
+  content: string,
+  status: string
+}
