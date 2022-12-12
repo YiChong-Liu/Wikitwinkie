@@ -5,6 +5,7 @@ import Home from "./pages/Home";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import CreateArticle from "./pages/CreateArticle";
+import Article from "./pages/Article";
 
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./index.css";
@@ -16,7 +17,8 @@ root.render(<React.StrictMode>
         <Route path="/" element={<Home/>}/>
         <Route path="/login" element={<Login/>}/>
         <Route path="/register" element={<Register/>}/>
-        <Route path="/createPage" element={<CreateArticle/>}/>
+        <Route path="/createArticle" element={<CreateArticle/>}/>
+        <Route path="/article/*" element={<Article/>}/>
     </Routes>
   </Router>
 </React.StrictMode>);
