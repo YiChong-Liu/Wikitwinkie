@@ -10,6 +10,7 @@ import Article from "./pages/Article";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./index.css";
 import UploadImage from "./pages/UploadImage";
+import ImageList from "./pages/ImageList";
 
 const root = ReactDOM.createRoot(document.getElementById("root")!);
 root.render(<React.StrictMode>
@@ -22,6 +23,7 @@ root.render(<React.StrictMode>
         <Route path="/uploadImage" element={<UploadImage/>}/>
         <Route path="/createArticle" element={<CreateArticle/>}/>
         <Route path="/article/*" element={<Article/>}/>
+        <Route path="/imageList" element={<ImageList/>}/>
     </Routes>
   </Router>
 </React.StrictMode>);
