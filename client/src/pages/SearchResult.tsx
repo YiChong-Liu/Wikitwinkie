@@ -1,10 +1,10 @@
-import axios from "axios";
-import type { AxiosResponse } from "axios";
-import { Link, useNavigate } from "react-router-dom";
-import NLPPage from "../lib/NLPPage";
+// import axios from "axios";
+// import type { AxiosResponse } from "axios";
+// import { Link, useNavigate } from "react-router-dom";
+// import NLPPage from "../lib/NLPPage";
 
 const SearchResult = (props: any) => {
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
   const arr: string[] = props.result.articleId;
 
   const search_result = document.getElementById("search-result");
@@ -19,7 +19,7 @@ const SearchResult = (props: any) => {
         const newdiv = document.createElement("div");
         newdiv.setAttribute("id", id);
         const newid = document.createTextNode(id);
-    
+
         newdiv.appendChild(newid);
         inner?.appendChild(newdiv);
         search_result?.appendChild(inner);
@@ -27,7 +27,7 @@ const SearchResult = (props: any) => {
   }
 
   return <div id="search-result">
-    
+
   </div>;
 }
 

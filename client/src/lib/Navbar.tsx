@@ -19,7 +19,7 @@ const NavBar = (props: {searchbar: boolean}) => {
       navigate("/");
     }} className="navbarAccountManagement">Log out</button>
   );
-  return <div className="navbar">
+  return <div className="nlpnavbar">
     <Link to="/"><div className="homeButton">Home</div></Link>
     {navbarAccountManagement}
   </div>;

@@ -1,12 +1,11 @@
 import axios from "axios";
-import type { AxiosResponse } from "axios";
-import { Link, useNavigate } from "react-router-dom";
+// import { Link, useNavigate } from "react-router-dom";
 import NLPPage from "../lib/NLPPage";
 import { useState } from 'react';
 import SearchResult from "./SearchResult";
 
 const Home = () => {
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
   const [ArticleId,setArticleId]=useState({articleId: []});
 
   const onSearch = async () => {
@@ -15,14 +14,13 @@ const Home = () => {
       `http://${window.location.hostname}:4405/search/${content}`,
       {withCredentials: true} // send and/or set cookies
     );
-    
-    setArticleId(response.data);    
+
+    setArticleId(response.data);
   }
 
   return <NLPPage title="Placeholder Title">
     This is text on the home page
     <br/>
-    <Link to="/login">Log in</Link>
     <SearchResult result={ArticleId}></SearchResult>
     <div className="input-group mb-3">
       <input type="text" className="form-control" id="search-bar" placeholder="Search here..."/>

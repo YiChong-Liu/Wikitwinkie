@@ -2,7 +2,7 @@
   text-align: center;
 }
 
-.navbar {
+.nlpnavbar {
   background-color: gray;
   display: flex;
   justify-content: space-between;
@@ -10,7 +10,7 @@
   text-align: left;
 }
 
-.navbar a {
+.nlpnavbar a {
   text-decoration: none;
 }
 
