@@ -8,7 +8,7 @@ import { EventType } from "./utils/interfaces.js";
 import type { IEvent } from './utils/interfaces.js';
 
 const EVENT_LISTENERS: EventType[] = [
-  EventType.COMMENT_CREATED
+  EventType.ARTICLE_CREATED
 ];
 
 const app: express.Express = express();
