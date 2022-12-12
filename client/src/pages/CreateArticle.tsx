@@ -29,9 +29,12 @@ const CreateArticle = () => {
         {withCredentials: true} // send and/or set cookies
       );
     } catch (e) {
+      console.error(e);
+      const registerError = document.getElementById("createArticleError") as HTMLSpanElement;
       if (e instanceof AxiosError && e.response) {
-        const registerError = document.getElementById("createArticleError") as HTMLSpanElement;
         registerError.textContent = `There was an error ${JSON.stringify(e.response.data)}. Please try again.`;
+      } else {
+        registerError.textContent = "There was an unknown error.";
       }
       return;
     }
