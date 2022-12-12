@@ -29,6 +29,9 @@ const NavBar = (props: {searchbar: boolean}) => {
     {username === undefined ? undefined : <Link to="/uploadImage">
       <div className="leftNavbarButton">Upload image</div>
     </Link>}
+    {username === undefined ? undefined : <Link to="/imageList">
+      <div className="leftNavbarButton">Image list</div>
+    </Link>}
     {navbarAccountManagement}
   </div>;
 }
