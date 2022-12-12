@@ -6,7 +6,7 @@ import SearchResult from "./SearchResult";
 
 const Home = () => {
   // const navigate = useNavigate();
-  const [ArticleId,setArticleId]=useState({articleId: []});
+  const [Articles,setArticles]=useState({articleId: []});
 
   const onSearch = async () => {
     const content: string = (document.getElementById("search-bar") as HTMLInputElement).value;
@@ -15,13 +15,14 @@ const Home = () => {
       {withCredentials: true} // send and/or set cookies
     );
 
-    setArticleId(response.data);
+    setArticles(response.data);
   }
 
   return <NLPPage title="WikiTwinkie">
     Please enter your search query in the search bar below:
     <br/>
-    <SearchResult result={ArticleId}></SearchResult>
+    <SearchResult result={Articles}></SearchResult>
+    
     <div className="input-group mb-3">
       <input type="text" className="form-control" id="search-bar" placeholder="Search here..."/>
       <div className="input-group-append">

@@ -29,10 +29,10 @@ export class db {
                 return { message: e };
             }
             if (res) {
-                const arr = JSON.parse(res);
-                arr.push(article.articleId);
+                const value = JSON.parse(res);
+                value.push(article);
                 try {
-                    await this.client.set(JSON.stringify(x), JSON.stringify(arr));
+                    await this.client.set(JSON.stringify(x), JSON.stringify(value));
                 }
                 catch (e) {
                     return { message: e };
@@ -40,7 +40,7 @@ export class db {
             }
             else {
                 try {
-                    await this.client.set(JSON.stringify(x), JSON.stringify([article.articleId]));
+                    await this.client.set(JSON.stringify(x), JSON.stringify([[article]]));
                 }
                 catch (e) {
                     return { message: e };

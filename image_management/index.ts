@@ -27,24 +27,66 @@ app.get("/registered_events", (req, res) => {
     res.status(200).send(EVENT_LISTENERS);
 });
 
+// upload the image
 app.post("/image/{name}", NLPRoute({
     bodySchema: {
         properties: {
             name: { type: "string" }
         }
     },
+    sessionCookie: "required"
 } as const, async (req, res) => {
+
+    // completed in NLPRoute: return 403 forbidden if not logged in
 
     const img = await db.get(req.body.name);
 
-    // if image exists in db, return 200 OK with image
+    // if image exists in db, return 200 OK and store image in the redis
+    if (img) {
+
+    } else {       
+    }
+}))
+
+// get the image
+app.get("/image/{name}", NLPRoute({
+    bodySchema: {
+        properties: {
+            name: { type: "string" }
+        }
+    },
+} as const, async (req, res) => {
+    const img = await db.get(req.body.name);
+
+    // if image exists in db, return 200 OK with the image
     if (img) {
         res.status(200).send(img);
     } else {
-        // if image does not exist, return 404 Not Found with the default.png image in the img folder
-        res.status(404).sendFile("default.png", { root: "./img" });
+        // if image does not exist in db, return 404 not found with the default.png
+        res.status(404).send("default.png");
     }
 }))
+
+// delete the image
+app.delete("/image/{name}", NLPRoute({
+    bodySchema: {
+        properties: {
+            name: { type: "string" }
+        }   
+    },
+} as const, async (req, res) => {
+    const img = await db.exists(req.body.name);
+
+    // if image exists in db, return 204 no content and delete the image
+    if (img) {
+        await db.del(req.body.name);
+        res.status(204).end();
+    } else {
+        // if image does not exist in db, return 404 not found
+        res.status(404).send("Image does not exist");
+    }
+}))
+
 
 await db.connect();
 app.listen(PORT, () => {
