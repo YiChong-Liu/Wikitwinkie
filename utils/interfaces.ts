@@ -50,3 +50,6 @@ export enum ArticleStatus {
   ACTIVE = "active",
   DELETED = "deleted"
 }
+export interface ArticleCreateResponse {
+  articleId: string
+}

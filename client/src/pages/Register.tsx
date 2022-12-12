@@ -20,7 +20,6 @@ const Register = () => {
       },
       {withCredentials: true} // send and/or set cookies
     );
-    console.log(response);
     if (response.data.success) {
       navigate("/");
     } else {
