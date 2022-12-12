@@ -4,7 +4,7 @@ import { BrowserRouter as Router, Routes, Route} from "react-router-dom";
 import Home from "./pages/Home";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
-import CreatePage from "./pages/CreatePage";
+import CreateArticle from "./pages/CreateArticle";
 
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./index.css";
@@ -16,7 +16,7 @@ root.render(<React.StrictMode>
         <Route path="/" element={<Home/>}/>
         <Route path="/login" element={<Login/>}/>
         <Route path="/register" element={<Register/>}/>
-        <Route path="/createPage" element={<CreatePage/>}/>
+        <Route path="/createPage" element={<CreateArticle/>}/>
     </Routes>
   </Router>
 </React.StrictMode>);
