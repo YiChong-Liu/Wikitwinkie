@@ -18,13 +18,10 @@ root.render(<React.StrictMode>
         <Route path="/" element={<Home/>}/>
         <Route path="/login" element={<Login/>}/>
         <Route path="/register" element={<Register/>}/>
-<<<<<<< HEAD
         <Route path="/createPage" element={<CreateArticle/>}/>
         <Route path="/uploadImage" element={<UploadImage/>}/>
-=======
         <Route path="/createArticle" element={<CreateArticle/>}/>
         <Route path="/article/*" element={<Article/>}/>
->>>>>>> 34dfe15c9ae57bf1cdd129012bb838db5100cd8a
     </Routes>
   </Router>
 </React.StrictMode>);
