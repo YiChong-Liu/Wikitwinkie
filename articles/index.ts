@@ -29,13 +29,13 @@ app.get("/registered_events", (req, res) => {
 app.post("/create", NLPRoute({
   bodySchema: {
     properties: {
-      articleId: { type: "string" },
       title: { type: "string" },
       content: { type: "string" }
     }
   },
   sessionCookie: "required"
 }, async (req, res) => {
+  console.log(`Create article called with title ${req.body.title} and content ${req.body.content}`);
   // TODO
   res.status(200).end();
 }));
