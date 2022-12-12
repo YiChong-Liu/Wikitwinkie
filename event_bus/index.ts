@@ -52,39 +52,28 @@ const getRegisteredEvents = async () => {
   }
 };
 
-function commentEvent(event: IEvent) {
-  try {
-    axios.post("http://comments:4401/events", event).catch((err: Error | AxiosError) => {
-      console.log(err.message);
-    });
-    axios.post
-  } catch (err) {
-    console.log(err);
-  }
-
-}
-
-function commentVoteEvent(event: IEvent) {
-  try {
-    axios.post("http://comment_votes:4403/events", event).catch((err: Error | AxiosError) => {
-      console.log(err.message);
-    });
-  } catch (err) {
-    console.log(err);
-  }
-}
-
 app.post("/events", (req, res) => {
+  if (!EVENT_TYPES.includes(req.body.type)) {
+    res.status(400).send("Invalid event type\n");
+    return;
+  }
   const event: IEvent = req.body;
-
-  commentEvent(event);
-  commentVoteEvent(event);
-
-  res.send({});
+  const eventListeners: string[] = registeredListeners.has(event.type)
+                                   ? registeredListeners.get(event.type)! : [];
+  for (const service of eventListeners) {
+    try {
+      axios.post(`${service}/events`, event).catch((err: Error | AxiosError) => {
+        console.log(err.message);
+      });
+    } catch (err) {
+      console.log(err);
+    }
+  }
+  res.status(204).end();
 });
 
 await getRegisteredEvents();
-console.log(`Registered event listeners: ${[...registeredListeners.entries()]}`);
+console.log(`Registered event listeners: ${JSON.stringify([...registeredListeners.entries()])}`);
 app.listen(PORT, () => {
   console.log(`Listening on port ${PORT}`);
 });
