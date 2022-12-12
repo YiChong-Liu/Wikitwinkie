@@ -7,7 +7,9 @@ const NavBar = (props: {searchbar: boolean}) => {
   const navigate = useNavigate();
   const username = Cookies.get("username");
   const navbarAccountManagement = username === undefined ? (
-    <Link to="/login"><div className="navbarAccountManagement">Log in</div></Link>
+    <Link to="/login" className="navbarAccountManagementOuter">
+      <div className="navbarAccountManagementText">Log in</div>
+    </Link>
   ) : (
     <button onClick={async () => {
       const response = await axios.post(
@@ -17,10 +19,13 @@ const NavBar = (props: {searchbar: boolean}) => {
       );
       console.log(response);
       navigate("/");
-    }} className="navbarAccountManagement">Log out</button>
+    }} className="navbarAccountManagementOuter navbarAccountManagementText">Log out</button>
   );
-  return <div className="navbar">
-    <Link to="/"><div className="homeButton">Home</div></Link>
+  return <div className="nlpnavbar">
+    <Link to="/"><div className="leftNavbarButton">Home</div></Link>
+    {username === undefined ? undefined : <Link to="/createPage">
+      <div className="leftNavbarButton">Create page</div>
+    </Link>}
     {navbarAccountManagement}
   </div>;
 }

@@ -1,6 +1,6 @@
 import * as redis from 'redis';
-import { Stemmer } from './stemmer';
-import { Article, ErrorMessage, instanceofSearchResult, SearchResult } from './utils';
+import { Stemmer } from './stemmer.js';
+import { Article, ErrorMessage, instanceofSearchResult, SearchResult } from './utils.js';
 
 export class db {
     client: redis.RedisClientType;
@@ -14,7 +14,7 @@ export class db {
 
         this.client.connect();
     }
-    
+
     async indexing(article: Article): Promise<Article | ErrorMessage> {
         const stemmer = new Stemmer(article.content);
         const arr = stemmer.stemming();
@@ -44,8 +44,8 @@ export class db {
                 }
                 catch (e) {
                     return { message: e };
-                }     
-            } 
+                }
+            }
         });
         return article;
     }
@@ -63,13 +63,13 @@ export class db {
             catch(e) {
                 return { message: e };
             }
-            
+
             if (res) {
                 const store: string[] = JSON.parse(res);
                 store.forEach(x => {
                     sr.articleId.push(x);
                 });
-            } 
+            }
         }
         return sr;
     }

@@ -1,4 +1,4 @@
-import { punc, stopword } from "./stopword";
+import { punc, stopword } from "./stopword.js";
 
 export class Stemmer {
     input: string;
@@ -10,13 +10,13 @@ export class Stemmer {
         const arr: string[] = content.split(" ");
         return arr.filter(x => !stopword.has(x));
     }
-    
+
     private punctuation(content: string): string {
         const arr = content.split("");
         const res = arr.filter(x => !punc.has(x));
         return res.join("");
     }
-    
+
     // Porter Stemmer
     private stemmer(content: string[]): string[] {
         // TODO: Implement Porter Stemmer

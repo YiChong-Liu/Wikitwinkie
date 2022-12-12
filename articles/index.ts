@@ -3,9 +3,12 @@ import cookieParser from "cookie-parser";
 import cors from "cors";
 import logger from "morgan";
 import redis from "redis";
+import type { EventType } from "./utils/interfaces.js";
 import { NLPRoute } from "./utils/utils.js";
 
 const PORT = 4005;
+const EVENT_LISTENERS: EventType[] = [];
+
 const app = express();
 app.use(logger("dev"));
 app.use(express.json());
@@ -19,16 +22,20 @@ const db = redis.createClient({
   }
 });
 
+app.get("/registered_events", (req, res) => {
+  res.status(200).send(EVENT_LISTENERS);
+});
+
 app.post("/create", NLPRoute({
   bodySchema: {
     properties: {
-      articleId: { type: "string" },
       title: { type: "string" },
       content: { type: "string" }
     }
   },
   sessionCookie: "required"
 }, async (req, res) => {
+  console.log(`Create article called with title ${req.body.title} and content ${req.body.content}`);
   // TODO
   res.status(200).end();
 }));

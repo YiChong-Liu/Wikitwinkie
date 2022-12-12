@@ -7,6 +7,8 @@ import { Comment, CommentKey, ErrorMessage, instanceOfComment } from './comments
 import { db } from './db.js';
 import { EventType } from './utils/interfaces.js';
 
+const EVENT_LISTENERS: EventType[] = [];
+
 const app: express.Express = express();
 
 app.use(logger('dev'));
@@ -14,6 +16,10 @@ app.use(express.json());
 app.use(cors());
 
 const database = new db();
+
+app.get("/registered_events", (req, res) => {
+  res.status(200).send(EVENT_LISTENERS);
+});
 
 // GET COMMENT BY ARTICLE ID
 app.get('/articles/:articleId/comments', async (req: express.Request, res: express.Response) => {

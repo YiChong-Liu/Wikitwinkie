@@ -3,7 +3,12 @@ import logger from 'morgan';
 import cors from 'cors';
 import axios from 'axios';
 import { randomBytes } from 'crypto';
-import { db } from './db';
+import { db } from './db.js';
+import { EventType } from "./utils/interfaces.js";
+
+const EVENT_LISTENERS: EventType[] = [
+  EventType.COMMENT_CREATED
+];
 
 const app: express.Express = express();
 
@@ -12,6 +17,10 @@ app.use(express.json());
 app.use(cors());
 
 const database = new db();
+
+app.get("/registered_events", (req, res) => {
+  res.status(200).send(EVENT_LISTENERS);
+});
 
 // Search by article content
 app.post('/search/:content', async (req: express.Request, res: express.Response) => {
@@ -34,7 +43,7 @@ app.post('/search/indexing', async (req: express.Request, res: express.Response)
 });
 
 app.post('/events', (req: express.Request, res: express.Response) => {
-  
+
   res.send({});
 });
 

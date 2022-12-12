@@ -7,10 +7,12 @@ import cors from "cors";
 import logger from "morgan";
 import redis from "redis";
 import { NLPRoute } from "./utils/utils.js";
-import type { AccountManagementCheckPasswordResponse } from "./utils/interfaces.js";
+import type { AccountManagementCheckPasswordResponse, EventType } from "./utils/interfaces.js";
 
 // session expiry in milliseconds
 const SESSION_EXPIRY_MS = 24 * 3600 * 1000
+
+const EVENT_LISTENERS: EventType[] = [];
 
 const PORT = 4001;
 const app = express();
@@ -52,6 +54,10 @@ const validateSession = async (sessionId: string, username: string) => {
   // return true only if username matches
   return session.username === username;
 };
+
+serverFacingApp.get("/registered_events", (req, res) => {
+  res.status(200).send(EVENT_LISTENERS);
+});
 
 serverFacingApp.post("/validate", NLPRoute({
   bodySchema: {
