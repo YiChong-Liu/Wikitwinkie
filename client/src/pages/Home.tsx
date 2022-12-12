@@ -18,7 +18,7 @@ const Home = () => {
     setArticleId(response.data);
   }
 
-  return <NLPPage title="Placeholder Title">
+  return <NLPPage title="The Wiki">
     This is text on the home page
     <br/>
     <SearchResult result={ArticleId}></SearchResult>

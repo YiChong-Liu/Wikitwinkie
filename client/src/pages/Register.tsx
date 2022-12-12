@@ -7,6 +7,8 @@ import type { SessionsLoginResponse } from "../utils/interfaces";
 const Register = () => {
   const navigate = useNavigate();
 
+  // TODO: reditect to home page if already logged in
+
   const signupSubmit = async () => {
     const username = (document.getElementById("username") as HTMLInputElement).value;
     const password = (document.getElementById("password") as HTMLInputElement).value;

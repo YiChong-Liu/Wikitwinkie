@@ -1,5 +1,6 @@
 // eventbus
 export enum EventType {
+  ArticleCreated = "ArticleCreated",
   COMMENT_CREATED = "CommentCreated",
   COMMENT_GET = "CommentGet",
   COMMENT_EDITED = "CommentEdited",
@@ -43,3 +44,9 @@ export interface AccountManagementCreateUserResponseFailed {
 }
 export type AccountManagementCreateUserResponse = AccountManagementCreateUserResponseSuccessful
                                                   | AccountManagementCreateUserResponseFailed;
+
+// articles
+export enum ArticleStatus {
+  ACTIVE = "active",
+  DELETED = "deleted"
+}

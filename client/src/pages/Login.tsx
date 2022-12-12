@@ -7,6 +7,8 @@ import type { SessionsLoginResponse } from "../utils/interfaces"
 const Login = () => {
   const navigate = useNavigate();
 
+  // TODO: reditect to home page if already logged in
+
   const loginSubmit = async () => {
     const username = (document.getElementById("username") as HTMLInputElement).value;
     const password = (document.getElementById("password") as HTMLInputElement).value;

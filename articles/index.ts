@@ -3,8 +3,8 @@ import cookieParser from "cookie-parser";
 import cors from "cors";
 import logger from "morgan";
 import redis from "redis";
-import type { EventType } from "./utils/interfaces.js";
-import { NLPRoute } from "./utils/utils.js";
+import { ArticleStatus, EventType } from "./utils/interfaces.js";
+import { generateEvent, NLPRoute } from "./utils/utils.js";
 
 const PORT = 4005;
 const EVENT_LISTENERS: EventType[] = [];
@@ -22,6 +22,9 @@ const db = redis.createClient({
   }
 });
 
+const getArticleId = (title: string) =>
+  encodeURIComponent(title).replace("_", "%5F").replace("%20", "_");
+
 app.get("/registered_events", (req, res) => {
   res.status(200).send(EVENT_LISTENERS);
 });
@@ -34,10 +37,31 @@ app.post("/create", NLPRoute({
     }
   },
   sessionCookie: "required"
-}, async (req, res) => {
+} as const, async (req, res, NLPParams) => {
+  const articleId = getArticleId(req.body.title);
   console.log(`Create article called with title ${req.body.title} and content ${req.body.content}`);
-  // TODO
-  res.status(200).end();
+  // TODO: validate content
+  await db.set(articleId, JSON.stringify({
+    history: [{
+      author: NLPParams.username, // TODO
+      name: articleId, // TODO: change this to allow changing name
+      title: req.body.title,
+      content: req.body.content,
+      utc_datetime: new Date().toISOString(),
+      status: ArticleStatus.ACTIVE
+    }],
+    comments: []
+  }));
+  generateEvent(EventType.ArticleCreated, {
+    articleId: articleId,
+    author: NLPParams.username,
+    name: articleId, // TODO: change this to allow changing name
+    title: req.body.title,
+    content: req.body.content
+  });
+  res.status(200).send({
+    articleId: articleId
+  });
 }));
 
 app.post("/edit", NLPRoute({
@@ -49,7 +73,7 @@ app.post("/edit", NLPRoute({
     }
   },
   sessionCookie: "required"
-}, async (req, res) => {
+} as const, async (req, res) => {
   // TODO
   res.status(200).end();
 }));
@@ -63,7 +87,7 @@ app.post("/delete", NLPRoute({
     }
   },
   sessionCookie: "required"
-}, async (req, res) => {
+} as const, async (req, res) => {
   // TODO
   res.status(200).end();
 }));
@@ -77,7 +101,7 @@ app.post("/restore", NLPRoute({
     }
   },
   sessionCookie: "required"
-}, async (req, res) => {
+} as const, async (req, res) => {
   // TODO
   res.status(200).end();
 }));

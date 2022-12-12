@@ -6,6 +6,8 @@ import "./CreateArticle.css";
 const CreatePage = () => {
   // const navigate = useNavigate();
 
+  // TODO: redirect to home page if not logged in
+
   const createArticleSubmit = async () => {
     const title = (document.getElementById("articleTitle") as HTMLInputElement).value;
     const content = (document.getElementById("articleContent") as HTMLTextAreaElement).value;
