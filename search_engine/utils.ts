@@ -8,6 +8,7 @@ export interface ErrorMessage {
 
 export interface Article {
     articleId: string,
+    title: string,
     content: string
 }
 

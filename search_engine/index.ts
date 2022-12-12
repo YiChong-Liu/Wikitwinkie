@@ -5,9 +5,10 @@ import axios from 'axios';
 import { randomBytes } from 'crypto';
 import { db } from './db.js';
 import { EventType } from "./utils/interfaces.js";
+import type { IEvent } from './utils/interfaces.js';
 
 const EVENT_LISTENERS: EventType[] = [
-  EventType.COMMENT_CREATED
+  EventType.ARTICLE_CREATED
 ];
 
 const app: express.Express = express();
@@ -43,7 +44,13 @@ app.post('/search/indexing', async (req: express.Request, res: express.Response)
 });
 
 app.post('/events', (req: express.Request, res: express.Response) => {
-
+  const event: IEvent = req.body;
+  switch (event.type) {
+    case EventType.ARTICLE_CREATED:
+      axios.post(`http://localhost:4405/search/indexing`, event.data).catch((err: Error) => {
+        console.log("FAIL TO INIT");
+      });
+  }
   res.send({});
 });
 
