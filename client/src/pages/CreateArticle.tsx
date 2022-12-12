@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 // import { Link, useNavigate } from "react-router-dom";
 import NLPPage from "../lib/NLPPage";
 import "./CreateArticle.css";
@@ -10,14 +10,21 @@ const CreatePage = () => {
     const title = (document.getElementById("articleTitle") as HTMLInputElement).value;
     const content = (document.getElementById("articleContent") as HTMLTextAreaElement).value;
     console.log(`createArticleSubmit caled with title ${title} and content ${content}`);
-    await axios.post(
-      `http://${window.location.hostname}:4005/create`,
-      { // body
-        title: title,
-        content: content
-      },
-      {withCredentials: true} // send and/or set cookies
-    );
+    try {
+      await axios.post(
+        `http://${window.location.hostname}:4005/create`,
+        { // body
+          title: title,
+          content: content
+        },
+        {withCredentials: true} // send and/or set cookies
+      );
+    } catch (e) {
+      if (e instanceof AxiosError && e.response) {
+        const registerError = document.getElementById("createArticleError") as HTMLSpanElement;
+        registerError.textContent = `There was an error ${JSON.stringify(e.response.data)}. Please try again.`;
+      }
+    }
     // TODO
   };
 
@@ -32,6 +39,7 @@ const CreatePage = () => {
       <textarea id="articleContent" placeholder="Enter content (Markdown)"/>
       <input className="button" type="button" value="Create Article" onClick={createArticleSubmit}/>
     </form>
+    <span id="createArticleError" className="errorSpan"></span>
   </NLPPage>;
 }
 

@@ -34,21 +34,12 @@ export const NLPRoute = <T>(
   const validateSchema = config.bodySchema === undefined ? null
                          : ajv.compile(config.bodySchema as JTDSchemaType<JTDDataType<T>>);
   const asyncHandler = async (request: Request, response: Response, next=console.error) => {
-    if (validateSchema !== null) {
-      if (!request.is("application/json")) {
-        response.status(400).send("Content-Type must be application/json\n");
-        return;
-      }
-      if (!validateSchema(request.body)) {
-        response.status(400).send(`Error in body: ${(validateSchema.errors as DefinedError[])[0].message}\n`);
-        return;
-      }
-    }
     const NLPParams: NLPParams = {
       username: null
     };
+
+    // validate session cookies
     if (config.sessionCookie) {
-      // TODO: handle session cookies
       let sessionValid;
       let sessionCookieError;
       if (validateSessionCookieSchema(request.cookies)) {
@@ -64,18 +55,33 @@ export const NLPRoute = <T>(
         } else {
           sessionValid = false;
           sessionCookieError = "Invalid session";
+          response.status(400).clearCookie("username").clearCookie("sessionId");
         }
       } else {
         sessionValid = false;
         sessionCookieError = (validateSessionCookieSchema.errors as DefinedError[])[0].message as string;
+        response.status(400);
       }
       if (sessionValid) {
         NLPParams.username = request.cookies.username;
       } else {
-        response.status(400).send(`Error in session cookie: ${sessionCookieError}\n`);
+        response.send(`Error in session cookie: ${sessionCookieError}\n`);
         return;
       }
     }
+
+    // validate body
+    if (validateSchema !== null) {
+      if (!request.is("application/json")) {
+        response.status(400).send("Content-Type must be application/json\n");
+        return;
+      }
+      if (!validateSchema(request.body)) {
+        response.status(400).send(`Error in body: ${(validateSchema.errors as DefinedError[])[0].message}\n`);
+        return;
+      }
+    }
+
     await routeHandler(request, response, NLPParams);
   };
   return (request: Request, response: Response, next=console.error) =>
