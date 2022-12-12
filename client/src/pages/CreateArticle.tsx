@@ -1,17 +1,25 @@
 import axios, { AxiosError } from "axios";
-// import { Link, useNavigate } from "react-router-dom";
+import type { AxiosResponse } from "axios";
+import Cookies from "js-cookie";
+import { Navigate, useNavigate } from "react-router-dom";
 import NLPPage from "../lib/NLPPage";
+import type { ArticleCreateResponse } from "../utils/interfaces";
 import "./CreateArticle.css";
 
-const CreatePage = () => {
-  // const navigate = useNavigate();
+const CreateArticle = () => {
+  const navigate = useNavigate();
+
+  // TODO: redirect to home page if not logged in
+  if (Cookies.get("username") === undefined) {
+    return  <Navigate replace to="/"/>;
+  }
 
   const createArticleSubmit = async () => {
     const title = (document.getElementById("articleTitle") as HTMLInputElement).value;
     const content = (document.getElementById("articleContent") as HTMLTextAreaElement).value;
-    console.log(`createArticleSubmit caled with title ${title} and content ${content}`);
+    let response: AxiosResponse<ArticleCreateResponse>;
     try {
-      await axios.post(
+      response = await axios.post(
         `http://${window.location.hostname}:4005/create`,
         { // body
           title: title,
@@ -24,8 +32,9 @@ const CreatePage = () => {
         const registerError = document.getElementById("createArticleError") as HTMLSpanElement;
         registerError.textContent = `There was an error ${JSON.stringify(e.response.data)}. Please try again.`;
       }
+      return;
     }
-    // TODO
+    navigate(`/article/${response.data.articleId}`);
   };
 
   return <NLPPage title="Create Article">
@@ -43,4 +52,4 @@ const CreatePage = () => {
   </NLPPage>;
 }
 
-export default CreatePage;
+export default CreateArticle;

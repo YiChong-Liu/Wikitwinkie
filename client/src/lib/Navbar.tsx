@@ -23,7 +23,7 @@ const NavBar = (props: {searchbar: boolean}) => {
   );
   return <div className="nlpnavbar">
     <Link to="/"><div className="leftNavbarButton">Home</div></Link>
-    {username === undefined ? undefined : <Link to="/createPage">
+    {username === undefined ? undefined : <Link to="/createArticle">
       <div className="leftNavbarButton">Create page</div>
     </Link>}
     {username === undefined ? undefined : <Link to="/uploadImage">
