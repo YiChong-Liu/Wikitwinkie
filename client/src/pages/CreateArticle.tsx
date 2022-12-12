@@ -1,3 +1,4 @@
+// Author: Neil Gupta (nog642)
 import axios, { AxiosError } from "axios";
 import type { AxiosResponse } from "axios";
 import Cookies from "js-cookie";
