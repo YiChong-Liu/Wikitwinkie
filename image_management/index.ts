@@ -3,12 +3,14 @@ import express from "express";
 import logger from "morgan";
 import cors from "cors";
 import axios from "axios";
-// import fs from 
+// import fs from
 
+import { EventType } from "./utils/interfaces.js";
 import { NLPRoute } from "./utils/utils.js";
 
 const app = express();
 const PORT = 4003;
+const EVENT_LISTENERS: EventType[] = [];
 
 app.use(logger("dev"));
 app.use(express.json());
@@ -20,6 +22,10 @@ const db = redis.createClient({
         port: 6379
     }
 })
+
+app.get("/registered_events", (req, res) => {
+    res.status(200).send(EVENT_LISTENERS);
+});
 
 app.post("/image/{name}", NLPRoute({
     bodySchema: {

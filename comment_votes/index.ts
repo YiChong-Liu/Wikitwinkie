@@ -33,6 +33,10 @@ import { CommentVote, ErrorMessage, instanceOfCommentVote, VoteKey } from './uti
 import { EventType } from './utils/interfaces.js';
 import type { IEvent } from './utils/interfaces.js';
 
+const EVENT_LISTENERS: EventType[] = [
+  EventType.COMMENT_CREATED
+];
+
 const app: express.Express = express();
 
 app.use(logger('dev'));
@@ -40,6 +44,10 @@ app.use(express.json());
 app.use(cors());
 
 const database = new db();
+
+app.get("/registered_events", (req, res) => {
+  res.status(200).send(EVENT_LISTENERS);
+});
 
 // GET COMMENT VOTE
 app.get('/articles/:articleId/comments/:commentId/votes', async (req: express.Request, res: express.Response) => {

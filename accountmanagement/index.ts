@@ -6,11 +6,12 @@ import axios, { AxiosResponse } from "axios";
 import bcrypt from "bcrypt"
 import { NLPRoute } from "./utils/utils.js";
 import { addAbortSignal } from "stream";
-import type { SessionsLoginResponse, SessionsLoginResponseFailed, SessionsLoginResponseSuccessful } from "./utils/interfaces.js"
+import type { EventType, SessionsLoginResponseSuccessful } from "./utils/interfaces.js"
+
+const PORT = 4002;
+const EVENT_LISTENERS: EventType[] = [];
 
 const app = express();
-const PORT = 4002;
-
 app.use(logger("dev"));
 app.use(express.json());
 app.use(cors({ origin: "http://localhost:3000", credentials: true }));
@@ -28,6 +29,10 @@ const db = redis.createClient({
         port: 6379
     }
 })
+
+serverFacingApp.get("/registered_events", (req, res) => {
+    res.status(200).send(EVENT_LISTENERS);
+});
 
 app.post("/createUser", NLPRoute({
     bodySchema: {
