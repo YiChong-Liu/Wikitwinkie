@@ -18,8 +18,8 @@ const Home = () => {
     setArticleId(response.data);
   }
 
-  return <NLPPage title="The Wiki">
-    This is text on the home page
+  return <NLPPage title="WikiTwinkie">
+    Please enter your search query in the search bar below:
     <br/>
     <SearchResult result={ArticleId}></SearchResult>
     <div className="input-group mb-3">
