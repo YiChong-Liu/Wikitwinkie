@@ -15,6 +15,15 @@ export interface IEvent {
   data: any
 }
 
+// event bodies
+export interface ArticleCreatedEventData {
+    articleId: string,
+    author: string,
+    name: string,
+    title: string,
+    content: string
+}
+
 // sessions
 export interface SessionsLoginResponseSuccessful {
   success: true,

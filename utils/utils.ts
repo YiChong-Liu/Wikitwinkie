@@ -3,10 +3,11 @@ import type { JTDSchemaType, JTDDataType } from "ajv/dist/jtd";
 import type { DefinedError } from "ajv";
 import axios from "axios";
 import type { AxiosResponse } from "axios";
-import cookieParser from "cookie-parser";
+import type cookieParser from "cookie-parser";  // require this to be installed
 import type { Request, Response } from "express";
 import type * as expressCore from "express-serve-static-core";
-import type { EventType, SessionsValidateSessionResponse } from "./interfaces.js"
+import { EventType } from "./interfaces.js"
+import type { SessionsValidateSessionResponse } from "./interfaces.js"
 
 const ajv = new Ajv();
 
@@ -94,3 +95,12 @@ export const generateEvent = async (eventType: EventType, data: any) => {
     data: data
   });
 };
+
+export const NLPEventListenerRouteConfig = {
+  bodySchema: {
+    properties: {
+      type: { enum: Object.values(EventType) },
+      data: {} // any data
+    }
+  }
+} as const;
