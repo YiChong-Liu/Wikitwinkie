@@ -1,17 +1,26 @@
+// Author: Neil Gupta (nog642)
 import axios, { AxiosError } from "axios";
-// import { Link, useNavigate } from "react-router-dom";
+import type { AxiosResponse } from "axios";
+import Cookies from "js-cookie";
+import { Navigate, useNavigate } from "react-router-dom";
 import NLPPage from "../lib/NLPPage";
+import type { ArticleCreateResponse } from "../utils/interfaces";
 import "./CreateArticle.css";
 
-const CreatePage = () => {
-  // const navigate = useNavigate();
+const CreateArticle = () => {
+  const navigate = useNavigate();
+
+  // redirect to home page if not logged in
+  if (Cookies.get("username") === undefined) {
+    return  <Navigate replace to="/"/>;
+  }
 
   const createArticleSubmit = async () => {
     const title = (document.getElementById("articleTitle") as HTMLInputElement).value;
     const content = (document.getElementById("articleContent") as HTMLTextAreaElement).value;
-    console.log(`createArticleSubmit caled with title ${title} and content ${content}`);
+    let response: AxiosResponse<ArticleCreateResponse>;
     try {
-      await axios.post(
+      response = await axios.post(
         `http://${window.location.hostname}:4005/create`,
         { // body
           title: title,
@@ -20,12 +29,21 @@ const CreatePage = () => {
         {withCredentials: true} // send and/or set cookies
       );
     } catch (e) {
+      console.error(e);
+      const errorSpan = document.getElementById("createArticleError") as HTMLSpanElement;
       if (e instanceof AxiosError && e.response) {
-        const registerError = document.getElementById("createArticleError") as HTMLSpanElement;
-        registerError.textContent = `There was an error ${JSON.stringify(e.response.data)}. Please try again.`;
+        errorSpan.textContent = `There was an error ${JSON.stringify(e.response.data)}. Please try again.`;
+      } else {
+        errorSpan.textContent = "There was an unknown error.";
       }
+      return;
     }
-    // TODO
+    const loadingSpan = document.getElementById("createArticleLoading") as HTMLSpanElement;
+    loadingSpan.textContent = "Creating article...";
+    // wait for the event bus to move data from the articles service to the article serving service
+    await new Promise(r => setTimeout(r, 1000));
+    // loadingSpan.textContent = "";
+    navigate(`/article/${response.data.articleId}`);
   };
 
   return <NLPPage title="Create Article">
@@ -39,8 +57,9 @@ const CreatePage = () => {
       <textarea id="articleContent" placeholder="Enter content (Markdown)"/>
       <input className="button" type="button" value="Create Article" onClick={createArticleSubmit}/>
     </form>
+    <span id="createArticleLoading"></span>
     <span id="createArticleError" className="errorSpan"></span>
   </NLPPage>;
 }
 
-export default CreatePage;
+export default CreateArticle;

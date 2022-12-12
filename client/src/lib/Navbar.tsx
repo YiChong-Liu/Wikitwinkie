@@ -1,3 +1,4 @@
+// Author: Neil Gupta (nog642)
 import axios from "axios";
 import Cookies from "js-cookie";
 import { Link, useNavigate } from "react-router-dom";
@@ -23,8 +24,14 @@ const NavBar = (props: {searchbar: boolean}) => {
   );
   return <div className="nlpnavbar">
     <Link to="/"><div className="leftNavbarButton">Home</div></Link>
-    {username === undefined ? undefined : <Link to="/createPage">
+    {username === undefined ? undefined : <Link to="/createArticle">
       <div className="leftNavbarButton">Create page</div>
+    </Link>}
+    {username === undefined ? undefined : <Link to="/uploadImage">
+      <div className="leftNavbarButton">Upload image</div>
+    </Link>}
+    {username === undefined ? undefined : <Link to="/imageList">
+      <div className="leftNavbarButton">Image list</div>
     </Link>}
     {navbarAccountManagement}
   </div>;

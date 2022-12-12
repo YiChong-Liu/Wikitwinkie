@@ -1,3 +1,4 @@
+// Author: Neil Gupta (nog642)
 import axios from "axios";
 import type { AxiosResponse } from "axios";
 import { useNavigate } from "react-router-dom";
@@ -6,6 +7,8 @@ import type { SessionsLoginResponse } from "../utils/interfaces";
 
 const Register = () => {
   const navigate = useNavigate();
+
+  // TODO: reditect to home page if already logged in
 
   const signupSubmit = async () => {
     const username = (document.getElementById("username") as HTMLInputElement).value;
@@ -18,7 +21,6 @@ const Register = () => {
       },
       {withCredentials: true} // send and/or set cookies
     );
-    console.log(response);
     if (response.data.success) {
       navigate("/");
     } else {

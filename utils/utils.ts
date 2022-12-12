@@ -3,9 +3,10 @@ import type { JTDSchemaType, JTDDataType } from "ajv/dist/jtd";
 import type { DefinedError } from "ajv";
 import axios from "axios";
 import type { AxiosResponse } from "axios";
-import cookieParser from "cookie-parser";
+import type cookieParser from "cookie-parser";  // require this to be installed
 import type { Request, Response } from "express";
 import type * as expressCore from "express-serve-static-core";
+import { EventType } from "./interfaces.js"
 import type { SessionsValidateSessionResponse } from "./interfaces.js"
 
 const ajv = new Ajv();
@@ -29,7 +30,7 @@ export const NLPRoute = <T>(
   },
   routeHandler: (req: Request<expressCore.ParamsDictionary, any, JTDDataType<T>>,
                  res: Response,
-                 NLPParams?: NLPParams) => Promise<void>
+                 NLPParams: NLPParams) => Promise<void>
 ) => {
   const validateSchema = config.bodySchema === undefined ? null
                          : ajv.compile(config.bodySchema as JTDSchemaType<JTDDataType<T>>);
@@ -88,11 +89,18 @@ export const NLPRoute = <T>(
              Promise.resolve(asyncHandler(request, response)).catch(next);
 };
 
-// export const serve404 = response =>
-//   response.status(404).sendFile(`${projectRoot}/client/404.html`, {
-//     lastModified: false
-//   }, err => {
-//     if (err) {
-//         response.status(500).end();
-//     }
-//   });
+export const generateEvent = async (eventType: EventType, data: any) => {
+  await axios.post("http://eventbus:2000/events", {
+    type: eventType,
+    data: data
+  });
+};
+
+export const NLPEventListenerRouteConfig = {
+  bodySchema: {
+    properties: {
+      type: { enum: Object.values(EventType) },
+      data: {} // any data
+    }
+  }
+} as const;

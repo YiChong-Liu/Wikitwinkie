@@ -1,3 +1,4 @@
+// Author: Neil Gupta (nog642)
 import axios from "axios";
 import type { AxiosResponse } from "axios";
 import { Link, useNavigate } from "react-router-dom";
@@ -6,6 +7,8 @@ import type { SessionsLoginResponse } from "../utils/interfaces"
 
 const Login = () => {
   const navigate = useNavigate();
+
+  // TODO: reditect to home page if already logged in
 
   const loginSubmit = async () => {
     const username = (document.getElementById("username") as HTMLInputElement).value;

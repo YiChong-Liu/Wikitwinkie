@@ -1,3 +1,4 @@
+// Author: Neil Gupta (nog642)
 import React from "react";
 import { Fragment } from "react";
 import Navbar from "./Navbar";

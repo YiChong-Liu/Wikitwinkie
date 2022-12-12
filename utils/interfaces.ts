@@ -1,5 +1,6 @@
 // eventbus
 export enum EventType {
+  ArticleCreated = "ArticleCreated",
   COMMENT_CREATED = "CommentCreated",
   COMMENT_GET = "CommentGet",
   COMMENT_EDITED = "CommentEdited",
@@ -15,6 +16,15 @@ export enum EventType {
 export interface IEvent {
   type: EventType,
   data: any
+}
+
+// event bodies
+export interface ArticleCreatedEventData {
+    articleId: string,
+    author: string,
+    name: string,
+    title: string,
+    content: string
 }
 
 // sessions
@@ -46,3 +56,19 @@ export interface AccountManagementCreateUserResponseFailed {
 }
 export type AccountManagementCreateUserResponse = AccountManagementCreateUserResponseSuccessful
                                                   | AccountManagementCreateUserResponseFailed;
+
+// articles
+export enum ArticleStatus {
+  ACTIVE = "active",
+  DELETED = "deleted"
+}
+export interface ArticleCreateResponse {
+  articleId: string
+}
+
+// article serving
+export interface ArticleServingResponse {
+  title: string,
+  content: string,
+  status: string
+}
