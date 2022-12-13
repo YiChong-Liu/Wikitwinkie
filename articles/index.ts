@@ -40,7 +40,6 @@ app.post("/create", NLPRoute({
   sessionCookie: "required"
 } as const, async (req, res, NLPParams) => {
   const articleId = getArticleId(req.body.title);
-  console.log(`Create article called with title ${req.body.title} and content ${req.body.content}`);
   // TODO: validate content
   await db.set(articleId, JSON.stringify({
     history: [{
@@ -63,7 +62,7 @@ app.post("/create", NLPRoute({
   const responseData: ArticleCreateResponse = {
     name: articleId
   };
-  res.status(200).send();
+  res.status(200).send(responseData);
 }));
 
 app.post("/edit", NLPRoute({

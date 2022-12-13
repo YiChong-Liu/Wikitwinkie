@@ -41,6 +41,11 @@ export const NLPRoute = <T>(
 
     // validate session cookies
     if (config.sessionCookie) {
+      if (request.cookies === undefined) {
+        console.error("ERROR: You need to use the cookieParser middleware for express to validate session cookies");
+        response.status(500).send("Misconfigured service\n");
+        return;
+      }
       let sessionValid;
       let sessionCookieError;
       if (validateSessionCookieSchema(request.cookies)) {
