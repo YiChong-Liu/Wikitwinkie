@@ -4,6 +4,7 @@ import cors from "cors";
 import logger from "morgan";
 import redis from "redis";
 import { ArticleStatus, EventType } from "./utils/interfaces.js";
+import type { ArticleCreateResponse } from "./utils/interfaces.js";
 import { generateEvent, NLPRoute } from "./utils/utils.js";
 
 const PORT = 4005;
@@ -59,9 +60,10 @@ app.post("/create", NLPRoute({
     title: req.body.title,
     content: req.body.content
   });
-  res.status(200).send({
-    articleId: articleId
-  });
+  const responseData: ArticleCreateResponse = {
+    name: articleId
+  };
+  res.status(200).send();
 }));
 
 app.post("/edit", NLPRoute({
@@ -74,7 +76,7 @@ app.post("/edit", NLPRoute({
   },
   sessionCookie: "required"
 } as const, async (req, res) => {
-  // TODO
+  console.log(`Article edit called with articleId ${req.body.articleId}, title ${req.body.title}, content ${req.body.content}`);
   res.status(200).end();
 }));
 

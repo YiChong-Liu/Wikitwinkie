@@ -60,11 +60,15 @@ export enum ArticleStatus {
   DELETED = "deleted"
 }
 export interface ArticleCreateResponse {
-  articleId: string
+  name: string
+}
+export interface ArticleEditResponse {
+  name: string
 }
 
 // article serving
 export interface ArticleServingResponse {
+  articleId: string,
   title: string,
   content: string,
   status: string

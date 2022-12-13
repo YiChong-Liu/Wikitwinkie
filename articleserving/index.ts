@@ -14,6 +14,7 @@ const EVENT_LISTENERS: EventType[] = [
 ];
 
 interface ArticleServingDBEntry {
+  articleId: string,
   title: string,
   content: string,
   status: ArticleStatus
@@ -40,6 +41,7 @@ app.post("/events", NLPRoute(NLPEventListenerRouteConfig, async (req, res) => {
     case EventType.ARTICLE_CREATED:
       const data = req.body.data as ArticleCreatedEventData;
       const dbEntry: ArticleServingDBEntry = {
+        articleId: data.articleId,
         title: data.title,
         content: data.content,
         status: ArticleStatus.ACTIVE
@@ -57,6 +59,7 @@ app.get("/:name", NLPRoute({}, async (req, res) => {
   }
   const article = JSON.parse(articleStr) as ArticleServingDBEntry;
   const responseData: ArticleServingResponse = {
+    articleId: article.articleId,
     title: article.title,
     content: article.content,
     status: article.status
