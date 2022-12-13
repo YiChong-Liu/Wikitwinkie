@@ -1,5 +1,6 @@
 import redis from "redis";
 import express from "express";
+import cookieParser from "cookie-parser";
 import logger from "morgan";
 import cors from "cors";
 import axios from "axios";
@@ -14,7 +15,9 @@ const EVENT_LISTENERS: EventType[] = [];
 
 app.use(logger("dev"));
 app.use(express.json());
-app.use(cors());
+app.use(cors({ origin: "http://localhost:3000", credentials: true }));
+app.use(cookieParser());
+
 
 const db = redis.createClient({
     socket: {
@@ -32,6 +35,7 @@ app.post("/image/:name", NLPRoute({
     bodySchema: {
         properties: {
             image: { type: "string" },
+            imageName: { type: "string" },
             imageDescription: { type: "string" }
         }
     },
@@ -39,12 +43,13 @@ app.post("/image/:name", NLPRoute({
 } as const, async (req, res) => {
 
     // completed in NLPRoute: return 403 forbidden if not logged in
+    console.log(JSON.stringify(req.body));
 
-    const img = await db.get(req.params.name);
+    const img = await db.get(req.body.imageName);
 
     // if image exists in db, return 200 OK and store image in the redis
     if (img) {
-        await db.set(req.params.name, req.body.image);
+        await db.set(req.body.imageName, req.body.image);
         res.status(200).send("Image updated");
     } else {       
     }
@@ -55,11 +60,12 @@ app.get("/image/:name", NLPRoute({
     bodySchema: {
         properties: {
             image: { type: "string" },
+            imageName: { type: "string" },
             imageDescription: { type: "string" }
         }
     },
 } as const, async (req, res) => {
-    const img = await db.get(req.body.name);
+    const img = await db.get(req.body.imageName);
 
     // if image exists in db, return 200 OK with the image
     if (img) {
@@ -74,15 +80,17 @@ app.get("/image/:name", NLPRoute({
 app.delete("/image/:name", NLPRoute({
     bodySchema: {
         properties: {
-            name: { type: "string" }
+            image: { type: "string" },
+            imageName: { type: "string" },
+            imageDescription: { type: "string" }
         }   
     },
 } as const, async (req, res) => {
-    const img = await db.exists(req.body.name);
+    const img = await db.exists(req.body.imageName);
 
     // if image exists in db, return 204 no content and delete the image
     if (img) {
-        await db.del(req.body.name);
+        await db.del(req.body.imageName);
         res.status(204).end();
     } else {
         // if image does not exist in db, return 404 not found

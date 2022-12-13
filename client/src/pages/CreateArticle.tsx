@@ -43,7 +43,7 @@ const CreateArticle = () => {
     // wait for the event bus to move data from the articles service to the article serving service
     await new Promise(r => setTimeout(r, 1000));
     // loadingSpan.textContent = "";
-    navigate(`/article/${response.data.articleId}`);
+    navigate(`/article/${response.data.name}`);
   };
 
   return <NLPPage title="Create Article">

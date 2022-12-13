@@ -58,7 +58,7 @@ const Article = () => {
     </Fragment>}
     {contents}
 
-    <Comment_Section articleId={articleName}></Comment_Section>
+    <Comment_Section articleName={articleName}></Comment_Section>
   </NLPPage>;
 }
 

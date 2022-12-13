@@ -1,6 +1,7 @@
 // eventbus
 export enum EventType {
   ARTICLE_CREATED = "ArticleCreated",
+  ARTICLE_UPDATED = "ArticleUpdated",
   COMMENT_CREATED = "CommentCreated",
   COMMENT_GET = "CommentGet",
   COMMENT_EDITED = "CommentEdited",
@@ -10,19 +11,24 @@ export enum EventType {
   COMMENT_VOTE_GET = "CommentVoteGet",
   COMMENT_VOTE_CHANGED = "CommentVoteChanged",
 }
-export interface IEvent {
-  type: EventType,
-  data: any
-}
-
-// event bodies
-export interface ArticleCreatedEventData {
+export type EventBody<T extends EventType> = (
+  T extends EventType.ARTICLE_CREATED ? {
     articleId: string,
     author: string,
     name: string,
     title: string,
     content: string
-}
+  } :
+  T extends EventType.ARTICLE_UPDATED ? {
+    articleId: string,
+    author: string,
+    name: string,
+    title: string,
+    content: string
+  } :
+  any
+);
+export type IEvent<T extends EventType = EventType> = {type: T, data: EventBody<T>};
 
 // sessions
 export interface SessionsLoginResponseSuccessful {
@@ -60,11 +66,15 @@ export enum ArticleStatus {
   DELETED = "deleted"
 }
 export interface ArticleCreateResponse {
-  articleId: string
+  name: string
+}
+export interface ArticleEditResponse {
+  name: string
 }
 
 // article serving
 export interface ArticleServingResponse {
+  articleId: string,
   title: string,
   content: string,
   status: string
@@ -77,7 +87,7 @@ export interface CommentKey {
   commentId: string,
   articleId: string
 }
-export interface Comment extends CommentKey {
+export interface CommentReponse extends CommentKey {
   username: string,
   content: string,
 }

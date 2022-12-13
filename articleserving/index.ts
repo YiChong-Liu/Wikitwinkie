@@ -3,7 +3,7 @@ import cors from "cors";
 import logger from "morgan";
 import redis from "redis";
 import { ArticleStatus, EventType } from "./utils/interfaces.js";
-import type { ArticleCreatedEventData, ArticleServingResponse } from "./utils/interfaces.js"
+import type { EventBody, ArticleServingResponse } from "./utils/interfaces.js"
 import { NLPRoute, NLPEventListenerRouteConfig } from "./utils/utils.js";
 import { title } from "process";
 // import { generateEvent, NLPRoute } from "./utils/utils.js";
@@ -14,6 +14,7 @@ const EVENT_LISTENERS: EventType[] = [
 ];
 
 interface ArticleServingDBEntry {
+  articleId: string,
   title: string,
   content: string,
   status: ArticleStatus
@@ -38,8 +39,9 @@ app.get("/registered_events", (req, res) => {
 app.post("/events", NLPRoute(NLPEventListenerRouteConfig, async (req, res) => {
   switch (req.body.type) {
     case EventType.ARTICLE_CREATED:
-      const data = req.body.data as ArticleCreatedEventData;
+      const data = req.body.data as EventBody<EventType.ARTICLE_CREATED>;
       const dbEntry: ArticleServingDBEntry = {
+        articleId: data.articleId,
         title: data.title,
         content: data.content,
         status: ArticleStatus.ACTIVE
@@ -57,6 +59,7 @@ app.get("/:name", NLPRoute({}, async (req, res) => {
   }
   const article = JSON.parse(articleStr) as ArticleServingDBEntry;
   const responseData: ArticleServingResponse = {
+    articleId: article.articleId,
     title: article.title,
     content: article.content,
     status: article.status

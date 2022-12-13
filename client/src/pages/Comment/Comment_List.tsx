@@ -4,20 +4,16 @@ import { Link, useNavigate } from "react-router-dom";
 import NLPPage from "../../lib/NLPPage";
 import { useState } from 'react';
 import Comment_Vote from "./Comment_Vote";
-import { Comment } from "../../utils/interfaces";
+import { CommentReponse } from "../../utils/interfaces";
 
-const Comment_List = async (props: any) => {
-  const response: Comment[] = await axios.post(
-    `http://${window.location.hostname}:4401/articles/:articleId/comments`,
-    {withCredentials: true}
-  );
+const Comment_List = (props: any) => {
 
-  const renderedComments = response.map((comment) => {
-    return <li key={comment.username}>{comment.content}</li>;
-  });
+  // const renderedComments = props.Comment.Comment.map(x => {
+  //   return <li key={x.username}>{x.content}</li>;
+  // });
 
-  return 
-    <ul>{renderedComments}</ul>;
+  return <div></div>;
+    // <ul>{renderedComments}</ul>;
 }
 
 export default Comment_List;

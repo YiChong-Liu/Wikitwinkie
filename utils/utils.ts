@@ -6,7 +6,7 @@ import type { AxiosResponse } from "axios";
 import type cookieParser from "cookie-parser";  // require this to be installed
 import type { Request, Response } from "express";
 import type * as expressCore from "express-serve-static-core";
-import { EventType } from "./interfaces.js"
+import { EventBody, EventType } from "./interfaces.js"
 import type { SessionsValidateSessionResponse } from "./interfaces.js"
 
 const ajv = new Ajv();
@@ -41,6 +41,11 @@ export const NLPRoute = <T>(
 
     // validate session cookies
     if (config.sessionCookie) {
+      if (request.cookies === undefined) {
+        console.error("ERROR: You need to use the cookieParser middleware for express to validate session cookies");
+        response.status(500).send("Misconfigured service\n");
+        return;
+      }
       let sessionValid;
       let sessionCookieError;
       if (validateSessionCookieSchema(request.cookies)) {
@@ -89,7 +94,7 @@ export const NLPRoute = <T>(
              Promise.resolve(asyncHandler(request, response)).catch(next);
 };
 
-export const generateEvent = async (eventType: EventType, data: any) => {
+export const generateEvent = async <T extends EventType>(eventType: T, data: EventBody<T>) => {
   await axios.post("http://eventbus:2000/events", {
     type: eventType,
     data: data
