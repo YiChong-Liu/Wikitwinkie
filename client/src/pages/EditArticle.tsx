@@ -86,7 +86,7 @@ const EditArticle = () => {
       // loadingSpan.textContent = "";
       navigate(`/article/${response.data.name}`);
     });
-  })()}, [articleName]);
+  })();}, [articleName]);
 
   // redirect to home page if not logged in
   if (Cookies.get("username") === undefined) {
