@@ -24,21 +24,13 @@ const UploadImage = () => {
                 `http://${window.location.hostname}:4003/image/${imageName}`,
                 {
                     image: image,
+                    imageName: imageName,
                     imageDescription: imageDescription
                 },
                 {withCredentials: true} // send and/or set cookies
             )
         }catch(e) {
-            const error = e as AxiosError;
-            if (error.response) {
-                console.log(error.response.data);
-                console.log(error.response.status);
-                console.log(error.response.headers);
-            } else if (error.request) {
-                console.log(error.request);
-            } else {
-                console.log('Error', error.message);
-            }
+            console.log(e);
         }
     };
 
