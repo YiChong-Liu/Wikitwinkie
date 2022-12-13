@@ -1,4 +1,4 @@
-import express from "express";
+import express, { response } from "express";
 import cors from "cors";
 import logger from "morgan";
 import redis from "redis";
@@ -10,7 +10,8 @@ import { title } from "process";
 
 const PORT = 4006;
 const EVENT_LISTENERS: EventType[] = [
-  EventType.ARTICLE_CREATED
+  EventType.ARTICLE_CREATED,
+  EventType.ARTICLE_UPDATED
 ];
 
 interface ArticleServingDBEntry {
@@ -38,21 +39,46 @@ app.get("/registered_events", (req, res) => {
 
 app.post("/events", NLPRoute(NLPEventListenerRouteConfig, async (req, res) => {
   switch (req.body.type) {
-    case EventType.ARTICLE_CREATED:
+    case EventType.ARTICLE_CREATED: {
       const data = req.body.data as EventBody<EventType.ARTICLE_CREATED>;
+      await db.set("names/" + data.articleId, data.name);
       const dbEntry: ArticleServingDBEntry = {
         articleId: data.articleId,
         title: data.title,
         content: data.content,
         status: ArticleStatus.ACTIVE
       };
-      await db.set(data.name, JSON.stringify(dbEntry));
+      await db.set("articles/" + data.name, JSON.stringify(dbEntry));
       break;
+    }
+    case EventType.ARTICLE_UPDATED: {
+      const data = req.body.data as EventBody<EventType.ARTICLE_UPDATED>;
+      console.log(`Got article updated event with content ${data.content}`);
+      const oldName = await db.get("names/" + data.articleId);
+      if (oldName === null) {
+        console.error(`Article with ID ${data.articleId} not found;`);
+        response.status(400).end();
+        return;
+      }
+
+      const dbEntry: ArticleServingDBEntry = {
+        articleId: data.articleId,
+        title: data.title,
+        content: data.content,
+        status: ArticleStatus.ACTIVE // TODO: handle deltion/restore
+      };
+      if (data.name !== oldName) {
+        await db.set("names/" + data.articleId, data.name);
+        await db.del("articles/" + oldName);
+      }
+      await db.set("articles/" + data.name, JSON.stringify(dbEntry));
+
+    }
   }
 }));
 
 app.get("/:name", NLPRoute({}, async (req, res) => {
-  const articleStr = await db.get(req.params.name)
+  const articleStr = await db.get("articles/" + req.params.name)
   if (articleStr === null) {
     res.status(404).end();
     return;
