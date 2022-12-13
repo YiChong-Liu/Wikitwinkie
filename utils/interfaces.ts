@@ -1,6 +1,6 @@
 // eventbus
 export enum EventType {
-  ArticleCreated = "ArticleCreated",
+  ARTICLE_CREATED = "ArticleCreated",
   COMMENT_CREATED = "CommentCreated",
   COMMENT_GET = "CommentGet",
   COMMENT_EDITED = "CommentEdited",
@@ -9,9 +9,6 @@ export enum EventType {
   COMMENT_VOTE_INIT = "CommentVoteInited",
   COMMENT_VOTE_GET = "CommentVoteGet",
   COMMENT_VOTE_CHANGED = "CommentVoteChanged",
-
-  // Article
-  ARTICLE_CREATED = "ArticleCreated",
 }
 export interface IEvent {
   type: EventType,

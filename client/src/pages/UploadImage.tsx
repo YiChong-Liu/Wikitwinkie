@@ -12,7 +12,30 @@ import "./UploadImage.css";
 const UploadImage = () => {
     // const navigate = useNavigate();
 
-    const uploadImageSubmit = async () => {};
+    const uploadImageSubmit = async () => {
+
+        const image = (document.getElementById("image") as HTMLInputElement).value;
+        const imageName = (document.getElementById("imageName") as HTMLInputElement).value;
+        const imageDescription = (document.getElementById("imageDescription") as HTMLInputElement).value;
+
+        const response = await axios.post(
+            `http://${window.location.hostname}:4003/image/${imageName}`,
+            {
+                image: image,
+                imageDescription: imageDescription
+            },
+            {withCredentials: true} // send and/or set cookies
+        ).catch((error: AxiosError) => {
+            if (error.response) {
+                console.log(error.response.data);
+                console.log(error.response.status);
+                console.log(error.response.headers);
+            } else if (error.request) {
+                console.log(error.request);
+            } else {
+                console.log('Error', error.message);
+            }
+    };
 
     return <NLPPage title="Upload Image"> 
     <form>

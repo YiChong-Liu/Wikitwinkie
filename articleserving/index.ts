@@ -10,7 +10,7 @@ import { title } from "process";
 
 const PORT = 4006;
 const EVENT_LISTENERS: EventType[] = [
-  EventType.ArticleCreated
+  EventType.ARTICLE_CREATED
 ];
 
 interface ArticleServingDBEntry {
@@ -37,7 +37,7 @@ app.get("/registered_events", (req, res) => {
 
 app.post("/events", NLPRoute(NLPEventListenerRouteConfig, async (req, res) => {
   switch (req.body.type) {
-    case EventType.ArticleCreated:
+    case EventType.ARTICLE_CREATED:
       const data = req.body.data as ArticleCreatedEventData;
       const dbEntry: ArticleServingDBEntry = {
         title: data.title,

@@ -24,7 +24,7 @@ const Comment_Vote = (props: any) => {
     );
     setVote(response.data.vote);
   }
-  
+
   return <div id="comment-vote">
     <span>Vote:</span>
     <button type="button" className="btn btn-outline-primary" onClick={upVote}>Up vote</button>
