@@ -15,7 +15,7 @@ const UploadImage = () => {
 
     const uploadImageSubmit = async () => {
 
-        const image = (document.getElementById("image") as HTMLInputElement).value;
+        const image = (document.getElementById("image") as HTMLInputElement)?.files?[0]:null;
         const imageName = (document.getElementById("imageName") as HTMLInputElement).value;
         const imageDescription = (document.getElementById("imageDescription") as HTMLInputElement).value;
 
