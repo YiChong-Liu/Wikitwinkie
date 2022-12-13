@@ -10,6 +10,7 @@ import type { ArticleServingResponse } from "../utils/interfaces";
 import "./EditArticle.css";
 
 const EditArticle = () => {
+  console.log("Rendering EditArticle..")
   const location = useLocation();
   // const navigate = useNavigate();
 
@@ -87,16 +88,16 @@ const EditArticle = () => {
       {title === undefined ? undefined : <Fragment>
         <label className="labels" htmlFor="user">Title: </label>
         <br/>
-        <input type="text" id="articleTitle" placeholder="Enter Title" value={title}/>
+        <input type="text" id="articleTitle" placeholder="Enter Title" defaultValue={title}/>
         <br/>
       </Fragment>}
       {contents === undefined ? undefined : <Fragment>
         <label className="labels" htmlFor="user">Content: </label>
         <br/>
-        <textarea id="articleContent" placeholder="Enter content (Markdown)" value={contents}/>
+        <textarea id="articleContent" placeholder="Enter content (Markdown)" defaultValue={contents}/>
       </Fragment>}
       {title === undefined || contents === undefined ? undefined :
-        <input className="button" type="button" value="Create Article" onClick={editArticleSubmit}/>
+        <input className="button" type="button" value="Edit Article" onClick={editArticleSubmit}/>
       }
     </form>
     <span id="editArticleLoading">Loading...</span>

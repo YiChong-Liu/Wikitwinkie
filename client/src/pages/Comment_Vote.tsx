@@ -24,11 +24,11 @@ const Comment_Vote = (props: any) => {
     );
     setVote(response.data.vote);
   }
-  
+
   return <div id="comment-vote">
     <span>Vote: {Vote}</span>
-    <button type="button" class="btn btn-outline-primary" onClick={upVote}>Up vote</button>
-    <button type="button" class="btn btn-outline-danger" onClick={downVote}>Down vote</button>
+    {/* <button type="button" class="btn btn-outline-primary" onClick={upVote}>Up vote</button>
+    <button type="button" class="btn btn-outline-danger" onClick={downVote}>Down vote</button> */}
   </div>;
 }
 
