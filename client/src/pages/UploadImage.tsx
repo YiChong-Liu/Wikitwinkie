@@ -34,7 +34,7 @@ const UploadImage = () => {
         }
     };
 
-    return <NLPPage title="Upload Image"> 
+    return <NLPPage title="Upload Image">
     <form>
         <label className="labels" htmlFor="user">Image: </label>
         <br/>
