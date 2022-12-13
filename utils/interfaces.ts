@@ -1,6 +1,7 @@
 // eventbus
 export enum EventType {
   ARTICLE_CREATED = "ArticleCreated",
+  ARTICLE_UPDATED = "ArticleUpdated",
   COMMENT_CREATED = "CommentCreated",
   COMMENT_GET = "CommentGet",
   COMMENT_EDITED = "CommentEdited",
@@ -10,19 +11,24 @@ export enum EventType {
   COMMENT_VOTE_GET = "CommentVoteGet",
   COMMENT_VOTE_CHANGED = "CommentVoteChanged",
 }
-export interface IEvent {
-  type: EventType,
-  data: any
-}
-
-// event bodies
-export interface ArticleCreatedEventData {
+export type EventBody<T extends EventType> = (
+  T extends EventType.ARTICLE_CREATED ? {
     articleId: string,
     author: string,
     name: string,
     title: string,
     content: string
-}
+  } :
+  T extends EventType.ARTICLE_UPDATED ? {
+    articleId: string,
+    author: string,
+    name: string,
+    title: string,
+    content: string
+  } :
+  any
+);
+export type IEvent<T extends EventType = EventType> = {type: T, data: EventBody<T>};
 
 // sessions
 export interface SessionsLoginResponseSuccessful {

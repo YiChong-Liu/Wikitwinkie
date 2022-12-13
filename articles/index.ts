@@ -51,12 +51,13 @@ app.post("/create", NLPRoute({
   },
   sessionCookie: "required"
 } as const, async (req, res, NLPParams) => {
-  const articleId = getArticleName(req.body.title);
+  const articleName = getArticleName(req.body.title);
+  const articleId = articleName; // TODO: change this
   // TODO: validate content
   const dbEntry: ArticlesDBEntry = {
     history: [{
       author: NLPParams.username!,
-      name: articleId, // TODO: change this to allow changing name
+      name: articleName,
       title: req.body.title,
       content: req.body.content,
       utc_datetime: new Date().toISOString(),
@@ -67,13 +68,13 @@ app.post("/create", NLPRoute({
   await db.set(articleId, JSON.stringify(dbEntry));
   generateEvent(EventType.ARTICLE_CREATED, {
     articleId: articleId,
-    author: NLPParams.username,
-    name: articleId, // TODO: change this to allow changing name
+    author: NLPParams.username!,
+    name: articleName,
     title: req.body.title,
     content: req.body.content
   });
   const responseData: ArticleCreateResponse = {
-    name: articleId
+    name: articleName
   };
   res.status(200).send(responseData);
 }));
@@ -95,6 +96,8 @@ app.post("/edit", NLPRoute({
     return;
   }
   const articleName = getArticleName(req.body.title);
+
+  // update database
   const dbEntry = JSON.parse(articleStr) as ArticlesDBEntry;
   dbEntry.history.push({
     author: NLPParams.username!,
@@ -105,6 +108,17 @@ app.post("/edit", NLPRoute({
     status: ArticleStatus.ACTIVE
   })
   await db.set(req.body.articleId, JSON.stringify(dbEntry));
+
+  // generate event
+  generateEvent(EventType.ARTICLE_UPDATED, {
+    articleId: req.body.articleId,
+    author: NLPParams.username!,
+    name: articleName,
+    title: req.body.title,
+    content: req.body.content
+  });
+
+  // return HTTP response
   const responseData: ArticleEditResponse = {
     name: articleName
   };
