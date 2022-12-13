@@ -4,7 +4,7 @@ import cookieParser from "cookie-parser";
 import logger from "morgan";
 import cors from "cors";
 import axios from "axios";
-// import fs from
+import fs from "fs";
 
 import { EventType } from "./utils/interfaces.js";
 import { NLPRoute } from "./utils/utils.js";
@@ -44,14 +44,15 @@ app.post("/image/:name", NLPRoute({
 
     // completed in NLPRoute: return 403 forbidden if not logged in
     console.log(JSON.stringify(req.body));
+    const img = await db.exists(req.body.imageName);
 
-    const img = await db.get(req.body.imageName);
-
-    // if image exists in db, return 200 OK and store image in the redis
-    if (img) {
-        await db.set(req.body.imageName, req.body.image);
-        res.status(200).send("Image updated");
-    } else {       
+    // if image does not exist in db, return 200 OK and store image in the redis
+    if (!img) {
+        await db.set(req.body.imageName, img);
+        res.status(200).send("Image uploaded");
+    } else {      
+        // if image exists in db, return 400 bad request
+        res.status(400).send("Image already exists");
     }
 }))
 
