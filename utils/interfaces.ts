@@ -81,3 +81,13 @@ export interface ArticleServingResponse {
 }
 
 export interface ArticleSearchEngineResponse extends ArticleCreateResponse, ArticleServingResponse {}
+
+// comment
+export interface CommentKey {
+  commentId: string,
+  articleId: string
+}
+export interface CommentReponse extends CommentKey {
+  username: string,
+  content: string,
+}

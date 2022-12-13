@@ -7,6 +7,7 @@ import { Link, useLocation } from "react-router-dom";
 import { ArticleStatus } from "../utils/interfaces";
 import type { ArticleServingResponse } from "../utils/interfaces";
 import NLPPage from "../lib/NLPPage";
+import Comment_Section from "./Comment/Comment_Section";
 
 const Article = () => {
   const location = useLocation();
@@ -56,6 +57,8 @@ const Article = () => {
       <br/>
     </Fragment>}
     {contents}
+
+    <Comment_Section articleName={articleName}></Comment_Section>
   </NLPPage>;
 }
 
