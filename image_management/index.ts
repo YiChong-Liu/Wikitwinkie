@@ -28,10 +28,11 @@ app.get("/registered_events", (req, res) => {
 });
 
 // upload the image
-app.post("/image/{name}", NLPRoute({
+app.post("/image/:name", NLPRoute({
     bodySchema: {
         properties: {
-            name: { type: "string" }
+            image: { type: "string" },
+            imageDescription: { type: "string" }
         }
     },
     sessionCookie: "required"
@@ -39,20 +40,22 @@ app.post("/image/{name}", NLPRoute({
 
     // completed in NLPRoute: return 403 forbidden if not logged in
 
-    const img = await db.get(req.body.name);
+    const img = await db.get(req.params.name);
 
     // if image exists in db, return 200 OK and store image in the redis
     if (img) {
-
+        await db.set(req.params.name, req.body.image);
+        res.status(200).send("Image updated");
     } else {       
     }
 }))
 
 // get the image
-app.get("/image/{name}", NLPRoute({
+app.get("/image/:name", NLPRoute({
     bodySchema: {
         properties: {
-            name: { type: "string" }
+            image: { type: "string" },
+            imageDescription: { type: "string" }
         }
     },
 } as const, async (req, res) => {
@@ -68,7 +71,7 @@ app.get("/image/{name}", NLPRoute({
 }))
 
 // delete the image
-app.delete("/image/{name}", NLPRoute({
+app.delete("/image/:name", NLPRoute({
     bodySchema: {
         properties: {
             name: { type: "string" }
