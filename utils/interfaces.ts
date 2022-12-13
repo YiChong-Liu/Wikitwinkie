@@ -72,3 +72,5 @@ export interface ArticleServingResponse {
   content: string,
   status: string
 }
+
+export interface ArticleSearchEngineResponse extends ArticleCreateResponse, ArticleServingResponse {}

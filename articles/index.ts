@@ -52,7 +52,7 @@ app.post("/create", NLPRoute({
     }],
     comments: []
   }));
-  generateEvent(EventType.ArticleCreated, {
+  generateEvent(EventType.ARTICLE_CREATED, {
     articleId: articleId,
     author: NLPParams.username,
     name: articleId, // TODO: change this to allow changing name
