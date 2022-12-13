@@ -1,5 +1,6 @@
 import redis from "redis";
 import express from "express";
+import cookieParser from "cookie-parser";
 import logger from "morgan";
 import cors from "cors";
 import axios from "axios";
@@ -15,6 +16,8 @@ const EVENT_LISTENERS: EventType[] = [];
 app.use(logger("dev"));
 app.use(express.json());
 app.use(cors({ origin: "http://localhost:3000", credentials: true }));
+app.use(cookieParser());
+
 
 const db = redis.createClient({
     socket: {
@@ -40,6 +43,7 @@ app.post("/image/:name", NLPRoute({
 } as const, async (req, res) => {
 
     // completed in NLPRoute: return 403 forbidden if not logged in
+    console.log(JSON.stringify(req.body));
 
     const img = await db.get(req.body.imageName);
 

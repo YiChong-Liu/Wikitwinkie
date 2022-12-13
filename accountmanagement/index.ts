@@ -2,6 +2,7 @@ import redis from "redis"
 import express from "express";
 import logger from "morgan";
 import cors from "cors";
+import cookieParser from "cookie-parser";
 import axios, { AxiosResponse } from "axios";
 import bcrypt from "bcrypt"
 import { NLPRoute } from "./utils/utils.js";
@@ -15,6 +16,7 @@ const app = express();
 app.use(logger("dev"));
 app.use(express.json());
 app.use(cors({ origin: "http://localhost:3000", credentials: true }));
+app.use(cookieParser());
 
 const SERVER_FACING_PORT = 4102;
 const serverFacingApp = express();
