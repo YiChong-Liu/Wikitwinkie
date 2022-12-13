@@ -6,6 +6,7 @@ import { randomBytes } from 'crypto';
 import { Comment, CommentKey, ErrorMessage, instanceOfComment } from './commentsUtils.js';
 import { db } from './db.js';
 import { EventType } from './utils/interfaces.js';
+import cookieParser from "cookie-parser";
 
 const EVENT_LISTENERS: EventType[] = [];
 
@@ -13,7 +14,8 @@ const app: express.Express = express();
 
 app.use(logger('dev'));
 app.use(express.json());
-app.use(cors());
+app.use(cors({ origin: "http://localhost:3000", credentials: true }));
+app.use(cookieParser());
 
 const database = new db();
 

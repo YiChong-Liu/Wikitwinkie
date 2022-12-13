@@ -14,6 +14,7 @@ const Article = () => {
   console.assert(location.pathname.slice(0, 9) === "/article/");
   const articleName = location.pathname.slice(9);
 
+  const [articleStatus, setArticleStatus] = useState("loading");
   const [title, setTitle] = useState("Loading...");
   const [contents, setContents] = useState("Loading...");
 
@@ -39,15 +40,18 @@ const Article = () => {
     setTitle(response.data.title);
     if (response.data.status === ArticleStatus.ACTIVE) {
       setContents(response.data.content);
+      setArticleStatus(ArticleStatus.ACTIVE);
     } else if (response.data.status === ArticleStatus.DELETED) {
       setContents("This article has been deleted")
+      setArticleStatus(ArticleStatus.DELETED);
     } else {
       console.error(`Unrecognized article status: ${response.data.status}`);
+      return;
     }
   })()}, [articleName]);
 
   return <NLPPage title={title}>
-    {Cookies.get("username") === undefined ? undefined : <Fragment>
+    {Cookies.get("username") === undefined || articleStatus === "loading" ? undefined : <Fragment>
       <Link to={"/edit/" + articleName}><div className="btn btn-primary">Edit</div></Link>
       <br/>
     </Fragment>}

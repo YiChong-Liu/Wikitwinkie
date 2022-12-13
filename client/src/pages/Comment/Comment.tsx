@@ -1,7 +1,7 @@
 import axios from "axios";
 import type { AxiosResponse } from "axios";
 import { Link, useNavigate } from "react-router-dom";
-import NLPPage from "../lib/NLPPage";
+import NLPPage from "../../lib/NLPPage";
 import { useState } from 'react';
 import Comment_Vote from "./Comment_Vote";
 
