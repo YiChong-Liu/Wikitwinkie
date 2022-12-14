@@ -56,7 +56,7 @@ const Article = () => {
   const loggedIn = Cookies.get("username") !== undefined;
 
   return <NLPPage title={title}>
-    {!loggedIn || articleStatus === "loading" ? undefined : <>
+    {!loggedIn || articleStatus !== ArticleStatus.ACTIVE ? undefined : <>
       <Link to={"/edit/" + articleName}><div className="btn btn-primary">Edit</div></Link>
       <br/>
     </>}

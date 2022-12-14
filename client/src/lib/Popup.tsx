@@ -1,8 +1,8 @@
+// Author: Neil Gupta (nog642)
 import { useState } from "react";
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 
-// TODO: refactor this to include the button
 const Popup = (props: {
   buttonText: string,
   title: string,
