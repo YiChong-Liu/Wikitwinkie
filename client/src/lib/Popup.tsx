@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
-
-import Button from 'react-bootstrap/Button';
-import Modal from 'react-bootstrap/Modal';
+import Button from "react-bootstrap/Button";
+import Modal from "react-bootstrap/Modal";
 
 const Popup = (props: {
   trigger: React.RefObject<HTMLElement>,
@@ -14,10 +13,10 @@ const Popup = (props: {
   const [show, setShow] = useState(false);
   useEffect(() => {
     if (props.trigger.current === null) {
-      throw "Popup trigger cannot be null";
+      throw new Error("Popup trigger cannot be null");
     }
     props.trigger.current.onclick = () => setShow(true)
-  }, []);
+  }, [props.trigger]);
   return <>
     {/* <Button variant="primary" onClick={() => setShow(true)}>
       {props.buttonText}

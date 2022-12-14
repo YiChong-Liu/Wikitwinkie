@@ -4,7 +4,7 @@ Date: 12-12-2022
 */
 
 
-import axios, { AxiosError } from "axios";
+import axios from "axios";
 // import { Link, useNavigate } from "react-router-dom";
 import NLPPage from "../lib/NLPPage";
 import "./UploadImage.css";

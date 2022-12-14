@@ -21,7 +21,7 @@ const EditArticle = () => {
   const [title, setTitle] = useState<string>();
   const [contents, setContents] = useState<string>();
   const [onSubmit, setOnSubmit] = useState<() => any>();
-  // const [isOpen, setIsOpen] = useState(false);
+  const [onDelete, setOnDelete] = useState<() => any>(() => {});
   const deleteButton = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {(async () => {
@@ -55,10 +55,6 @@ const EditArticle = () => {
     //    react assumes it's a function that takes the old state and returns the new state,
     //    but in our case we actually want to set the state to a function.
     setOnSubmit(() => async () => {
-      if (articleId === undefined) {
-        console.error("articleId is undefined");
-        return;
-      }
       const title = (document.getElementById("articleTitle") as HTMLInputElement).value;
       const content = (document.getElementById("articleContent") as HTMLTextAreaElement).value;
       let response: AxiosResponse<ArticleEditResponse>;
@@ -89,7 +85,28 @@ const EditArticle = () => {
       // loadingSpan.textContent = "";
       navigate(`/article/${response.data.name}`);
     });
-  })();}, [articleName]);
+    setOnDelete(() => async () => {
+      try {
+        response = await axios.post(
+          `http://${window.location.hostname}:4005/delete`,
+          { // body
+            articleId: articleId
+          },
+          {withCredentials: true} // send and/or set cookies
+        );
+      } catch (e) {
+        console.error(e);
+        const errorSpan = document.getElementById("editArticleError") as HTMLSpanElement;
+        if (e instanceof AxiosError && e.response) {
+          errorSpan.textContent = `There was an error ${JSON.stringify(e.response.data)}. Please try again.`;
+        } else {
+          errorSpan.textContent = "There was an unknown error.";
+        }
+        return;
+      }
+      // TODO
+    });
+  })();}, [articleName, navigate]);
 
   // redirect to home page if not logged in
   if (Cookies.get("username") === undefined) {
@@ -118,31 +135,20 @@ const EditArticle = () => {
                value="Edit Article" onClick={onSubmit}/>
       }
     </form>
-    {/* {!loaded ? undefined :
-        <button className="btn btn-primary"
-          // onClick={() => setIsOpen(true)}
-          // data-bs-toggle="modal" data-bs-target="#deleteModal"
-          ref={deleteButton}
-        >Delete Article</button>
-    } */}
+    {!loaded ? undefined :
+      <button className="btn btn-primary" ref={deleteButton} >Delete Article</button>
+    }
     <span id="editArticleLoading">Loading...</span>
     <span id="editArticleError" className="errorSpan"></span>
-    {/* {isOpen &&
-      <Popup content={<>
-               <b>Design your Popup</b>
-               <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-               <button>Test button</button>
-             </>} handleClose={() => setIsOpen(false)}/>
-    } */}
-    {/* <Popup id="deleteModal"/> */}
-    <button className="btn btn-primary" ref={deleteButton} >Delete Article</button>
-    <Popup
-      trigger={deleteButton}
-      title="Are you sure?"
-      closeText="Cancel"
-      confirmText="Delete Article"
-      onConfirm={() => console.log("Delete article called")}
-    >Are you sure you want to delete [title]?</Popup>
+    {!loaded ? undefined :
+      <Popup
+        trigger={deleteButton}
+        title="Are you sure?"
+        closeText="Cancel"
+        confirmText="Delete Article"
+        onConfirm={onDelete}
+      >Are you sure you want to delete [title]?</Popup>
+    }
   </NLPPage>;
 }
 

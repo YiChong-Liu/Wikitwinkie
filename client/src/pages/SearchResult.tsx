@@ -1,8 +1,8 @@
-import axios from "axios";
-import type { AxiosResponse } from "axios";
-import { Link, useNavigate } from "react-router-dom";
-import NLPPage from "../lib/NLPPage";
-import { ArticleSearchEngineResponse } from "../utils/interfaces";
+// import axios from "axios";
+// import type { AxiosResponse } from "axios";
+// import { Link, useNavigate } from "react-router-dom";
+// import NLPPage from "../lib/NLPPage";
+// import { ArticleSearchEngineResponse } from "../utils/interfaces";
 
 const SearchResult = (props: any) => {
   // const navigate = useNavigate();
@@ -14,7 +14,7 @@ const SearchResult = (props: any) => {
   const inner = document.createElement("div");
   inner.setAttribute("id", "inner-search");
 
-  if (arr && arr.length > 0) {    
+  if (arr && arr.length > 0) {
     for (let article of arr) {
       if (!document.getElementById(article.articleId)) {
           const newdiv = document.createElement("div");
@@ -24,7 +24,7 @@ const SearchResult = (props: any) => {
           link.setAttribute("href", `http://localhost:3000/article/${article.articleId}`);
           link.classList.add("link-primary");
           const title = document.createTextNode(article.articleId);
-  
+
           link.appendChild(title);
           newdiv.appendChild(link);
           inner?.appendChild(newdiv);
@@ -39,7 +39,7 @@ const SearchResult = (props: any) => {
     inner?.appendChild(newdiv);
     search_result?.appendChild(inner);
   }
-  
+
   return <div id="search-result">
 
   </div>;

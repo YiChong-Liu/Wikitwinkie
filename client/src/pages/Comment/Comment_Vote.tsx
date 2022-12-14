@@ -1,9 +1,9 @@
 import axios from "axios";
-import type { AxiosResponse } from "axios";
-import { Link, useNavigate } from "react-router-dom";
-import NLPPage from "../../lib/NLPPage";
+// import type { AxiosResponse } from "axios";
+// import { Link, useNavigate } from "react-router-dom";
+// import NLPPage from "../../lib/NLPPage";
 import { useEffect, useState } from 'react';
-import SearchResult from "../SearchResult";
+// import SearchResult from "../SearchResult";
 
 const Comment_Vote = (props: any) => {
   const [Vote,setVote] = useState();
@@ -11,7 +11,7 @@ const Comment_Vote = (props: any) => {
 
   useEffect(() => {
     try {
-      axios.get( 
+      axios.get(
         `http://${window.location.hostname}:4403/articles/${props.Comment.articleId}/comments/${props.Comment.commentId}/votes`,
         {withCredentials: true}
       ).then(response => {
@@ -22,7 +22,7 @@ const Comment_Vote = (props: any) => {
     catch(e) {
       console.log(e);
     }
-    
+
   }, []);
 
   if (isLoading) {

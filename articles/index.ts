@@ -128,13 +128,12 @@ app.post("/edit", NLPRoute({
 app.post("/delete", NLPRoute({
   bodySchema: {
     properties: {
-      articleId: { type: "string" },
-      title: { type: "string" },
-      content: { type: "string" }
+      articleId: { type: "string" }
     }
   },
   sessionCookie: "required"
 } as const, async (req, res) => {
+  console.log(`Delete called on ${req.body.articleId}`);
   // TODO
   res.status(200).end();
 }));
