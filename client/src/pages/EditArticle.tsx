@@ -1,7 +1,7 @@
 // Author: Neil Gupta (nog642)
 import axios, { AxiosError } from "axios";
 import type { AxiosResponse } from "axios";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Cookies from "js-cookie";
 import { Navigate, useLocation, useNavigate } from "react-router-dom";
 import NLPPage from "../lib/NLPPage";
@@ -21,7 +21,8 @@ const EditArticle = () => {
   const [title, setTitle] = useState<string>();
   const [contents, setContents] = useState<string>();
   const [onSubmit, setOnSubmit] = useState<() => any>();
-  const [isOpen, setIsOpen] = useState(false);
+  // const [isOpen, setIsOpen] = useState(false);
+  const deleteButton = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {(async () => {
     let response: AxiosResponse<ArticleServingResponse>
@@ -96,6 +97,7 @@ const EditArticle = () => {
   }
 
   const loaded = title !== undefined && contents !== undefined;
+  console.log("Test");
 
   return <NLPPage title="Edit Article">
     <form id="editArticleForm">
@@ -116,12 +118,13 @@ const EditArticle = () => {
                value="Edit Article" onClick={onSubmit}/>
       }
     </form>
-    {!loaded ? undefined : null
-        // <button className="btn btn-primary"
-        //         // onClick={() => setIsOpen(true)}
-        //         data-bs-toggle="modal" data-bs-target="#deleteModal"
-        //         >Delete Article</button>
-    }
+    {/* {!loaded ? undefined :
+        <button className="btn btn-primary"
+          // onClick={() => setIsOpen(true)}
+          // data-bs-toggle="modal" data-bs-target="#deleteModal"
+          ref={deleteButton}
+        >Delete Article</button>
+    } */}
     <span id="editArticleLoading">Loading...</span>
     <span id="editArticleError" className="errorSpan"></span>
     {/* {isOpen &&
@@ -132,7 +135,14 @@ const EditArticle = () => {
              </>} handleClose={() => setIsOpen(false)}/>
     } */}
     {/* <Popup id="deleteModal"/> */}
-    <Popup buttonText="Delete Article"/>
+    <button className="btn btn-primary" ref={deleteButton} >Delete Article</button>
+    <Popup
+      trigger={deleteButton}
+      title="Are you sure?"
+      closeText="Cancel"
+      confirmText="Delete Article"
+      onConfirm={() => console.log("Delete article called")}
+    >Are you sure you want to delete [title]?</Popup>
   </NLPPage>;
 }
 

@@ -1,36 +1,38 @@
-import React, { useState } from 'react';
-import "./Popup.css";
-
-// Code adapted from https://www.cluemediator.com/create-simple-popup-in-reactjs
-// const Popup = (props: {content: JSX.Element, handleClose: () => any}) => {
-//   return <div className="popup-box">
-//     <div className="box">
-//       <span className="close-icon" onClick={props.handleClose}>x</span>
-//       {props.content}
-//     </div>
-//   </div>;
-// };
+import { useEffect, useState } from "react";
 
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 
-const Popup = (props: {buttonText: string}) => {
+const Popup = (props: {
+  trigger: React.RefObject<HTMLElement>,
+  title: string,
+  children: React.ReactNode,
+  closeText: string,
+  confirmText: string,
+  onConfirm: () => any
+}) => {
   const [show, setShow] = useState(false);
+  useEffect(() => {
+    if (props.trigger.current === null) {
+      throw "Popup trigger cannot be null";
+    }
+    props.trigger.current.onclick = () => setShow(true)
+  }, []);
   return <>
-    <Button variant="primary" onClick={() => setShow(true)}>
+    {/* <Button variant="primary" onClick={() => setShow(true)}>
       {props.buttonText}
-    </Button>
+    </Button> */}
     <Modal show={show} onHide={() => setShow(false)}>
       <Modal.Header closeButton>
-        <Modal.Title>Modal heading</Modal.Title>
+        <Modal.Title>{props.title}</Modal.Title>
       </Modal.Header>
-      <Modal.Body>Woohoo, you're reading this text in a modal!</Modal.Body>
+      <Modal.Body>{props.children}</Modal.Body>
       <Modal.Footer>
         <Button variant="secondary" onClick={() => setShow(false)}>
-          Close
+          {props.closeText}
         </Button>
-        <Button variant="primary" onClick={() => setShow(false)}>
-          Save Changes
+        <Button variant="primary" onClick={() => { setShow(false); props.onConfirm(); }}>
+          {props.confirmText}
         </Button>
       </Modal.Footer>
     </Modal>
