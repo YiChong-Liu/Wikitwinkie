@@ -11,7 +11,7 @@ const Comment_List = (props: any) => {
 
   const renderedComments = comments.map(x => {
     return <li className="list-group-item" key={x.username}>
-        <div>Username: {x.username}</div>
+        <div>Username: <b>{x.username}</b></div>
         <div>{x.content}</div>
       </li>;
   });
