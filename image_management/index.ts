@@ -64,10 +64,10 @@ app.get("/image/:name", NLPRoute({} as const, async (req, res) => {
 
     // if image exists in db, return 200 OK with the image
     if (img) {
-        res.status(200).send(img);
+        res.status(200).send(req.params.image);
     } else {
         // if image does not exist in db, return 404 not found with the default.png
-        res.status(404).send("default.png");
+        res.status(404).send("./default.png");
     }
 }))
 
