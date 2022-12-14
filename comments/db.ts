@@ -32,7 +32,7 @@ export class db {
             }
         }
         else {
-            return { message: "comment not found" };
+            return [];
         }
     }
 
@@ -48,7 +48,6 @@ export class db {
                 return { message: e };
             }
         }
-
         else {
             try {
                 await this.client.set(JSON.stringify(comment.articleId), JSON.stringify([comment]));

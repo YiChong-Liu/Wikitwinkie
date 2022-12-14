@@ -7,13 +7,18 @@ import Comment_Vote from "./Comment_Vote";
 import { CommentReponse } from "../../utils/interfaces";
 
 const Comment_List = (props: any) => {
+  const comments: CommentReponse[] = props.Comment;
 
-  // const renderedComments = props.Comment.Comment.map(x => {
-  //   return <li key={x.username}>{x.content}</li>;
-  // });
+  const renderedComments = comments.map(x => {
+    return <li className="list-group-item" key={x.username}>
+        <div>Username: {x.username}</div>
+        <div>{x.content}</div>
+      </li>;
+  });
 
-  return <div></div>;
-    // <ul>{renderedComments}</ul>;
+  return <ul className="list-group">{renderedComments}</ul>;
+  
+    
 }
 
 export default Comment_List;
