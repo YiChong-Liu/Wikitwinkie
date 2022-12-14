@@ -43,7 +43,7 @@ app.post("/image/:name", NLPRoute({
 } as const, async (req, res) => {
 
     // completed in NLPRoute: return 403 forbidden if not logged in
-    console.log(JSON.stringify(req.body));
+   // console.log(JSON.stringify(req.body));
     const img = await db.exists(req.body.imageName);
 
     // if image does not exist in db, return 200 OK and store image in the redis
