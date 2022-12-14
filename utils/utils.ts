@@ -19,27 +19,25 @@ const cookieSchema = {
 } as const;
 const validateSessionCookieSchema = ajv.compile(cookieSchema as JTDSchemaType<JTDDataType<typeof cookieSchema>>);
 
-type NLPParams = {
-  username: string | null
+type NLPParams<sessionCookie extends ("required" | "optional")> = {
+  username: sessionCookie extends "required" ? string : string | null
 };
 
-export const NLPRoute = <T>(
+export const NLPRoute = <T, sessionCookie extends ("required" | "optional")>(
   config: {
-    sessionCookie?: "required" | "optional",
+    sessionCookie?: sessionCookie,
     bodySchema?: T
     sessionFailStatus?: number
   },
   routeHandler: (req: Request<expressCore.ParamsDictionary, any, JTDDataType<T>>,
                  res: Response,
-                 NLPParams: NLPParams) => Promise<void>
+                 NLPParams: NLPParams<sessionCookie>) => Promise<void>
 ) => {
   const sessionFailStatus = config.sessionFailStatus === undefined ? 400 : config.sessionFailStatus;
   const validateSchema = config.bodySchema === undefined ? null
                          : ajv.compile(config.bodySchema as JTDSchemaType<JTDDataType<T>>);
   const asyncHandler = async (request: Request, response: Response, next=console.error) => {
-    const NLPParams: NLPParams = {
-      username: null
-    };
+    let username: string | null = null;
 
     // validate session cookies
     if (config.sessionCookie) {
@@ -71,7 +69,7 @@ export const NLPRoute = <T>(
         response.status(sessionFailStatus);
       }
       if (sessionValid) {
-        NLPParams.username = request.cookies.username;
+        username = request.cookies.username;
       } else {
         response.send(`Error in session cookie: ${sessionCookieError}\n`);
         return;
@@ -90,7 +88,9 @@ export const NLPRoute = <T>(
       }
     }
 
-    await routeHandler(request, response, NLPParams);
+    await routeHandler(request, response, {
+      username: username
+    } as NLPParams<sessionCookie>);
   };
   return (request: Request, response: Response, next=console.error) =>
              Promise.resolve(asyncHandler(request, response)).catch(next);

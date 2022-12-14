@@ -56,7 +56,7 @@ app.post("/create", NLPRoute({
   // TODO: validate content
   const dbEntry: ArticlesDBEntry = {
     history: [{
-      author: NLPParams.username!,
+      author: NLPParams.username,
       name: articleName,
       title: req.body.title,
       content: req.body.content,
@@ -68,7 +68,7 @@ app.post("/create", NLPRoute({
   await db.set(articleId, JSON.stringify(dbEntry));
   generateEvent(EventType.ARTICLE_CREATED, {
     articleId: articleId,
-    author: NLPParams.username!,
+    author: NLPParams.username,
     name: articleName,
     title: req.body.title,
     content: req.body.content
@@ -92,7 +92,7 @@ app.post("/edit", NLPRoute({
   console.log(`Article edit called with articleId ${req.body.articleId}, title ${req.body.title}, content ${req.body.content}`);
   const articleStr = await db.get(req.body.articleId);
   if (articleStr === null) {
-    res.status(400).send("Article not found\n");
+    res.status(404).send("Article not found\n");
     return;
   }
   const articleName = getArticleName(req.body.title);
@@ -100,7 +100,7 @@ app.post("/edit", NLPRoute({
   // update database
   const dbEntry = JSON.parse(articleStr) as ArticlesDBEntry;
   dbEntry.history.push({
-    author: NLPParams.username!,
+    author: NLPParams.username,
     name: articleName,
     title: req.body.title,
     content: req.body.content,
@@ -112,10 +112,11 @@ app.post("/edit", NLPRoute({
   // generate event
   generateEvent(EventType.ARTICLE_UPDATED, {
     articleId: req.body.articleId,
-    author: NLPParams.username!,
+    author: NLPParams.username,
     name: articleName,
     title: req.body.title,
-    content: req.body.content
+    content: req.body.content,
+    status: ArticleStatus.ACTIVE
   });
 
   // return HTTP response
@@ -132,10 +133,39 @@ app.post("/delete", NLPRoute({
     }
   },
   sessionCookie: "required"
-} as const, async (req, res) => {
-  console.log(`Delete called on ${req.body.articleId}`);
-  // TODO
-  res.status(200).end();
+} as const, async (req, res, NLPParams) => {
+  console.log(`Article delete called on articleId ${req.body.articleId}`);
+  const articleStr = await db.get(req.body.articleId);
+  if (articleStr === null) {
+    res.status(404).send("Article not found\n");
+    return;
+  }
+
+  // update database
+  const dbEntry = JSON.parse(articleStr) as ArticlesDBEntry;
+  const lastHistoryEnty = dbEntry.history[dbEntry.history.length - 1];
+  dbEntry.history.push({
+    author: NLPParams.username,
+    name: lastHistoryEnty.name,
+    title: lastHistoryEnty.title,
+    content: "",
+    utc_datetime: new Date().toISOString(),
+    status: ArticleStatus.DELETED
+  })
+  await db.set(req.body.articleId, JSON.stringify(dbEntry));
+
+  // generate event
+  generateEvent(EventType.ARTICLE_UPDATED, {
+    articleId: req.body.articleId,
+    author: NLPParams.username,
+    name: lastHistoryEnty.name,
+    title: lastHistoryEnty.title,
+    content: "",
+    status: ArticleStatus.DELETED
+  });
+
+  // return HTTP response
+  res.status(204).end();
 }));
 
 app.post("/restore", NLPRoute({

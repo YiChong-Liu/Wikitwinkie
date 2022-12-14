@@ -24,7 +24,8 @@ export type EventBody<T extends EventType> = (
     author: string,
     name: string,
     title: string,
-    content: string
+    content: string,
+    status: ArticleStatus
   } :
   any
 );
