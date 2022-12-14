@@ -116,19 +116,23 @@ const EditArticle = () => {
                value="Edit Article" onClick={onSubmit}/>
       }
     </form>
-    {!loaded ? undefined :
-        <button className="btn btn-primary" onClick={() => setIsOpen(true)}>Delete Article</button>
+    {!loaded ? undefined : null
+        // <button className="btn btn-primary"
+        //         // onClick={() => setIsOpen(true)}
+        //         data-bs-toggle="modal" data-bs-target="#deleteModal"
+        //         >Delete Article</button>
     }
     <span id="editArticleLoading">Loading...</span>
     <span id="editArticleError" className="errorSpan"></span>
-    {isOpen && <Popup
-      content={<>
-        <b>Design your Popup</b>
-        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-        <button>Test button</button>
-      </>}
-      handleClose={() => setIsOpen(false)}
-    />}
+    {/* {isOpen &&
+      <Popup content={<>
+               <b>Design your Popup</b>
+               <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+               <button>Test button</button>
+             </>} handleClose={() => setIsOpen(false)}/>
+    } */}
+    {/* <Popup id="deleteModal"/> */}
+    <Popup buttonText="Delete Article"/>
   </NLPPage>;
 }
 
