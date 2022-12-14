@@ -23,36 +23,39 @@ const Article = () => {
   const [onRestore, setOnRestore] = useState<() => any>(() => {});
 
   useEffect(() => {(async () => {
-    let response: AxiosResponse<ArticleServingResponse>
-    try {
-      response = await axios.get(`http://${window.location.hostname}:4006/${articleName}`);
-    } catch (e) {
-      console.error(e);
-      const errorSpan = document.getElementById("createArticleError") as HTMLSpanElement;
-      if (e instanceof AxiosError && e.response) {
-        if (e.response.status === 404) {
-          setTitle("404 Not Found");
-          setContents(`Article not found.`)
+    const errorSpan = document.getElementById("createArticleError") as HTMLSpanElement;
+    const loadArticle = async () => {
+      let response: AxiosResponse<ArticleServingResponse>
+      try {
+        response = await axios.get(`http://${window.location.hostname}:4006/${articleName}`);
+      } catch (e) {
+        console.error(e);
+        if (e instanceof AxiosError && e.response) {
+          if (e.response.status === 404) {
+            setTitle("404 Not Found");
+            setContents(`Article not found.`)
+          } else {
+            errorSpan.textContent = `There was an error ${JSON.stringify(e.response.data)}. Please try again.`;
+          }
         } else {
-          errorSpan.textContent = `There was an error ${JSON.stringify(e.response.data)}. Please try again.`;
+          errorSpan.textContent = "There was an unknown error.";
         }
-      } else {
-        errorSpan.textContent = "There was an unknown error.";
+        return;
       }
-      return;
-    }
-    const articleId = response.data.articleId;
-    setTitle(response.data.title);
-    if (response.data.status === ArticleStatus.ACTIVE) {
-      setContents(response.data.content);
-      setArticleStatus(ArticleStatus.ACTIVE);
-    } else if (response.data.status === ArticleStatus.DELETED) {
-      setContents("This article has been deleted")
-      setArticleStatus(ArticleStatus.DELETED);
-    } else {
-      console.error(`Unrecognized article status: ${response.data.status}`);
-      return;
-    }
+      setTitle(response.data.title);
+      if (response.data.status === ArticleStatus.ACTIVE) {
+        setContents(response.data.content);
+        setArticleStatus(ArticleStatus.ACTIVE);
+      } else if (response.data.status === ArticleStatus.DELETED) {
+        setContents("This article has been deleted")
+        setArticleStatus(ArticleStatus.DELETED);
+      } else {
+        console.error(`Unrecognized article status: ${response.data.status}`);
+        return;
+      }
+      return response.data.articleId;
+    };
+    const articleId = await loadArticle();
 
     // we need an extra layer of function here because if the setter recieves a function
     //    react assumes it's a function that takes the old state and returns the new state,
@@ -76,9 +79,11 @@ const Article = () => {
         }
         return;
       }
-      // TODO: reload article if needed
+
+      // re-render the article
+      await loadArticle();
     });
-  })()}, [articleName]);
+  })();}, [articleName]);
 
   const loggedIn = Cookies.get("username") !== undefined;
 
