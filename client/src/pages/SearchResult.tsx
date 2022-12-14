@@ -6,40 +6,38 @@ import { ArticleSearchEngineResponse } from "../utils/interfaces";
 
 const SearchResult = (props: any) => {
   // const navigate = useNavigate();
-  const arr: ArticleSearchEngineResponse[] = props.result.Articles;
-  if (arr) {
-    const search_result = document.getElementById("search-result");
-    const prev = document.getElementById("inner-search");
-    prev?.remove();
+  const arr = props.result;
+  const search_result = document.getElementById("search-result");
+  const prev = document.getElementById("inner-search");
+  prev?.remove();
 
-    const inner = document.createElement("div");
-    inner.setAttribute("id", "inner-search");
-    
-    if (arr.length == 0) {
-      const newdiv = document.createElement("div");
-      const notFound = document.createTextNode("No article found.");
+  const inner = document.createElement("div");
+  inner.setAttribute("id", "inner-search");
 
-      newdiv.appendChild(notFound);
-      inner?.appendChild(newdiv);
-      search_result?.appendChild(inner);
-    }
-    else {
-      for (let article of arr) {
-        if (!document.getElementById(article.articleId)) {
-            const newdiv = document.createElement("div");
-            newdiv.setAttribute("id", article.articleId);
+  if (arr && arr.length > 0) {    
+    for (let article of arr) {
+      if (!document.getElementById(article.articleId)) {
+          const newdiv = document.createElement("div");
+          newdiv.setAttribute("id", article.articleId);
 
-            // TODO: link to articleId
-            // <Link to="/about">About</Link>
-            // const link = document.createElement("Link");
-            const title = document.createTextNode(article.articleId);
-    
-            newdiv.appendChild(title);
-            inner?.appendChild(newdiv);
-            search_result?.appendChild(inner);
-        }
-      }
-    }
+          const link = document.createElement("a");
+          link.setAttribute("href", `http://localhost:3000/article/${article.articleId}`);
+          link.classList.add("link-primary");
+          const title = document.createTextNode(article.articleId);
+  
+          link.appendChild(title);
+          newdiv.appendChild(link);
+          inner?.appendChild(newdiv);
+          search_result?.appendChild(inner);
+      }}
+  }
+  else {
+    const newdiv = document.createElement("div");
+    const notFound = document.createTextNode("No article found.");
+
+    newdiv.appendChild(notFound);
+    inner?.appendChild(newdiv);
+    search_result?.appendChild(inner);
   }
   
   return <div id="search-result">

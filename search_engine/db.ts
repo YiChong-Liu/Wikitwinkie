@@ -40,7 +40,7 @@ export class db {
             }
             else {
                 try {
-                    await this.client.set(JSON.stringify(x), JSON.stringify([[article]]));
+                    await this.client.set(JSON.stringify(x), JSON.stringify([article]));
                 }
                 catch (e) {
                     return { message: e };
@@ -50,10 +50,10 @@ export class db {
         return article;
     }
 
-    async searchContent(content: string): Promise<SearchResult | ErrorMessage> {
+    async searchContent(content: string): Promise<Article[] | ErrorMessage> {
         const stemmer: Stemmer = new Stemmer(content);
         const arr: string[] = stemmer.stemming();
-        const sr: SearchResult = { articleId: [] };
+        const sr: Article[] = [];
 
         for (const x of arr) {
             let res: string | null = null;
@@ -65,9 +65,9 @@ export class db {
             }
 
             if (res) {
-                const store: string[] = JSON.parse(res);
+                const store: Article[] = JSON.parse(res);
                 store.forEach(x => {
-                    sr.articleId.push(x);
+                    sr.push(x);
                 });
             }
         }
