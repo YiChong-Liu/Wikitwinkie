@@ -66,7 +66,7 @@ app.post("/create", NLPRoute({
     comments: []
   };
   await db.set(articleId, JSON.stringify(dbEntry));
-  generateEvent(EventType.ARTICLE_CREATED, {
+  await generateEvent(EventType.ARTICLE_CREATED, {
     articleId: articleId,
     author: NLPParams.username,
     name: articleName,
@@ -110,7 +110,7 @@ app.post("/edit", NLPRoute({
   await db.set(req.body.articleId, JSON.stringify(dbEntry));
 
   // generate event
-  generateEvent(EventType.ARTICLE_UPDATED, {
+  await generateEvent(EventType.ARTICLE_UPDATED, {
     articleId: req.body.articleId,
     author: NLPParams.username,
     name: articleName,
@@ -162,7 +162,7 @@ app.post("/delete", NLPRoute({
   await db.set(req.body.articleId, JSON.stringify(dbEntry));
 
   // generate event
-  generateEvent(EventType.ARTICLE_UPDATED, {
+  await generateEvent(EventType.ARTICLE_UPDATED, {
     articleId: req.body.articleId,
     author: NLPParams.username,
     name: lastHistoryEnty.name,
@@ -215,7 +215,7 @@ app.post("/restore", NLPRoute({
   await db.set(req.body.articleId, JSON.stringify(dbEntry));
 
   // generate event
-  generateEvent(EventType.ARTICLE_UPDATED, {
+  await generateEvent(EventType.ARTICLE_UPDATED, {
     articleId: req.body.articleId,
     author: NLPParams.username,
     name: lastHistoryEnty.name,

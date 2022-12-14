@@ -27,6 +27,9 @@ export type EventBody<T extends EventType> = (
     content: string,
     status: ArticleStatus
   } :
+  T extends EventType.COMMENT_CREATED ? Comment :
+  T extends EventType.COMMENT_EDITED ? Comment :
+  T extends EventType.COMMENT_DELETED ? CommentKey :
   any
 );
 export type IEvent<T extends EventType = EventType> = {type: T, data: EventBody<T>};
@@ -81,14 +84,15 @@ export interface ArticleServingResponse {
   status: string
 }
 
+// search engine
 export interface ArticleSearchEngineResponse extends ArticleCreateResponse, ArticleServingResponse {}
 
-// comment
+// comments
 export interface CommentKey {
   commentId: string,
   articleId: string
 }
-export interface CommentReponse extends CommentKey {
+export interface Comment extends CommentKey {
   username: string,
   content: string,
 }
