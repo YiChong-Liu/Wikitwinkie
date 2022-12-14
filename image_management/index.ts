@@ -8,6 +8,7 @@ import fs from "fs";
 
 import { EventType } from "./utils/interfaces.js";
 import { NLPRoute } from "./utils/utils.js";
+import bodyParser from "body-parser";
 
 const app = express();
 const PORT = 4003;
@@ -17,7 +18,7 @@ app.use(logger("dev"));
 app.use(express.json());
 app.use(cors({ origin: "http://localhost:3000", credentials: true }));
 app.use(cookieParser());
-
+app.use(bodyParser({ limit: "50mb" }));
 
 const db = redis.createClient({
     socket: {

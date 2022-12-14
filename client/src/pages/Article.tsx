@@ -51,14 +51,18 @@ const Article = () => {
     }
   })()}, [articleName]);
 
+  const loggedIn = Cookies.get("username") !== undefined;
+
   return <NLPPage title={title}>
-    {Cookies.get("username") === undefined || articleStatus === "loading" ? undefined : <Fragment>
+    {!loggedIn || articleStatus === "loading" ? undefined : <Fragment>
       <Link to={"/edit/" + articleName}><div className="btn btn-primary">Edit</div></Link>
       <br/>
     </Fragment>}
     {contents}
 
-    <Comment_Section articleName={articleName}></Comment_Section>
+    {articleStatus === "loading" ? undefined :
+      <Comment_Section articleName={articleName}></Comment_Section>
+    }
   </NLPPage>;
 }
 

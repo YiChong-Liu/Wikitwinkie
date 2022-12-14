@@ -48,12 +48,12 @@ app.post("/events", NLPRoute(NLPEventListenerRouteConfig, async (req, res) => {
         content: data.content,
         status: ArticleStatus.ACTIVE
       };
+      console.log(`Saving article to ${"articles/" + data.name} in db`);
       await db.set("articles/" + data.name, JSON.stringify(dbEntry));
       break;
     }
     case EventType.ARTICLE_UPDATED: {
       const data = req.body.data as EventBody<EventType.ARTICLE_UPDATED>;
-      console.log(`Got article updated event with content ${data.content}`);
       const oldName = await db.get("names/" + data.articleId);
       if (oldName === null) {
         console.error(`Article with ID ${data.articleId} not found;`);
@@ -78,7 +78,11 @@ app.post("/events", NLPRoute(NLPEventListenerRouteConfig, async (req, res) => {
 }));
 
 app.get("/:name", NLPRoute({}, async (req, res) => {
-  const articleStr = await db.get("articles/" + req.params.name)
+  // we need to parse originalUrl because req.params.name will parse url encoding,
+  //     which we don't want
+  const articleName = req.originalUrl.substring(1);
+
+  const articleStr = await db.get("articles/" + articleName)
   if (articleStr === null) {
     res.status(404).end();
     return;
