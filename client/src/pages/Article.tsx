@@ -8,6 +8,7 @@ import { ArticleStatus } from "../utils/interfaces";
 import type { ArticleServingResponse } from "../utils/interfaces";
 import NLPPage from "../lib/NLPPage";
 import Comment_Section from "./Comment/Comment_Section";
+import Popup from "../lib/Popup";
 
 const Article = () => {
   const location = useLocation();
@@ -60,6 +61,13 @@ const Article = () => {
       <br/>
     </>}
     {contents}
+    {articleStatus !== ArticleStatus.DELETED ? undefined : <><br/><Popup
+      buttonText="Restore"
+      title="Are you sure?"
+      closeText="Cancel"
+      confirmText="Restore Article"
+      onConfirm={() => console.log("Restore called")}
+    >Restore article "{title}"?</Popup></>}
 
     {articleStatus === "loading" ? undefined :
       <Comment_Section articleName={articleName}></Comment_Section>

@@ -86,7 +86,7 @@ const EditArticle = () => {
     });
     setOnDelete(() => async () => {
       try {
-        response = await axios.post(
+        await axios.post(
           `http://${window.location.hostname}:4005/delete`,
           { // body
             articleId: articleId
@@ -103,7 +103,7 @@ const EditArticle = () => {
         }
         return;
       }
-      // TODO
+      navigate(`/article/${articleName}`);
     });
   })();}, [articleName, navigate]);
 
@@ -141,7 +141,7 @@ const EditArticle = () => {
         closeText="Cancel"
         confirmText="Delete Article"
         onConfirm={onDelete}
-      >Are you sure you want to delete [title]?</Popup>
+      >Are you sure you want to delete {title}?</Popup>
     }
     <span id="editArticleLoading">Loading...</span>
     <span id="editArticleError" className="errorSpan"></span>
