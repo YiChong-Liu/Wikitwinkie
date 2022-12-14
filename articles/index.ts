@@ -5,14 +5,9 @@ import logger from "morgan";
 import redis from "redis";
 import { ArticleStatus, EventType } from "./utils/interfaces.js";
 import type { ArticleCreateResponse, ArticleEditResponse } from "./utils/interfaces.js";
-import { generateEvent, NLPRoute } from "./utils/utils.js";
+import { generateEvent, listenToEvents, NLPRoute } from "./utils/utils.js";
 
 const PORT = 4005;
-const EVENT_LISTENERS: EventType[] = [
-  EventType.COMMENT_CREATED,
-  EventType.COMMENT_EDITED,
-  EventType.COMMENT_DELETED
-];
 
 interface ArticlesDBEntry {
   history: {
@@ -42,8 +37,19 @@ const db = redis.createClient({
 const getArticleName = (title: string) =>
   encodeURIComponent(title).replace("_", "%5F").replace("%20", "_");
 
-app.get("/registered_events", (req, res) => {
-  res.status(200).send(EVENT_LISTENERS);
+listenToEvents(app, {
+  [EventType.COMMENT_CREATED]: async data => {
+    // do something
+    console.log(data);
+  },
+  [EventType.COMMENT_EDITED]: async data => {
+    // do something
+    console.log(data);
+  },
+  [EventType.COMMENT_DELETED]: async data => {
+    // do something
+    console.log(data);
+  }
 });
 
 app.post("/create", NLPRoute({

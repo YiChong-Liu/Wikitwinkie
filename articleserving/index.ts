@@ -8,10 +8,6 @@ import { NLPRoute, listenToEvents } from "./utils/utils.js";
 // import { generateEvent, NLPRoute } from "./utils/utils.js";
 
 const PORT = 4006;
-const EVENT_LISTENERS: EventType[] = [
-  EventType.ARTICLE_CREATED,
-  EventType.ARTICLE_UPDATED
-];
 
 interface ArticleServingDBEntry {
   articleId: string,
@@ -30,10 +26,6 @@ const db = redis.createClient({
     host: "articleservingdb",
     port: 6379
   }
-});
-
-app.get("/registered_events", (req, res) => {
-  res.status(200).send(EVENT_LISTENERS);
 });
 
 listenToEvents(app, {

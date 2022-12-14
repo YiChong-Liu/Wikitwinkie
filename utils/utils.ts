@@ -104,6 +104,10 @@ export const generateEvent = async <T extends EventType>(eventType: T, data: Eve
 };
 
 export const listenToEvents = (app: Express, handlers: {[key in EventType]?: (data: EventBody<key>) => any}) => {
+  const registeredEvents = Object.keys(handlers) as EventType[];
+  app.get("/registered_events", (req, res) => {
+    res.status(200).send(registeredEvents);
+  });
   app.post("/events", NLPRoute({
     bodySchema: {
       properties: {
