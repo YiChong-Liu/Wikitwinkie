@@ -8,7 +8,11 @@ import type { ArticleCreateResponse, ArticleEditResponse } from "./utils/interfa
 import { generateEvent, NLPRoute } from "./utils/utils.js";
 
 const PORT = 4005;
-const EVENT_LISTENERS: EventType[] = [];
+const EVENT_LISTENERS: EventType[] = [
+  EventType.COMMENT_CREATED,
+  EventType.COMMENT_EDITED,
+  EventType.COMMENT_DELETED
+];
 
 interface ArticlesDBEntry {
   history: {

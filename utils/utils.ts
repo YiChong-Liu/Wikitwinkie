@@ -4,7 +4,7 @@ import type { DefinedError } from "ajv";
 import axios from "axios";
 import type { AxiosResponse } from "axios";
 import type cookieParser from "cookie-parser";  // require this to be installed
-import type { Request, Response } from "express";
+import type { Express, Request, Response } from "express";
 import type * as expressCore from "express-serve-static-core";
 import { EventBody, EventType } from "./interfaces.js"
 import type { SessionsValidateSessionResponse } from "./interfaces.js"
@@ -103,11 +103,19 @@ export const generateEvent = async <T extends EventType>(eventType: T, data: Eve
   });
 };
 
-export const NLPEventListenerRouteConfig = {
-  bodySchema: {
-    properties: {
-      type: { enum: Object.values(EventType) },
-      data: {} // any data
+export const listenToEvents = (app: Express, handlers: {[key in EventType]?: (data: EventBody<key>) => any}) => {
+  app.post("/events", NLPRoute({
+    bodySchema: {
+      properties: {
+        type: { enum: Object.values(EventType) },
+        data: {} // any data
+      }
     }
-  }
-} as const;
+  } as const, async (req, res) => {
+    const handler = handlers[req.body.type];
+    if (handler !== undefined) {
+      await handler(req.body.data);
+    }
+    res.status(204).end();
+  }));
+};
