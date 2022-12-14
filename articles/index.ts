@@ -144,6 +144,13 @@ app.post("/delete", NLPRoute({
   // update database
   const dbEntry = JSON.parse(articleStr) as ArticlesDBEntry;
   const lastHistoryEnty = dbEntry.history[dbEntry.history.length - 1];
+  if (lastHistoryEnty.status === ArticleStatus.DELETED) {
+    // article is already deleted, can't delete it again
+    // don't return error though, so the client thinks the article is deleted
+    //     (which it is)
+    res.status(204).end();
+    return;
+  }
   dbEntry.history.push({
     author: NLPParams.username,
     name: lastHistoryEnty.name,
@@ -171,21 +178,22 @@ app.post("/delete", NLPRoute({
 app.post("/restore", NLPRoute({
   bodySchema: {
     properties: {
-      articleId: { type: "string" },
-      title: { type: "string" },
-      content: { type: "string" }
+      articleId: { type: "string" }
     }
   },
   sessionCookie: "required"
 } as const, async (req, res) => {
+  console.log(`Article restore called on articleId ${req.body.articleId}`);
   // TODO
-  res.status(200).end();
+  res.status(204).end();
 }));
 
 app.get("/:name/comments", NLPRoute({}, async (req, res) => {
-  console.log(req.params.name);
+  console.log(`Get comments called on ${req.params.name}`);
+  const [ articleName ] = req.originalUrl.substring(1).split("/", 1);
+  console.log(`Get comments called on ${articleName}`);
   // TODO
-  res.status(200).end();
+  res.status(204).end();
 }));
 
 await db.connect();

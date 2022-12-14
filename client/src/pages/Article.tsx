@@ -20,6 +20,7 @@ const Article = () => {
   const [articleStatus, setArticleStatus] = useState("loading");
   const [title, setTitle] = useState("Loading...");
   const [contents, setContents] = useState("Loading...");
+  const [onRestore, setOnRestore] = useState<() => any>(() => {});
 
   useEffect(() => {(async () => {
     let response: AxiosResponse<ArticleServingResponse>
@@ -40,6 +41,7 @@ const Article = () => {
       }
       return;
     }
+    const articleId = response.data.articleId;
     setTitle(response.data.title);
     if (response.data.status === ArticleStatus.ACTIVE) {
       setContents(response.data.content);
@@ -51,6 +53,31 @@ const Article = () => {
       console.error(`Unrecognized article status: ${response.data.status}`);
       return;
     }
+
+    // we need an extra layer of function here because if the setter recieves a function
+    //    react assumes it's a function that takes the old state and returns the new state,
+    //    but in our case we actually want to set the state to a function.
+    setOnRestore(() => async () => {
+      try {
+        await axios.post(
+          `http://${window.location.hostname}:4005/restore`,
+          { // body
+            articleId: articleId
+          },
+          {withCredentials: true} // send and/or set cookies
+        );
+      } catch (e) {
+        console.error(e);
+        const errorSpan = document.getElementById("editArticleError") as HTMLSpanElement;
+        if (e instanceof AxiosError && e.response) {
+          errorSpan.textContent = `There was an error ${JSON.stringify(e.response.data)}. Please try again.`;
+        } else {
+          errorSpan.textContent = "There was an unknown error.";
+        }
+        return;
+      }
+      // TODO: reload article if needed
+    });
   })()}, [articleName]);
 
   const loggedIn = Cookies.get("username") !== undefined;
@@ -66,7 +93,7 @@ const Article = () => {
       title="Are you sure?"
       closeText="Cancel"
       confirmText="Restore Article"
-      onConfirm={() => console.log("Restore called")}
+      onConfirm={onRestore}
     >Restore article "{title}"?</Popup></>}
 
     {articleStatus === "loading" ? undefined :
