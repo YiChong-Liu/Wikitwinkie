@@ -50,23 +50,17 @@ app.post("/image/:name", NLPRoute({
     if (!img) {
         await db.set(req.body.imageName, img);
         res.status(200).send("Image uploaded");
-    } else {      
+    } else {
         // if image exists in db, return 400 bad request
         res.status(400).send("Image already exists");
     }
 }))
 
 // get the image
-app.get("/image/:name", NLPRoute({
-    bodySchema: {
-        properties: {
-            image: { type: "string" },
-            imageName: { type: "string" },
-            imageDescription: { type: "string" }
-        }
-    },
-} as const, async (req, res) => {
-    const img = await db.get(req.body.imageName);
+app.get("/image/:name", NLPRoute({} as const, async (req, res) => {
+    console.log(`Got GET request for image name: ${req.params.name}`);
+    const img = await db.get(req.params.name);
+    console.log(`Got image ${req.params.name} from database: ${img}`);
 
     // if image exists in db, return 200 OK with the image
     if (img) {
@@ -84,7 +78,7 @@ app.delete("/image/:name", NLPRoute({
             image: { type: "string" },
             imageName: { type: "string" },
             imageDescription: { type: "string" }
-        }   
+        }
     },
 } as const, async (req, res) => {
     const img = await db.exists(req.body.imageName);
