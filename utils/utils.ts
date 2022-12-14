@@ -27,11 +27,13 @@ export const NLPRoute = <T>(
   config: {
     sessionCookie?: "required" | "optional",
     bodySchema?: T
+    sessionFailStatus?: number
   },
   routeHandler: (req: Request<expressCore.ParamsDictionary, any, JTDDataType<T>>,
                  res: Response,
                  NLPParams: NLPParams) => Promise<void>
 ) => {
+  const sessionFailStatus = config.sessionFailStatus === undefined ? 400 : config.sessionFailStatus;
   const validateSchema = config.bodySchema === undefined ? null
                          : ajv.compile(config.bodySchema as JTDSchemaType<JTDDataType<T>>);
   const asyncHandler = async (request: Request, response: Response, next=console.error) => {
@@ -61,12 +63,12 @@ export const NLPRoute = <T>(
         } else {
           sessionValid = false;
           sessionCookieError = "Invalid session";
-          response.status(400).clearCookie("username").clearCookie("sessionId");
+          response.status(sessionFailStatus).clearCookie("username").clearCookie("sessionId");
         }
       } else {
         sessionValid = false;
         sessionCookieError = (validateSessionCookieSchema.errors as DefinedError[])[0].message as string;
-        response.status(400);
+        response.status(sessionFailStatus);
       }
       if (sessionValid) {
         NLPParams.username = request.cookies.username;
