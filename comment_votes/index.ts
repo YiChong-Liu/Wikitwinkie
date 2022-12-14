@@ -94,7 +94,7 @@ app.post('/events', (req: express.Request, res: express.Response) => {
 
       if (instanceOfCommentVote(comment_vote)) {
         const articleId: string = event.data.articleId, commentId: string = event.data.commentId;
-        axios.post(`http://localhost:4403/articles/${articleId}/comments/${commentId}/votes`, event).catch((err: Error) => {
+        axios.post(`http://localhost:4403/articles/${articleId}/comments/${commentId}/votes`, event.data).catch((err: Error) => {
           console.log("FAIL TO INIT");
         });
       }

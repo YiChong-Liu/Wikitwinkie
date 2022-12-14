@@ -3,12 +3,14 @@ import logger from 'morgan';
 import cors from 'cors';
 import axios from 'axios';
 import { randomBytes } from 'crypto';
-import { Comment, CommentKey, ErrorMessage, instanceOfComment } from './commentsUtils.js';
+import { Comment, CommentKey, ErrorMessage, instaceOfErrorMessage, instanceOfComment } from './commentsUtils.js';
 import { db } from './db.js';
-import { EventType } from './utils/interfaces.js';
+import { EventType, IEvent } from './utils/interfaces.js';
 import cookieParser from "cookie-parser";
 
-const EVENT_LISTENERS: EventType[] = [];
+const EVENT_LISTENERS: EventType[] = [
+  EventType.ARTICLE_CREATED
+];
 
 const app: express.Express = express();
 
@@ -26,12 +28,23 @@ app.get("/registered_events", (req, res) => {
 // GET COMMENT BY ARTICLE ID
 app.get('/articles/:articleId/comments', async (req: express.Request, res: express.Response) => {
   const comment: Comment[] | ErrorMessage = await database.getCommentsByArticleId(req.params.articleId);
-  if (instanceOfComment(comment)) {
-    res.status(201).send(comment);
+
+  if (!instaceOfErrorMessage(comment)) {
+    let isComment = true;
+    comment.forEach(element => {
+      isComment = instanceOfComment(element) && isComment;
+    });
+    if (isComment) {
+      res.status(201).send(comment);
+    }
+    else {
+      res.status(404).send(comment);
+    }
   }
   else {
     res.status(404).send(comment);
   }
+  
 
   const payload = {
     type: EventType.COMMENT_GET,
@@ -114,7 +127,15 @@ app.post('/articles/:articleId/comments/:commentId', async (req: express.Request
 
 
 app.post('/events', (req: express.Request, res: express.Response) => {
-  console.log(req.body.type);
+  const event: IEvent = req.body;
+  // switch (event.type) {
+  //   case EventType.ARTICLE_CREATED:
+  //     const articleId: string = event.data.articleId, commentId: string = event.data.commentId;
+  //     axios.post(`http://localhost:4401/articles/:articleId/comments`, event.data).catch((err: Error) => {
+  //       console.log("FAIL TO INIT");
+  //     });
+  // }
+
   res.send({});
 });
 
