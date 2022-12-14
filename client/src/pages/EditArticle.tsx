@@ -1,10 +1,11 @@
 // Author: Neil Gupta (nog642)
 import axios, { AxiosError } from "axios";
 import type { AxiosResponse } from "axios";
-import { Fragment, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import Cookies from "js-cookie";
 import { Navigate, useLocation, useNavigate } from "react-router-dom";
 import NLPPage from "../lib/NLPPage";
+import Popup from "../lib/Popup";
 import { ArticleStatus } from "../utils/interfaces";
 import type { ArticleServingResponse, ArticleEditResponse } from "../utils/interfaces";
 import "./EditArticle.css";
@@ -20,6 +21,7 @@ const EditArticle = () => {
   const [title, setTitle] = useState<string>();
   const [contents, setContents] = useState<string>();
   const [onSubmit, setOnSubmit] = useState<() => any>();
+  const [isOpen, setIsOpen] = useState(false);
 
   useEffect(() => {(async () => {
     let response: AxiosResponse<ArticleServingResponse>
@@ -93,25 +95,40 @@ const EditArticle = () => {
     return  <Navigate replace to="/"/>;
   }
 
+  const loaded = title !== undefined && contents !== undefined;
+
   return <NLPPage title="Edit Article">
     <form id="editArticleForm">
-      {title === undefined ? undefined : <Fragment>
+      {title === undefined ? undefined : <>
         <label className="labels" htmlFor="user">Title: </label>
         <br/>
         <input type="text" id="articleTitle" placeholder="Enter Title" defaultValue={title}/>
         <br/>
-      </Fragment>}
-      {contents === undefined ? undefined : <Fragment>
+      </>}
+      {contents === undefined ? undefined : <>
         <label className="labels" htmlFor="user">Content: </label>
         <br/>
-        <textarea id="articleContent" placeholder="Enter content (Markdown)" defaultValue={contents}/>
-      </Fragment>}
-      {title === undefined || contents === undefined ? undefined :
-        <input id="editArticleSubmit" type="button" value="Edit Article" onClick={onSubmit}/>
+        <textarea id="articleContent" placeholder="Enter content (Markdown)"
+                  defaultValue={contents}/>
+      </>}
+      {!loaded ? undefined :
+        <input id="editArticleSubmit" type="button" className="btn btn-primary"
+               value="Edit Article" onClick={onSubmit}/>
       }
     </form>
+    {!loaded ? undefined :
+        <button className="btn btn-primary" onClick={() => setIsOpen(true)}>Delete Article</button>
+    }
     <span id="editArticleLoading">Loading...</span>
     <span id="editArticleError" className="errorSpan"></span>
+    {isOpen && <Popup
+      content={<>
+        <b>Design your Popup</b>
+        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+        <button>Test button</button>
+      </>}
+      handleClose={() => setIsOpen(false)}
+    />}
   </NLPPage>;
 }
 

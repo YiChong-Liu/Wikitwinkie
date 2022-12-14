@@ -2,7 +2,7 @@
 import axios from "axios";
 import { AxiosError, AxiosResponse } from "axios";
 import Cookies from "js-cookie";
-import { Fragment, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { ArticleStatus } from "../utils/interfaces";
 import type { ArticleServingResponse } from "../utils/interfaces";
@@ -54,10 +54,10 @@ const Article = () => {
   const loggedIn = Cookies.get("username") !== undefined;
 
   return <NLPPage title={title}>
-    {!loggedIn || articleStatus === "loading" ? undefined : <Fragment>
+    {!loggedIn || articleStatus === "loading" ? undefined : <>
       <Link to={"/edit/" + articleName}><div className="btn btn-primary">Edit</div></Link>
       <br/>
-    </Fragment>}
+    </>}
     {contents}
 
     {articleStatus === "loading" ? undefined :
