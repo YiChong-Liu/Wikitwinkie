@@ -91,7 +91,7 @@ app.get("/:name", NLPRoute({}, async (req, res) => {
 
   const articleStr = await db.get("articles/" + articleName)
   if (articleStr === null) {
-    res.status(404).end();
+    res.status(404).send("Article not found\n");
     return;
   }
   const article = JSON.parse(articleStr) as ArticleServingDBEntry;

@@ -182,9 +182,49 @@ app.post("/restore", NLPRoute({
     }
   },
   sessionCookie: "required"
-} as const, async (req, res) => {
+} as const, async (req, res, NLPParams) => {
   console.log(`Article restore called on articleId ${req.body.articleId}`);
-  // TODO
+  const articleStr = await db.get(req.body.articleId);
+  if (articleStr === null) {
+    res.status(404).send("Article not found\n");
+    return;
+  }
+
+  // update database
+  const dbEntry = JSON.parse(articleStr) as ArticlesDBEntry;
+  const lastHistoryEnty = dbEntry.history[dbEntry.history.length - 1];
+  if (lastHistoryEnty.status === ArticleStatus.ACTIVE) {
+    // article is not deleted, can't restore it
+    // don't return error though, so the client thinks the article is
+    //     not deleted (which is true)
+    res.status(204).end();
+    return;
+  }
+  const secondLastHistoryEnty = dbEntry.history[dbEntry.history.length - 2];
+  if (secondLastHistoryEnty === undefined || secondLastHistoryEnty.status !== ArticleStatus.ACTIVE) {
+    throw new Error("Unexpected error getting previous article state for restore");
+  }
+  dbEntry.history.push({
+    author: NLPParams.username,
+    name: lastHistoryEnty.name, // didn't change
+    title: lastHistoryEnty.title, // didn't change
+    content: secondLastHistoryEnty.content,
+    utc_datetime: new Date().toISOString(),
+    status: ArticleStatus.ACTIVE
+  })
+  await db.set(req.body.articleId, JSON.stringify(dbEntry));
+
+  // generate event
+  generateEvent(EventType.ARTICLE_UPDATED, {
+    articleId: req.body.articleId,
+    author: NLPParams.username,
+    name: lastHistoryEnty.name,
+    title: lastHistoryEnty.title,
+    content: secondLastHistoryEnty.content,
+    status: ArticleStatus.ACTIVE
+  });
+
+  // return HTTP response
   res.status(204).end();
 }));
 
