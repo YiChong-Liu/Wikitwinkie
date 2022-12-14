@@ -10,9 +10,11 @@ const Comment_List = (props: any) => {
   const comments: CommentReponse[] = props.Comment;
 
   const renderedComments = comments.map(x => {
-    return <li className="list-group-item" key={x.username}>
+    return <li className="list-group-item" key={x.commentId}>
         <div>Username: <b>{x.username}</b></div>
         <div>{x.content}</div>
+        
+        <Comment_Vote Comment={x}></Comment_Vote>
       </li>;
   });
 
