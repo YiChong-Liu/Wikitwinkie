@@ -11,8 +11,9 @@ import Comment_Section from "./Comment/Comment_Section";
 
 const Article = () => {
   const location = useLocation();
-  // const navigate = useNavigate();
-  console.assert(location.pathname.slice(0, 9) === "/article/");
+  if (location.pathname.slice(0, 9) !== "/article/") {
+    throw new Error("Could not parse article URL");
+  }
   const articleName = location.pathname.slice(9);
 
   const [articleStatus, setArticleStatus] = useState("loading");

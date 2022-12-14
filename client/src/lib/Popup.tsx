@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 
+// TODO: refactor this to include the button
 const Popup = (props: {
   trigger: React.RefObject<HTMLElement>,
   title: string,

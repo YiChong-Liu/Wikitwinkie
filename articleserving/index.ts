@@ -54,25 +54,33 @@ app.post("/events", NLPRoute(NLPEventListenerRouteConfig, async (req, res) => {
     }
     case EventType.ARTICLE_UPDATED: {
       const data = req.body.data as EventBody<EventType.ARTICLE_UPDATED>;
-      const oldName = await db.get("names/" + data.articleId);
-      if (oldName === null) {
-        console.error(`Article with ID ${data.articleId} not found;`);
-        response.status(400).end();
-        return;
-      }
-
       const dbEntry: ArticleServingDBEntry = {
         articleId: data.articleId,
         title: data.title,
         content: data.content,
-        status: ArticleStatus.ACTIVE // TODO: handle deltion/restore
+        status: data.status
       };
-      if (data.name !== oldName) {
-        await db.set("names/" + data.articleId, data.name);
-        await db.del("articles/" + oldName);
+      if (data.status === ArticleStatus.DELETED) {
+        // the article was deleted, meaning it cannot have also been renamed
+        // just update the article entry in the database
+      } else if (data.status === ArticleStatus.ACTIVE) {
+        // we need to check if the article was renamed and update the
+        //     names index if it was
+        const oldName = await db.get("names/" + data.articleId);
+        if (oldName === null) {
+          console.error(`Article with ID ${data.articleId} not found;`);
+          response.status(400).end();
+          return;
+        }
+        if (data.name !== oldName) {
+          await db.set("names/" + data.articleId, data.name);
+          await db.del("articles/" + oldName);
+        }
+      } else {
+        throw new Error("Unexpected article status in event");
       }
       await db.set("articles/" + data.name, JSON.stringify(dbEntry));
-
+      break;
     }
   }
 }));
