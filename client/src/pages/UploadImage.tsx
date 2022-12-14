@@ -25,8 +25,8 @@ const UploadImage = () => {
         const imageName = (document.getElementById("imageName") as HTMLInputElement).value;
         const imageDescription = (document.getElementById("imageDescription") as HTMLInputElement).value;
 
-        try {
-            reader.onload = async () => {
+        reader.onload = async () => {
+            try {
                 const response = await axios.post(
                     `http://${window.location.hostname}:4003/image/${imageName}`,
                     {
@@ -36,11 +36,15 @@ const UploadImage = () => {
                     },
                     { withCredentials: true } // send and/or set cookies}
                 )
+                // a pop up window to show the image is uploaded successfully
+                alert("Image uploaded successfully!");
+            } catch (e) {
+                // console.error(e);
+                // a pop up window to show the image is duplicated
+                alert("Image is duplicated!");
             }
-        } catch (e) {
-            console.log(e);
         }
-    };
+    }
 
     return <NLPPage title="Upload Image">
         <form>
@@ -63,6 +67,6 @@ const UploadImage = () => {
             <input className="button" type="button" value="Submit" onClick={uploadImageSubmit} />
         </form>
     </NLPPage>;
-}
+};
 
 export default UploadImage;
