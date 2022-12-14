@@ -96,3 +96,4 @@ export interface Comment extends CommentKey {
   username: string,
   content: string,
 }
+export type CommentResponse = Comment;

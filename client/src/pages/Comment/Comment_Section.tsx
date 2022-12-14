@@ -4,7 +4,7 @@ import axios from "axios";
 import Cookies from "js-cookie";
 // import NLPPage from "../../lib/NLPPage";
 import { useEffect, useState } from 'react';
-// import { CommentReponse } from "../../utils/interfaces";
+// import { CommentResponse } from "../../utils/interfaces";
 import Comment_List from "./Comment_List";
 
 const Comment_Section = (props: any) => {

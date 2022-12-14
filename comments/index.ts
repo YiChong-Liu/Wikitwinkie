@@ -1,7 +1,7 @@
 import express from 'express';
 import logger from 'morgan';
 import cors from 'cors';
-import axios from 'axios';
+// import axios from 'axios';
 import { randomBytes } from 'crypto';
 import cookieParser from "cookie-parser";
 import { Comment, CommentKey, EventType, IEvent } from './utils/interfaces.js';

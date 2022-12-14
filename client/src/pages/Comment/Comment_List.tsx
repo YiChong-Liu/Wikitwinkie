@@ -4,10 +4,10 @@
 // import NLPPage from "../../lib/NLPPage";
 // import { useState } from 'react';
 import Comment_Vote from "./Comment_Vote";
-import { CommentReponse } from "../../utils/interfaces";
+import { CommentResponse } from "../../utils/interfaces";
 
 const Comment_List = (props: any) => {
-  const comments: CommentReponse[] = props.Comment;
+  const comments: CommentResponse[] = props.Comment;
 
   const renderedComments = comments.map(x => {
     return <li className="list-group-item" key={x.commentId}>
