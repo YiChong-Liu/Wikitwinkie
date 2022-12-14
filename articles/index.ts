@@ -39,16 +39,31 @@ const getArticleName = (title: string) =>
 
 listenToEvents(app, {
   [EventType.COMMENT_CREATED]: async data => {
-    // do something
-    console.log(data);
-  },
-  [EventType.COMMENT_EDITED]: async data => {
-    // do something
-    console.log(data);
+    const articleStr = await db.get(data.articleId);
+    if (articleStr === null) {
+      throw new Error("Article not found\n");
+    }
+
+    // update database
+    const dbEntry = JSON.parse(articleStr) as ArticlesDBEntry;
+    dbEntry.comments.push(data.commentId);
+    await db.set(data.articleId, JSON.stringify(dbEntry));
   },
   [EventType.COMMENT_DELETED]: async data => {
-    // do something
-    console.log(data);
+    const articleStr = await db.get(data.articleId);
+    if (articleStr === null) {
+      throw new Error("Article not found\n");
+    }
+
+    // update database
+    const dbEntry = JSON.parse(articleStr) as ArticlesDBEntry;
+    const commentIndex = dbEntry.comments.indexOf(data.commentId);
+    if (commentIndex == -1) {
+      // comment not found, already deleted so ignore
+      return;
+    }
+    dbEntry.comments.splice(commentIndex, 1);
+    await db.set(data.articleId, JSON.stringify(dbEntry));
   }
 });
 
@@ -238,12 +253,17 @@ app.post("/restore", NLPRoute({
   res.status(204).end();
 }));
 
-app.get("/:name/comments", NLPRoute({}, async (req, res) => {
-  console.log(`Get comments called on ${req.params.name}`);
-  const [ articleName ] = req.originalUrl.substring(1).split("/", 1);
-  console.log(`Get comments called on ${articleName}`);
-  // TODO
-  res.status(204).end();
+app.get("/comments/:articleId", NLPRoute({}, async (req, res) => {
+  console.log(`Get comments called with original url ${req.originalUrl}`);
+  const articleId = req.originalUrl.substring(10);
+  console.log(`Get comments called on ${articleId}`);
+  const articleStr = await db.get(articleId);
+  if (articleStr === null) {
+    res.status(404).send("Article not found\n");
+    return;
+  }
+  const dbEntry = JSON.parse(articleStr) as ArticlesDBEntry;
+  res.status(200).send(dbEntry.comments);
 }));
 
 await db.connect();
