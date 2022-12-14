@@ -5,7 +5,6 @@ import redis from "redis";
 import { ArticleStatus, EventType } from "./utils/interfaces.js";
 import type { EventBody, ArticleServingResponse } from "./utils/interfaces.js"
 import { NLPRoute, NLPEventListenerRouteConfig } from "./utils/utils.js";
-import { title } from "process";
 // import { generateEvent, NLPRoute } from "./utils/utils.js";
 
 const PORT = 4006;

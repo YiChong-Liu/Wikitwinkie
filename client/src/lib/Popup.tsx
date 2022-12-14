@@ -1,10 +1,10 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 
 // TODO: refactor this to include the button
 const Popup = (props: {
-  trigger: React.RefObject<HTMLElement>,
+  buttonText: string,
   title: string,
   children: React.ReactNode,
   closeText: string,
@@ -12,16 +12,10 @@ const Popup = (props: {
   onConfirm: () => any
 }) => {
   const [show, setShow] = useState(false);
-  useEffect(() => {
-    if (props.trigger.current === null) {
-      throw new Error("Popup trigger cannot be null");
-    }
-    props.trigger.current.onclick = () => setShow(true)
-  }, [props.trigger]);
   return <>
-    {/* <Button variant="primary" onClick={() => setShow(true)}>
+    <Button variant="primary" onClick={() => setShow(true)}>
       {props.buttonText}
-    </Button> */}
+    </Button>
     <Modal show={show} onHide={() => setShow(false)}>
       <Modal.Header closeButton>
         <Modal.Title>{props.title}</Modal.Title>
