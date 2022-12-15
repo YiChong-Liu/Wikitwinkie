@@ -9,6 +9,7 @@ import type { ArticleServingResponse } from "../utils/interfaces";
 import NLPPage from "../lib/NLPPage";
 import Comment_Section from "./Comment/Comment_Section";
 import Popup from "../lib/Popup";
+import ArticleVote from "./Article_Vote";
 
 const Article = () => {
   const location = useLocation();
@@ -108,8 +109,8 @@ const Article = () => {
     >Restore article "{title}"?</Popup></>}
 
     {articleStatus === "loading" ? undefined :
-      <Comment_Section articleId={articleId} articleName={articleName}></Comment_Section>
-    }
+      <><ArticleVote articleId={articleId}></ArticleVote><Comment_Section articleId={articleId} articleName={articleName}></Comment_Section>
+    </>}
   </NLPPage>;
 }
 
