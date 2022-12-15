@@ -49,7 +49,7 @@ app.post("/image/:name", NLPRoute({
 
     // if image does not exist in db, return 200 OK and store image in the redis
     if (!img) {
-        await db.set(req.body.imageName, img);
+        await db.set(req.body.imageName, JSON.stringify(req.body));
         res.status(200).send("Image uploaded");
     } else {
         // if image exists in db, return 400 bad request
@@ -65,13 +65,12 @@ app.get("/image/:name", NLPRoute({} as const, async (req, res) => {
 
     // if image exists in db, return 200 OK with the image
     if (img) {
-        
-        res.status(200).send(req.params.image);
+        res.status(200).send(JSON.parse(img));
     } else {
-        const data = await fs.readFile("./img/default.png", "binary");  
-        res.writeHead(404, { "Content-Type": "image/png" });     
+        // const data = await fs.readFile("./img/default.png", "binary");
+        // res.writeHead(404, { "Content-Type": "image/png" });
         // if image does not exist in db, return 404 not found with the default.png
-        res.end(data);
+        res.sendFile("/home/node/app/img/default.png");
     }
 }))
 
