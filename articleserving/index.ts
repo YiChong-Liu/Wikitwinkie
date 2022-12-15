@@ -2,10 +2,10 @@ import express, { response } from "express";
 import cors from "cors";
 import logger from "morgan";
 import redis from "redis";
+import { Marked } from "@ts-stack/markdown";
 import { ArticleStatus, EventType } from "./utils/interfaces.js";
-import type { EventBody, ArticleServingResponse } from "./utils/interfaces.js"
+import type { ArticleServingResponse } from "./utils/interfaces.js"
 import { NLPRoute, listenToEvents } from "./utils/utils.js";
-// import { generateEvent, NLPRoute } from "./utils/utils.js";
 
 const PORT = 4006;
 
@@ -88,6 +88,20 @@ app.get("/:name", NLPRoute({}, async (req, res) => {
     status: article.status
   };
   res.status(200).send(responseData);
+}));
+
+app.get("/embed/:name", NLPRoute({}, async (req, res) => {
+  // we need to parse originalUrl because req.params.name will parse url encoding,
+  //     which we don't want
+  const articleName = req.originalUrl.substring(7);
+
+  const articleStr = await db.get("articles/" + articleName)
+  if (articleStr === null) {
+    res.status(404).send("Article not found\n");
+    return;
+  }
+  const article = JSON.parse(articleStr) as ArticleServingDBEntry;
+  res.status(200).send(Marked.parse(article.content));
 }));
 
 await db.connect();

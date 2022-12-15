@@ -10,7 +10,7 @@ const Home = () => {
 
   const onSearch = async () => {
     const content: string = (document.getElementById("search-bar") as HTMLInputElement).value;
-    const response = await axios.post(
+    const response = await axios.get(
       `http://${window.location.hostname}:4405/search/${content}`,
       {withCredentials: true} // send and/or set cookies
     );
