@@ -6,13 +6,11 @@ import cookieParser from "cookie-parser";
 import cors from "cors";
 import logger from "morgan";
 import redis from "redis";
-import { NLPRoute } from "./utils/utils.js";
+import { listenToEvents, NLPRoute } from "./utils/utils.js";
 import type { AccountManagementCheckPasswordResponse, EventType } from "./utils/interfaces.js";
 
 // session expiry in milliseconds
 const SESSION_EXPIRY_MS = 24 * 3600 * 1000
-
-const EVENT_LISTENERS: EventType[] = [];
 
 const PORT = 4001;
 const app = express();
@@ -33,7 +31,7 @@ const db = redis.createClient({
   }
 });
 
-const validateSession = async (sessionId: string, username: string) => {
+const validateSession = async (sessionId: string, username: string): Promise<boolean> => {
   const sessionStr = await db.get(sessionId);
   if (sessionStr === null) {
     // session does not exist
@@ -55,9 +53,7 @@ const validateSession = async (sessionId: string, username: string) => {
   return session.username === username;
 };
 
-serverFacingApp.get("/registered_events", (req, res) => {
-  res.status(200).send(EVENT_LISTENERS);
-});
+listenToEvents(serverFacingApp, {});
 
 serverFacingApp.post("/validate", NLPRoute({
   bodySchema: {
@@ -119,7 +115,7 @@ app.post("/login", NLPRoute({
 
 app.post("/logout", NLPRoute({}, async (req, res) => {
   if (req.cookies.sessionId === undefined) {
-    res.status(200);
+    res.status(204);
     if (req.cookies.username !== undefined) {
       res.clearCookie("username");
     }
@@ -129,7 +125,7 @@ app.post("/logout", NLPRoute({}, async (req, res) => {
     // even if the username is wrong, the session should be deleted
     //     if someone is trying to log it out
     await db.del(req.cookies.sessionId);
-    res.status(200).clearCookie("sessionId");
+    res.status(204).clearCookie("sessionId");
     if (req.cookies.username !== undefined) {
       res.clearCookie("username");
     }

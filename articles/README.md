@@ -4,7 +4,7 @@ Author: Neil Gupta ([@nog642](https://github.com/nog642))
 
 ## Description
 
-This is the articles service. It keeps track of the authoritative data for all the articles, including article ID, name, title, content, status (deleted vs active), edit history, and comments (only the list of comment IDs associated with each article).
+This is the articles service. It keeps track of the authoritative data for all the articles, including article ID, name, title, content, author, status (deleted vs active), edit history, and comments (only the list of comment IDs associated with each article).
 
 An article "name" is a URL-friendly identifier which is used to get the article. It is derived from the title, which can be any string. Articles can be renamed, so their title and name will change. An article "ID" is a unique identifier that does not change when the article is renamed.
 
@@ -65,5 +65,15 @@ This service is best run along with all the other services using `docker compose
 To run the service on its own, use `link_utils.sh` in the repository root first to link in the `utils` directory, then run `npm install` in the `articles` directory, then run `npm start`. Note that the database needs to be running as well under the host name `articlesdb`, or this will fail.
 
 ## Architecture
+
+This service generates two types of events:
+* `ArticleCreated`
+    * Data: `{ articleId: string, author: string, name: string, title: string, content: string }`
+* `ArticleUpdated`
+    * Data: `{ articleId: string, author: string, name: string, title: string, content: string, status: ArticleStatus }`
+
+These events are listened to by the article serving service to keep its database up to date.
+
+[comments service?]
 
 [how the service interacts with other services]

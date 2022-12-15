@@ -45,6 +45,15 @@ app.post("/createUser", NLPRoute({
     }
 } as const, async (req, res) => {
 
+    // blank username not allowed
+    if (req.body.username === "") {
+        res.status(400).send({
+            success: false,
+            error: "Username cannot be empty"
+        });
+        return;
+    }
+
     // Check if the username is duplicate
     const userName = await db.get(req.body.username);
     // username does not exist
