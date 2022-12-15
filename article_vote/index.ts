@@ -25,7 +25,7 @@ app.get("/registered_events", (req, res) => {
 });
 
 // GET ARTICLE VOTE
-app.get('/articles/:articleId/article_vote/votes', async (req: express.Request, res: express.Response) => {
+app.get('/articles/:articleId/vote', async (req: express.Request, res: express.Response) => {
   const key: VoteKey = { 'articleId': req.params.articleId}
   const vote: ArticleVote | ErrorMessage = await database.getVoteById(key);
 

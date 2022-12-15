@@ -7,7 +7,7 @@ export class db {
         this.client = redis.createClient({
             socket: {
                 host: 'article_votedb',
-                port: 4005
+                port: 4407
             }
         });
 
