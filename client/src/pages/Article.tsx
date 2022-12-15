@@ -22,6 +22,8 @@ const Article = () => {
   const [contents, setContents] = useState("Loading...");
   const [onRestore, setOnRestore] = useState<() => any>(() => {});
 
+  const [articleId, setArticleId] = useState("");
+
   useEffect(() => {(async () => {
     const errorSpan = document.getElementById("createArticleError") as HTMLSpanElement;
     const loadArticle = async () => {
@@ -46,6 +48,8 @@ const Article = () => {
       if (response.data.status === ArticleStatus.ACTIVE) {
         setContents(response.data.content);
         setArticleStatus(ArticleStatus.ACTIVE);
+        setArticleId(response.data.articleId);
+
       } else if (response.data.status === ArticleStatus.DELETED) {
         setContents("This article has been deleted")
         setArticleStatus(ArticleStatus.DELETED);
@@ -102,7 +106,7 @@ const Article = () => {
     >Restore article "{title}"?</Popup></>}
 
     {articleStatus === "loading" ? undefined :
-      <Comment_Section articleName={articleName}></Comment_Section>
+      <Comment_Section articleId={articleId} articleName={articleName}></Comment_Section>
     }
   </NLPPage>;
 }
