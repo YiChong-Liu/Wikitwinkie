@@ -1,19 +1,28 @@
 # Author
 Keith Pham ([@minhnghia2208](https://github.com/minhnghia2208))
 
-# Search Engine Service
+# Search Engine Service (SES)
 
-## Description
+## Service Description
+SES fetchs Articles whose contents contain search keywords
 
+## Inter-service interactions:
+SES listens to ARTICLE_CREATED event from Article Service. ARTICLE_CREATED event contains content of the created article.
 
-## System Design
-Link: https://docs.google.com/document/d/16Upk8h3mSBbqCPcpqjEV3224Noz2sLAB0JTWROl__yU/edit
+SES indexes the content of the created article and save the indexes into Redis
 
-## Data Model:
-- Article: { "articleId": string } 
-- Articles: Article[]
+## Endpoints:
+URL: /search?content={content}
 
-## Data Structure in Redis:
+Method: GET
+
+Response: 
+
+200 OK{"articleId": string[]}
+
+404 NOT FOUND Invalid search content 
+
+Descript:
 
 
 ## File Structure:
