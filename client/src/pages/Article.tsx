@@ -2,41 +2,47 @@
 import axios from "axios";
 import { AxiosError, AxiosResponse } from "axios";
 import Cookies from "js-cookie";
-import { Fragment, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { ArticleStatus } from "../utils/interfaces";
 import type { ArticleServingResponse } from "../utils/interfaces";
 import NLPPage from "../lib/NLPPage";
 import Comment_Section from "./Comment/Comment_Section";
+import Popup from "../lib/Popup";
 
 const Article = () => {
   const location = useLocation();
-  // const navigate = useNavigate();
-  console.assert(location.pathname.slice(0, 9) === "/article/");
+  if (location.pathname.slice(0, 9) !== "/article/") {
+    throw new Error("Could not parse article URL");
+  }
   const articleName = location.pathname.slice(9);
 
   const [articleStatus, setArticleStatus] = useState("loading");
   const [title, setTitle] = useState("Loading...");
   const [contents, setContents] = useState("Loading...");
+  const [onRestore, setOnRestore] = useState<() => any>(() => {});
 
   const [articleId, setArticleId] = useState("");
 
   useEffect(() => {(async () => {
-    let response: AxiosResponse<ArticleServingResponse>
-    try {
-      response = await axios.get(`http://${window.location.hostname}:4006/${articleName}`);
-    } catch (e) {
-      console.error(e);
-      const errorSpan = document.getElementById("createArticleError") as HTMLSpanElement;
-      if (e instanceof AxiosError && e.response) {
-        if (e.response.status === 404) {
-          setTitle("404 Not Found");
-          setContents(`Article not found.`)
+    const errorSpan = document.getElementById("createArticleError") as HTMLSpanElement;
+    const loadArticle = async () => {
+      let response: AxiosResponse<ArticleServingResponse>
+      try {
+        response = await axios.get(`http://${window.location.hostname}:4006/${articleName}`);
+      } catch (e) {
+        console.error(e);
+        if (e instanceof AxiosError && e.response) {
+          if (e.response.status === 404) {
+            setTitle("404 Not Found");
+            setContents(`Article not found.`)
+          } else {
+            errorSpan.textContent = `There was an error ${JSON.stringify(e.response.data)}. Please try again.`;
+          }
         } else {
-          errorSpan.textContent = `There was an error ${JSON.stringify(e.response.data)}. Please try again.`;
+          errorSpan.textContent = "There was an unknown error.";
         }
-      } else {
-        errorSpan.textContent = "There was an unknown error.";
+        return;
       }
       return;
     }
@@ -58,11 +64,18 @@ const Article = () => {
   const loggedIn = Cookies.get("username") !== undefined;
 
   return <NLPPage title={title}>
-    {!loggedIn || articleStatus === "loading" ? undefined : <Fragment>
+    {!loggedIn || articleStatus !== ArticleStatus.ACTIVE ? undefined : <>
       <Link to={"/edit/" + articleName}><div className="btn btn-primary">Edit</div></Link>
       <br/>
-    </Fragment>}
+    </>}
     {contents}
+    {articleStatus !== ArticleStatus.DELETED ? undefined : <><br/><Popup
+      buttonText="Restore"
+      title="Are you sure?"
+      closeText="Cancel"
+      confirmText="Restore Article"
+      onConfirm={onRestore}
+    >Restore article "{title}"?</Popup></>}
 
     {articleStatus === "loading" ? undefined :
       <Comment_Section articleId={articleId} articleName={articleName}></Comment_Section>

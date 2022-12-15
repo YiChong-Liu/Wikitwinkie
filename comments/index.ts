@@ -1,12 +1,13 @@
 import express from 'express';
 import logger from 'morgan';
 import cors from 'cors';
-import axios from 'axios';
+// import axios from 'axios';
 import { randomBytes } from 'crypto';
-import { Comment, CommentKey, ErrorMessage, instaceOfErrorMessage, instanceOfComment } from './commentsUtils.js';
-import { db } from './db.js';
-import { EventType, IEvent } from './utils/interfaces.js';
 import cookieParser from "cookie-parser";
+import { Comment, CommentKey, EventType, IEvent } from './utils/interfaces.js';
+import { generateEvent } from './utils/utils.js';
+import { ErrorMessage, instaceOfErrorMessage, instanceOfComment } from './commentsUtils.js';
+import { db } from './db.js';
 
 const EVENT_LISTENERS: EventType[] = [
   EventType.ARTICLE_CREATED
@@ -44,13 +45,9 @@ app.get('/articles/:articleId/comments', async (req: express.Request, res: expre
   else {
     res.status(404).send(comment);
   }
-  
 
-  const payload = {
-    type: EventType.COMMENT_GET,
-    data: comment
-  }
-  await axios.post('http://eventbus:2000/events', payload);
+
+  await generateEvent(EventType.COMMENT_GET, comment);
 });
 
 // GENERATE COMMENT
@@ -71,11 +68,7 @@ app.post('/articles/:articleId/comments', async (req: express.Request, res: expr
     res.status(500).send(e);
   }
 
-  const payload = {
-    type: EventType.COMMENT_CREATED,
-    data: comment
-  }
-  await axios.post('http://eventbus:2000/events', payload);
+  await generateEvent(EventType.COMMENT_CREATED, comment);
 });
 
 // EDIT COMMENT
@@ -96,11 +89,7 @@ app.put('/articles/:articleId/comments/:commentId', async (req: express.Request,
     res.status(500).send(e);
   }
 
-  const payload = {
-    type: EventType.COMMENT_EDITED,
-    data: comment
-  }
-  await axios.post('http://eventbus:2000/events', payload);
+  await generateEvent(EventType.COMMENT_EDITED, comment);
 });
 
 // DELETE COMMENT
@@ -118,11 +107,7 @@ app.post('/articles/:articleId/comments/:commentId', async (req: express.Request
     res.status(500).send(e);
   }
 
-  const payload = {
-    type: EventType.COMMENT_DELETED,
-    data: key
-  }
-  await axios.post('http://eventbus:2000/events', payload);
+  await generateEvent(EventType.COMMENT_DELETED, key);
 });
 
 

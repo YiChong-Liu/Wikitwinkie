@@ -1,11 +1,4 @@
-export interface CommentKey {
-    commentId: string,
-    articleId: string
-}
-export interface Comment extends CommentKey {
-    username: string,
-    content: string,
-}
+import { Comment } from './utils/interfaces.js';
 
 export interface ErrorMessage {
     message: any

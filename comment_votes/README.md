@@ -1,3 +1,6 @@
+# Author
+Keith Pham ([@minhnghia2208](https://github.com/minhnghia2208))
+
 # Comment Vote Service
 
 ## System Design
