@@ -19,6 +19,8 @@ const Article = () => {
   const [title, setTitle] = useState("Loading...");
   const [contents, setContents] = useState("Loading...");
 
+  const [articleId, setArticleId] = useState("");
+
   useEffect(() => {(async () => {
     let response: AxiosResponse<ArticleServingResponse>
     try {
@@ -42,6 +44,8 @@ const Article = () => {
     if (response.data.status === ArticleStatus.ACTIVE) {
       setContents(response.data.content);
       setArticleStatus(ArticleStatus.ACTIVE);
+      setArticleId(response.data.articleId);
+
     } else if (response.data.status === ArticleStatus.DELETED) {
       setContents("This article has been deleted")
       setArticleStatus(ArticleStatus.DELETED);
@@ -61,7 +65,7 @@ const Article = () => {
     {contents}
 
     {articleStatus === "loading" ? undefined :
-      <Comment_Section articleName={articleName}></Comment_Section>
+      <Comment_Section articleId={articleId} articleName={articleName}></Comment_Section>
     }
   </NLPPage>;
 }

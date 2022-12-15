@@ -14,7 +14,7 @@ const Comment_Section = (props: any) => {
     useEffect(() => {
       try {
         axios.get( 
-          `http://${window.location.hostname}:4401/articles/${props.articleName}/comments`,
+          `http://${window.location.hostname}:4401/articles/${props.articleId}/comments`,
           {withCredentials: true}
         ).then(response => {
           setComments(response.data);
@@ -34,17 +34,17 @@ const Comment_Section = (props: any) => {
     const postComment = async () => {
         const content: HTMLInputElement = (document.getElementById("comment-bar") as HTMLInputElement);
         await axios.post(
-            `http://${window.location.hostname}:4401/articles/${props.articleName}/comments`,
+            `http://${window.location.hostname}:4401/articles/${props.articleId}/comments`,
             {
                 content: content.value,
-                articleId: props.articleName,
+                articleId: props.articleId,
                 username: Cookies.get("username") || "Anonymous"
             },
             {withCredentials: true}
         );
 
         const response = await axios.get( 
-          `http://${window.location.hostname}:4401/articles/${props.articleName}/comments`,
+          `http://${window.location.hostname}:4401/articles/${props.articleId}/comments`,
           {withCredentials: true}
         );
         setComments(response.data);
