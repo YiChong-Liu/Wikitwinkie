@@ -58,12 +58,12 @@ services:
   articleservingdb:
     image: "redis:alpine"
 
-  article_vote:
-    build:
-      context: .
-      dockerfile: article_vote/Dockerfile
-    ports:
-       - "4004:4004"
+  # article_vote:
+  #   build:
+  #     context: .
+  #     dockerfile: article_vote/Dockerfile
+  #   ports:
+  #      - "4004:4004"
 
   comments:
     build:

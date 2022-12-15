@@ -19,13 +19,12 @@ const Article = () => {
 
   const [articleStatus, setArticleStatus] = useState("loading");
   const [title, setTitle] = useState("Loading...");
-  const [contents, setContents] = useState("Loading...");
   const [onRestore, setOnRestore] = useState<() => any>(() => {});
 
   const [articleId, setArticleId] = useState("");
 
   useEffect(() => {(async () => {
-    const errorSpan = document.getElementById("createArticleError") as HTMLSpanElement;
+    const errorSpan = document.getElementById("errorSpan") as HTMLSpanElement;
     const loadArticle = async () => {
       let response: AxiosResponse<ArticleServingResponse>
       try {
@@ -35,7 +34,7 @@ const Article = () => {
         if (e instanceof AxiosError && e.response) {
           if (e.response.status === 404) {
             setTitle("404 Not Found");
-            setContents(`Article not found.`)
+            errorSpan.textContent = `Article not found.`;
           } else {
             errorSpan.textContent = `There was an error ${JSON.stringify(e.response.data)}. Please try again.`;
           }
@@ -46,12 +45,11 @@ const Article = () => {
       }
       setTitle(response.data.title);
       if (response.data.status === ArticleStatus.ACTIVE) {
-        setContents(response.data.content);
         setArticleStatus(ArticleStatus.ACTIVE);
         setArticleId(response.data.articleId);
 
       } else if (response.data.status === ArticleStatus.DELETED) {
-        setContents("This article has been deleted")
+        errorSpan.textContent = "This article has been deleted";
         setArticleStatus(ArticleStatus.DELETED);
       } else {
         console.error(`Unrecognized article status: ${response.data.status}`);
@@ -96,7 +94,11 @@ const Article = () => {
       <Link to={"/edit/" + articleName}><div className="btn btn-primary">Edit</div></Link>
       <br/>
     </>}
-    {contents}
+    {articleStatus !== ArticleStatus.ACTIVE ? undefined : <>
+      <iframe src={`http://localhost:4006/embed/${articleName}`} title="Article body"></iframe>
+      <br/>
+    </>}
+    <span id="errorSpan" className="errorSpan"></span>
     {articleStatus !== ArticleStatus.DELETED ? undefined : <><br/><Popup
       buttonText="Restore"
       title="Are you sure?"

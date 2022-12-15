@@ -62,7 +62,7 @@ app.get("/image/:name", NLPRoute({} as const, async (req, res) => {
     // if image exists in db, return 200 OK with the image
     if (img) {
         const imgData = JSON.parse(img);
-        res.status(200).send(imgData.image);
+        res.writeHead(200, { "Content-Type": "image/png" }).end(imgData.image);
     } else {
         // const data = await fs.readFile("./img/default.png", "binary");
         // res.writeHead(404, { "Content-Type": "image/png" });

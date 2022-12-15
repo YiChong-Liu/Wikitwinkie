@@ -74,6 +74,8 @@ This service generates two types of events:
 
 These events are listened to by the article serving service to keep its database up to date.
 
-[comments service?]
+This service also listens to `CommentCreated` and `CommentDeleted` events to keep track of the list of comments on each article.
 
-[how the service interacts with other services]
+### History tracking (exceeding expectation component)
+
+While the original intention was to have the history browsable from the client, we never got that far. However, the history of edits is still tracked in the database in this service. It is used to allow for deletion and then restoration of pages, all with timestamps and the user who performed the action being recorded.
