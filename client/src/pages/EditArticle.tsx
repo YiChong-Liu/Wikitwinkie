@@ -131,10 +131,11 @@ const EditArticle = () => {
       </>}
       {!loaded ? undefined :
         <input id="editArticleSubmit" type="button" className="btn btn-primary"
-               value="Edit Article" onClick={onSubmit}/>
+               value="Publish Changes" onClick={onSubmit}/>
       }
     </form>
-    {!loaded ? undefined :
+    {!loaded ? undefined : <>
+      <br/>
       <Popup
         buttonText="Delete Article"
         title="Are you sure?"
@@ -142,7 +143,7 @@ const EditArticle = () => {
         confirmText="Delete Article"
         onConfirm={onDelete}
       >Are you sure you want to delete {title}?</Popup>
-    }
+    </>}
     <span id="editArticleLoading">Loading...</span>
     <span id="editArticleError" className="errorSpan"></span>
   </NLPPage>;
