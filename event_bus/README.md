@@ -38,3 +38,5 @@ We have a `listenToEvents` library function in `utils/utils.js` that makes setti
 The function sets up the `GET /registered_events` and `POST /events` routes automatically given the object containing the event listeners. It automatically sets up the service usign `GET /registered_events` to recieve all event types contained in the keys of the object, and thn adds a `POST /events` handler that parses the event type and passes the body along to the correct listener function.
 
 But the most interesting part of this function is the typing. In `utils/interfaces.js`, we define types for the event bodies of several event types (with a default of `any` for the rest). Using some fancy typing, the event handler/listener functions, which take in a `data` argument containing the body of the event, automatically have the correct typing information for `data`, without having to hard-code each case. The event bodies are declared in one place.
+
+There is also a less fancy `generateEvent` function wrapping the axios call to the `/events` endpoint of this service, which is also very usfeul.

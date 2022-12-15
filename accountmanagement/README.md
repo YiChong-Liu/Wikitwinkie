@@ -52,6 +52,6 @@ The account management service will interact with the sessions management servic
 
 ### Tutorial
 
-From the *accountmanagement* directory run `npm start`
+This service is best run along with all the other services using `docker compose build` and then `docker compose up` at the root level of this repository.
 
-The service then should run at [http://localhost:4002](http://localhost:4002/) in the browser.
+To run the service on its own, use `link_utils.sh` in the repository root first to link in the `utils` directory, then run `npm install` in the `accountmanagement` directory, then run `npm start`. Note that the database needs to be running as well under the host name `accountmanagementdb`, or this will fail.

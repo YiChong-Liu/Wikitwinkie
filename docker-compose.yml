@@ -64,6 +64,9 @@ services:
       dockerfile: article_vote/Dockerfile
     ports:
        - "4004:4004"
+  article_votedb:
+    image: "redis:alpine"
+    command: --port 4407
 
   comments:
     build:

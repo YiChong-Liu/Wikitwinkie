@@ -4,14 +4,20 @@ Date: 12-12-2022
 */
 
 
-import axios from "axios";
-// import { Link, useNavigate } from "react-router-dom";
+import axios, { AxiosError } from "axios";
+import { Navigate } from "react-router-dom";
+import Cookies from "js-cookie";
 import NLPPage from "../lib/NLPPage";
 import "./UploadImage.css";
 
 const UploadImage = () => {
 
     // const navigate = useNavigate();
+
+    // redirect to home page if not logged in
+    if (Cookies.get("username") === undefined) {
+        return  <Navigate replace to="/"/>;
+    }
 
     const uploadImageSubmit = async () => {
         const reader = new FileReader();
@@ -39,9 +45,13 @@ const UploadImage = () => {
                 // a pop up window to show the image is uploaded successfully
                 alert("Image uploaded successfully!");
             } catch (e) {
-                // console.error(e);
-                // a pop up window to show the image is duplicated
-                alert("Image is duplicated!");
+                console.error(e);
+                if (e instanceof AxiosError && e.response) {
+                    // a pop up window to show the image is duplicated or session failed
+                    alert(`Error submitting image ${JSON.stringify(e.response.data)}!`);
+                } else {
+                    alert(`Unknown error submitting image!`);
+                }
             }
         }
     }
