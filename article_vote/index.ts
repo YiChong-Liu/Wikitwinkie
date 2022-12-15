@@ -9,7 +9,7 @@ import type { IEvent } from './utils/interfaces.js';
 import axios from 'axios';
 
 const EVENT_LISTENERS: EventType[] = [
-    EventType.ARTICLE_VOTED
+    EventType.ARTICLE_CREATED
 ];
 const app = express();
 const PORT = 4004;
@@ -92,8 +92,9 @@ app.post('/events', async (req: express.Request, res: express.Response) => {
       }
 
       if (instanceOfArticleVote(article_vote)) {
-        const articleId: string = event.data.articleId, commentId: string = event.data.commentId;
-        const key: VoteKey = { 'articleId': articleId}
+        const articleId: string = event.data.articleId;
+        const key: VoteKey = { 'articleId': articleId};
+        console.log(key);
         const vote: ArticleVote | ErrorMessage = await database.initVote(key);
 
         if (instanceOfArticleVote(vote)) {

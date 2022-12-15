@@ -107,7 +107,7 @@ const Article = () => {
     >Restore article "{title}"?</Popup></>}
 
     {articleStatus === "loading" ? undefined :
-      <><ArticleVote/><Comment_Section articleId={articleId} articleName={articleName}></Comment_Section>
+      <><ArticleVote articleId={articleId}></ArticleVote><Comment_Section articleId={articleId} articleName={articleName}></Comment_Section>
     </>}
   </NLPPage>;
 }

@@ -17,7 +17,7 @@ export class db {
     async getVoteById(key: VoteKey): Promise<ArticleVote | ErrorMessage> {
         let res: string | null = null;
         try {
-            res = await this.client.get(JSON.stringify(parsedKey(key)));
+            res = await this.client.get(JSON.stringify(key));
         }
         catch(e) {
             return { message: e };
@@ -41,7 +41,7 @@ export class db {
         const vote: ArticleVote = { 'articleId': key.articleId, 'vote': 0 };
 
         try {
-            await this.client.set(JSON.stringify(parsedKey(key)), JSON.stringify(vote));
+            await this.client.set(JSON.stringify(key), JSON.stringify(vote));
         }
         catch {
             return { message: 'Failed to init vote' };
@@ -56,7 +56,7 @@ export class db {
         if (instanceOfArticleVote(vote)) {
             try {
                 vote.vote += value;
-                await this.client.set(JSON.stringify(parsedKey(key)), JSON.stringify(vote));
+                await this.client.set(JSON.stringify(key), JSON.stringify(vote));
             }
             catch (e) {
                 return { message: e };
