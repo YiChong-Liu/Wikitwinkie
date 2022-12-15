@@ -3,12 +3,9 @@ import express from "express";
 import cookieParser from "cookie-parser";
 import logger from "morgan";
 import cors from "cors";
-import axios from "axios";
-import {promises as fs} from "fs";
 
 import { EventType } from "./utils/interfaces.js";
 import { NLPRoute } from "./utils/utils.js";
-import bodyParser from "body-parser";
 
 const app = express();
 const PORT = 4003;
@@ -61,18 +58,33 @@ app.post("/image/:name", NLPRoute({
 app.get("/image/:name", NLPRoute({} as const, async (req, res) => {
     console.log(`Got GET request for image name: ${req.params.name}`);
     const img = await db.get(req.params.name);
-    console.log(`Got image ${req.params.name} from database: ${img}`);
 
     // if image exists in db, return 200 OK with the image
     if (img) {
-        res.status(200).send(JSON.parse(img));
+        const imgData = JSON.parse(img);
+        res.status(200).send(imgData.image);
     } else {
         // const data = await fs.readFile("./img/default.png", "binary");
         // res.writeHead(404, { "Content-Type": "image/png" });
         // if image does not exist in db, return 404 not found with the default.png
-        res.sendFile("/home/node/app/img/default.png");
+        res.status(404).sendFile("/home/node/app/img/default.png");
     }
-}))
+}));
+
+// get the image description
+app.get("/description/:name", NLPRoute({} as const, async (req, res) => {
+    console.log(`Got GET request for image name: ${req.params.name}`);
+    const img = await db.get(req.params.name);
+
+    // if image exists in db, return 200 OK with the image
+    if (img) {
+        const imgData = JSON.parse(img);
+        res.status(200).send(imgData.description);
+    } else {
+        // if image does not exist in db, return 404 not found
+        res.status(404).send("Image not found\n");
+    }
+}));
 
 // delete the image
 app.delete("/image/:name", NLPRoute({} as const, async (req, res) => {
