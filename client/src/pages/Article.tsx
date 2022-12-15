@@ -44,22 +44,50 @@ const Article = () => {
         }
         return;
       }
-      return;
-    }
-    setTitle(response.data.title);
-    if (response.data.status === ArticleStatus.ACTIVE) {
-      setContents(response.data.content);
-      setArticleStatus(ArticleStatus.ACTIVE);
-      setArticleId(response.data.articleId);
+      setTitle(response.data.title);
+      if (response.data.status === ArticleStatus.ACTIVE) {
+        setContents(response.data.content);
+        setArticleStatus(ArticleStatus.ACTIVE);
+        setArticleId(response.data.articleId);
 
-    } else if (response.data.status === ArticleStatus.DELETED) {
-      setContents("This article has been deleted")
-      setArticleStatus(ArticleStatus.DELETED);
-    } else {
-      console.error(`Unrecognized article status: ${response.data.status}`);
-      return;
-    }
-  })()}, [articleName]);
+      } else if (response.data.status === ArticleStatus.DELETED) {
+        setContents("This article has been deleted")
+        setArticleStatus(ArticleStatus.DELETED);
+      } else {
+        console.error(`Unrecognized article status: ${response.data.status}`);
+        return;
+      }
+      return response.data.articleId;
+    };
+    const articleId = await loadArticle();
+
+    // we need an extra layer of function here because if the setter recieves a function
+    //    react assumes it's a function that takes the old state and returns the new state,
+    //    but in our case we actually want to set the state to a function.
+    setOnRestore(() => async () => {
+      try {
+        await axios.post(
+          `http://${window.location.hostname}:4005/restore`,
+          { // body
+            articleId: articleId
+          },
+          {withCredentials: true} // send and/or set cookies
+        );
+      } catch (e) {
+        console.error(e);
+        const errorSpan = document.getElementById("editArticleError") as HTMLSpanElement;
+        if (e instanceof AxiosError && e.response) {
+          errorSpan.textContent = `There was an error ${JSON.stringify(e.response.data)}. Please try again.`;
+        } else {
+          errorSpan.textContent = "There was an unknown error.";
+        }
+        return;
+      }
+
+      // re-render the article
+      await loadArticle();
+    });
+  })();}, [articleName]);
 
   const loggedIn = Cookies.get("username") !== undefined;
 
