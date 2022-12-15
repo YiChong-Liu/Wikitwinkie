@@ -40,9 +40,13 @@ SES indexes the content of the created article and save the indexes into Redis
 
     Description: Reverse Indexing content from article. Save in Redis using "word" as key
 
-## Tutorial using Postman or other API Platform
+## Tutorial
+- User should be able to run endpoints after building Docker Image
+- The following is the example endpoint calls to test Service using Postman or other API Platform
 - Step 1:
+
     POST: http://localhost:4405/search/indexing
+
     Body: 
     {
         "articleId": "1",
@@ -50,6 +54,7 @@ SES indexes the content of the created article and save the indexes into Redis
         "content": "John Doe"
     }
 - Step 2:
+
     GET: http://localhost:4405/search/John
 
     Reponse: { "articleId": ["1"] }
