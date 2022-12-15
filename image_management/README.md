@@ -6,9 +6,11 @@ Yichong Liu ([@YiChong_Liu](https://github.com/YiChong-Liu))
 
 ### Description
 
-The Image Management Service handles uploading, getting, updating and deleting images, and managing metadata. Images can be inserted into articles.
+The Image Management Service handles uploading, getting, updating and deleting images.
 
 ### Service Interaction
+
+The service interacts with the client directly to upload and get images.
 
 ### API Endpoints
 
@@ -29,11 +31,6 @@ The Image Management Service handles uploading, getting, updating and deleting i
     - 201 CREATED on success
     - 400 BAD REQUEST if not logged in
     - 400 BAD REQUEST if incomplete data
-
-- Update image metadata
-  - URL: /update
-  - Method: POST
-  - Request body: {"name": string, "metadata": {TBD...}}
 - Delete image
   - URL: /image/{name}
   - Method: DELETE
