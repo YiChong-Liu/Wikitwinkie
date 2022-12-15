@@ -24,7 +24,7 @@ app.get("/registered_events", (req, res) => {
 });
 
 // Search by article content
-app.get('/search/:content', async (req: express.Request, res: express.Response) => {
+app.post('/search/:content', async (req: express.Request, res: express.Response) => {
   try {
     res.status(200).send(await database.searchContent(req.params.content));
   }
@@ -40,7 +40,7 @@ app.post('/search/indexing', async (req: express.Request, res: express.Response)
     return;
   }
   catch(e) {
-    res.status(404).send( { message: e } );
+    res.status(404).send( { message: e });
   }
 });
 

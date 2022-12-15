@@ -62,7 +62,7 @@ export class db {
 
     }
 
-    async editComment(comment: Comment) {
+    async editComment(comment: Comment): Promise<Comment | ErrorMessage> {
         const comments: Comment[] | ErrorMessage = await this.getCommentsByArticleId(comment.articleId)
         if (instanceOfComments(comments)) {
             comments.forEach(x => {
@@ -86,7 +86,7 @@ export class db {
         return comment;
     }
 
-    async deleteComment(key: CommentKey) {
+    async deleteComment(key: CommentKey): Promise<CommentKey | ErrorMessage> {
         const comments: Comment[] | ErrorMessage = await this.getCommentsByArticleId(key.articleId)
         if (instanceOfComments(comments)) {
             const newComments: Comment[] = [];
