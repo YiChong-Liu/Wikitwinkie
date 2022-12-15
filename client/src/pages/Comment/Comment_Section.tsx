@@ -1,10 +1,10 @@
 import axios from "axios";
-import type { AxiosResponse } from "axios";
-import { Link, useNavigate } from "react-router-dom";
+// import type { AxiosResponse } from "axios";
+// import { Link, useNavigate } from "react-router-dom";
 import Cookies from "js-cookie";
-import NLPPage from "../../lib/NLPPage";
+// import NLPPage from "../../lib/NLPPage";
 import { useEffect, useState } from 'react';
-import { CommentReponse } from "../../utils/interfaces";
+// import { CommentResponse } from "../../utils/interfaces";
 import Comment_List from "./Comment_List";
 
 const Comment_Section = (props: any) => {
@@ -13,7 +13,7 @@ const Comment_Section = (props: any) => {
 
     useEffect(() => {
       try {
-        axios.get( 
+        axios.get(
           `http://${window.location.hostname}:4401/articles/${props.articleName}/comments`,
           {withCredentials: true}
         ).then(response => {
@@ -24,9 +24,9 @@ const Comment_Section = (props: any) => {
       catch(e) {
         console.log(e);
       }
-      
+
     }, []);
-  
+
     if (isLoading) {
       return <div>Loading Comments...</div>;
     }
@@ -43,7 +43,7 @@ const Comment_Section = (props: any) => {
             {withCredentials: true}
         );
 
-        const response = await axios.get( 
+        const response = await axios.get(
           `http://${window.location.hostname}:4401/articles/${props.articleName}/comments`,
           {withCredentials: true}
         );

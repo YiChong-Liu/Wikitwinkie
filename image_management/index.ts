@@ -39,7 +39,8 @@ app.post("/image/:name", NLPRoute({
             imageDescription: { type: "string" }
         }
     },
-    sessionCookie: "required"
+    sessionCookie: "required",
+    sessionFailStatus: 403
 } as const, async (req, res) => {
 
     // completed in NLPRoute: return 403 forbidden if not logged in

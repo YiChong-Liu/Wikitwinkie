@@ -18,7 +18,7 @@ export function instaceOfErrorMessage(object: any): object is ErrorMessage {
 }
 
 export function instanceOfCommentVote(object: any): object is CommentVote {
-    return 'commentId' && 'articleId' && 'vote' in object;
+    return 'vote' in object;
 }
 
 export function parsedKey(key: VoteKey): string {

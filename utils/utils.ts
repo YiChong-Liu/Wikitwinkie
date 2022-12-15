@@ -4,7 +4,7 @@ import type { DefinedError } from "ajv";
 import axios from "axios";
 import type { AxiosResponse } from "axios";
 import type cookieParser from "cookie-parser";  // require this to be installed
-import type { Request, Response } from "express";
+import type { Express, Request, Response } from "express";
 import type * as expressCore from "express-serve-static-core";
 import { EventBody, EventType } from "./interfaces.js"
 import type { SessionsValidateSessionResponse } from "./interfaces.js"
@@ -19,25 +19,25 @@ const cookieSchema = {
 } as const;
 const validateSessionCookieSchema = ajv.compile(cookieSchema as JTDSchemaType<JTDDataType<typeof cookieSchema>>);
 
-type NLPParams = {
-  username: string | null
+type NLPParams<sessionCookie extends ("required" | "optional")> = {
+  username: sessionCookie extends "required" ? string : string | null
 };
 
-export const NLPRoute = <T>(
+export const NLPRoute = <T, sessionCookie extends ("required" | "optional")>(
   config: {
-    sessionCookie?: "required" | "optional",
+    sessionCookie?: sessionCookie,
     bodySchema?: T
+    sessionFailStatus?: number
   },
   routeHandler: (req: Request<expressCore.ParamsDictionary, any, JTDDataType<T>>,
                  res: Response,
-                 NLPParams: NLPParams) => Promise<void>
+                 NLPParams: NLPParams<sessionCookie>) => Promise<void>
 ) => {
+  const sessionFailStatus = config.sessionFailStatus === undefined ? 400 : config.sessionFailStatus;
   const validateSchema = config.bodySchema === undefined ? null
                          : ajv.compile(config.bodySchema as JTDSchemaType<JTDDataType<T>>);
   const asyncHandler = async (request: Request, response: Response, next=console.error) => {
-    const NLPParams: NLPParams = {
-      username: null
-    };
+    let username: string | null = null;
 
     // validate session cookies
     if (config.sessionCookie) {
@@ -61,15 +61,15 @@ export const NLPRoute = <T>(
         } else {
           sessionValid = false;
           sessionCookieError = "Invalid session";
-          response.status(400).clearCookie("username").clearCookie("sessionId");
+          response.status(sessionFailStatus).clearCookie("username").clearCookie("sessionId");
         }
       } else {
         sessionValid = false;
         sessionCookieError = (validateSessionCookieSchema.errors as DefinedError[])[0].message as string;
-        response.status(400);
+        response.status(sessionFailStatus);
       }
       if (sessionValid) {
-        NLPParams.username = request.cookies.username;
+        username = request.cookies.username;
       } else {
         response.send(`Error in session cookie: ${sessionCookieError}\n`);
         return;
@@ -88,7 +88,9 @@ export const NLPRoute = <T>(
       }
     }
 
-    await routeHandler(request, response, NLPParams);
+    await routeHandler(request, response, {
+      username: username
+    } as NLPParams<sessionCookie>);
   };
   return (request: Request, response: Response, next=console.error) =>
              Promise.resolve(asyncHandler(request, response)).catch(next);
@@ -101,11 +103,23 @@ export const generateEvent = async <T extends EventType>(eventType: T, data: Eve
   });
 };
 
-export const NLPEventListenerRouteConfig = {
-  bodySchema: {
-    properties: {
-      type: { enum: Object.values(EventType) },
-      data: {} // any data
+export const listenToEvents = (app: Express, handlers: {[key in EventType]?: (data: EventBody<key>) => any}) => {
+  const registeredEvents = Object.keys(handlers) as EventType[];
+  app.get("/registered_events", (req, res) => {
+    res.status(200).send(registeredEvents);
+  });
+  app.post("/events", NLPRoute({
+    bodySchema: {
+      properties: {
+        type: { enum: Object.values(EventType) },
+        data: {} // any data
+      }
     }
-  }
-} as const;
+  } as const, async (req, res) => {
+    const handler = handlers[req.body.type];
+    if (handler !== undefined) {
+      await handler(req.body.data);
+    }
+    res.status(204).end();
+  }));
+};

@@ -35,21 +35,30 @@ app.post('/search/:content', async (req: express.Request, res: express.Response)
 
 // Inverted indexing
 app.post('/search/indexing', async (req: express.Request, res: express.Response) => {
+  console.log("outer");
   try {
+    console.log("inner");
+    console.log(req.body);
     res.status(200).send(await database.indexing(req.body));
+    return;
   }
   catch(e) {
     res.status(404).send( { message: e });
   }
 });
 
-app.post('/events', (req: express.Request, res: express.Response) => {
+app.post('/events', async (req: express.Request, res: express.Response) => {
   const event: IEvent = req.body;
   switch (event.type) {
     case EventType.ARTICLE_CREATED:
-      axios.post(`http://localhost:4405/search/indexing`, event.data).catch((err: Error) => {
-        console.log("FAIL TO INIT");
-      });
+      try {
+        res.status(200).send(await database.indexing(event.data));
+        return;
+      }
+      catch(e) {
+        res.status(404).send( { message: e });
+        return;
+      }
   }
   res.send({});
 });

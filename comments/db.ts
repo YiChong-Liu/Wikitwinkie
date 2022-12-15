@@ -1,5 +1,6 @@
 import * as redis from 'redis';
-import { Comment, CommentKey, ErrorMessage, instanceOfComment, instanceOfComments } from './commentsUtils.js';
+import type { Comment, CommentKey } from './utils/interfaces.js';
+import { ErrorMessage, instanceOfComment, instanceOfComments } from './commentsUtils.js';
 
 export class db {
     client: redis.RedisClientType;

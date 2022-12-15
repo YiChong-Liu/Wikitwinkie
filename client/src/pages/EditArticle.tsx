@@ -1,10 +1,11 @@
 // Author: Neil Gupta (nog642)
 import axios, { AxiosError } from "axios";
 import type { AxiosResponse } from "axios";
-import { Fragment, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import Cookies from "js-cookie";
 import { Navigate, useLocation, useNavigate } from "react-router-dom";
 import NLPPage from "../lib/NLPPage";
+import Popup from "../lib/Popup";
 import { ArticleStatus } from "../utils/interfaces";
 import type { ArticleServingResponse, ArticleEditResponse } from "../utils/interfaces";
 import "./EditArticle.css";
@@ -20,6 +21,7 @@ const EditArticle = () => {
   const [title, setTitle] = useState<string>();
   const [contents, setContents] = useState<string>();
   const [onSubmit, setOnSubmit] = useState<() => any>();
+  const [onDelete, setOnDelete] = useState<() => any>(() => {});
 
   useEffect(() => {(async () => {
     let response: AxiosResponse<ArticleServingResponse>
@@ -52,10 +54,6 @@ const EditArticle = () => {
     //    react assumes it's a function that takes the old state and returns the new state,
     //    but in our case we actually want to set the state to a function.
     setOnSubmit(() => async () => {
-      if (articleId === undefined) {
-        console.error("articleId is undefined");
-        return;
-      }
       const title = (document.getElementById("articleTitle") as HTMLInputElement).value;
       const content = (document.getElementById("articleContent") as HTMLTextAreaElement).value;
       let response: AxiosResponse<ArticleEditResponse>;
@@ -86,30 +84,65 @@ const EditArticle = () => {
       // loadingSpan.textContent = "";
       navigate(`/article/${response.data.name}`);
     });
-  })();}, [articleName]);
+    setOnDelete(() => async () => {
+      try {
+        await axios.post(
+          `http://${window.location.hostname}:4005/delete`,
+          { // body
+            articleId: articleId
+          },
+          {withCredentials: true} // send and/or set cookies
+        );
+      } catch (e) {
+        console.error(e);
+        const errorSpan = document.getElementById("editArticleError") as HTMLSpanElement;
+        if (e instanceof AxiosError && e.response) {
+          errorSpan.textContent = `There was an error ${JSON.stringify(e.response.data)}. Please try again.`;
+        } else {
+          errorSpan.textContent = "There was an unknown error.";
+        }
+        return;
+      }
+      navigate(`/article/${articleName}`);
+    });
+  })();}, [articleName, navigate]);
 
   // redirect to home page if not logged in
   if (Cookies.get("username") === undefined) {
     return  <Navigate replace to="/"/>;
   }
 
+  const loaded = title !== undefined && contents !== undefined;
+  console.log("Test");
+
   return <NLPPage title="Edit Article">
     <form id="editArticleForm">
-      {title === undefined ? undefined : <Fragment>
+      {title === undefined ? undefined : <>
         <label className="labels" htmlFor="user">Title: </label>
         <br/>
         <input type="text" id="articleTitle" placeholder="Enter Title" defaultValue={title}/>
         <br/>
-      </Fragment>}
-      {contents === undefined ? undefined : <Fragment>
+      </>}
+      {contents === undefined ? undefined : <>
         <label className="labels" htmlFor="user">Content: </label>
         <br/>
-        <textarea id="articleContent" placeholder="Enter content (Markdown)" defaultValue={contents}/>
-      </Fragment>}
-      {title === undefined || contents === undefined ? undefined :
-        <input id="editArticleSubmit" type="button" value="Edit Article" onClick={onSubmit}/>
+        <textarea id="articleContent" placeholder="Enter content (Markdown)"
+                  defaultValue={contents}/>
+      </>}
+      {!loaded ? undefined :
+        <input id="editArticleSubmit" type="button" className="btn btn-primary"
+               value="Edit Article" onClick={onSubmit}/>
       }
     </form>
+    {!loaded ? undefined :
+      <Popup
+        buttonText="Delete Article"
+        title="Are you sure?"
+        closeText="Cancel"
+        confirmText="Delete Article"
+        onConfirm={onDelete}
+      >Are you sure you want to delete {title}?</Popup>
+    }
     <span id="editArticleLoading">Loading...</span>
     <span id="editArticleError" className="errorSpan"></span>
   </NLPPage>;

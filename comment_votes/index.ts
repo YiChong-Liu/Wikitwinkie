@@ -16,7 +16,7 @@ const app: express.Express = express();
 
 app.use(logger('dev'));
 app.use(express.json());
-app.use(cors());
+app.use(cors({ origin: "http://localhost:3000", credentials: true }));
 
 const database = new db();
 
@@ -82,7 +82,7 @@ app.put('/articles/:articleId/comments/:commentId/votes', async (req: express.Re
   await axios.post('http://eventbus:2000/events', payload);
 });
 
-app.post('/events', (req: express.Request, res: express.Response) => {
+app.post('/events', async (req: express.Request, res: express.Response) => {
   const event: IEvent = req.body;
   switch (event.type) {
     case EventType.COMMENT_CREATED:
@@ -94,9 +94,17 @@ app.post('/events', (req: express.Request, res: express.Response) => {
 
       if (instanceOfCommentVote(comment_vote)) {
         const articleId: string = event.data.articleId, commentId: string = event.data.commentId;
-        axios.post(`http://localhost:4403/articles/${articleId}/comments/${commentId}/votes`, event.data).catch((err: Error) => {
-          console.log("FAIL TO INIT");
-        });
+        const key: VoteKey = { 'articleId': articleId, 'commentId': commentId }
+        const vote: CommentVote | ErrorMessage = await database.initVote(key);
+
+        if (instanceOfCommentVote(vote)) {
+          res.status(201).send(vote);
+          return;
+        }
+        else {
+          res.status(404).send(vote);
+          return;
+        }
       }
       else {
         res.status(500).send("Invalid CommentVote Data");
