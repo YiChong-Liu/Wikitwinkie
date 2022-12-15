@@ -10,6 +10,10 @@ export enum EventType {
   COMMENT_VOTE_INIT = "CommentVoteInited",
   COMMENT_VOTE_GET = "CommentVoteGet",
   COMMENT_VOTE_CHANGED = "CommentVoteChanged",
+  ARTICLE_VOTED = "ArticleVoted",
+  ARTICLE_VOTE_INIT = "ArticleVoteInited",
+  ARTICLE_VOTE_GET = "ArticleVoteGet",
+  ARTICLE_VOTE_CHANGED = "ArticleVoteChanged",
 }
 export type EventBody<T extends EventType> = (
   T extends EventType.ARTICLE_CREATED ? {
