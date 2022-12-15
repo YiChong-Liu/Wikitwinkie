@@ -4,7 +4,7 @@ import cookieParser from "cookie-parser";
 import logger from "morgan";
 import cors from "cors";
 import axios from "axios";
-import fs from "fs";
+import {promises as fs} from "fs";
 
 import { EventType } from "./utils/interfaces.js";
 import { NLPRoute } from "./utils/utils.js";
@@ -66,26 +66,19 @@ app.get("/image/:name", NLPRoute({} as const, async (req, res) => {
     if (img) {
         res.status(200).send(req.params.image);
     } else {
+        const data = await fs.readFile("default.png", "binary");  
+        res.writeHead(404, { "Content-Type": "image/png" });     
         // if image does not exist in db, return 404 not found with the default.png
-        res.status(404).send("./default.png");
+        res.end(data);
     }
 }))
 
 // delete the image
-app.delete("/image/:name", NLPRoute({
-    bodySchema: {
-        properties: {
-            image: { type: "string" },
-            imageName: { type: "string" },
-            imageDescription: { type: "string" }
-        }
-    },
-} as const, async (req, res) => {
-    const img = await db.exists(req.body.imageName);
-
+app.delete("/image/:name", NLPRoute({} as const, async (req, res) => {
+    const img = await db.exists(req.params.imageName);
     // if image exists in db, return 204 no content and delete the image
     if (img) {
-        await db.del(req.body.imageName);
+        await db.del(req.params.imageName);
         res.status(204).end();
     } else {
         // if image does not exist in db, return 404 not found
