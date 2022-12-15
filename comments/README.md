@@ -7,50 +7,76 @@ Keith Pham ([@minhnghia2208](https://github.com/minhnghia2208))
 CS provides Comment API for Article Service 
 
 ## Inter-service interactions:
-SES listens to ARTICLE_CREATED event from Article Service. ARTICLE_CREATED event contains content of the created article.
-
-SES indexes the content of the created article and save the indexes into Redis
+CS emmits COMMENT_CREATED event to CommentVote Service
 
 ## Endpoints:
-- URL: /search?content={content}
+- URL: /articles/:articleId/comments
 
     Method: GET
 
     Response: 
 
-    200 OK {"articleId": string[]}
+    200 OK {commentId: string, articleId: string, username: string, content: string}[] 
 
     404 NOT FOUND { message: e }
 
-    Description: Search for articleId which contains keywords in {content} params
+    Description: Get Article's Comments by articleId 
     
-- URL: /search/indexing
+- URL: /articles/:articleId/comments
 
     Method: POST
 
-    Body: { articleId: string, title: string, content: string}
+    Body: { content: string, username: string}
 
     Response: 
 
-    200 OK { articleId: string, title: string, content: string}
+    200 OK { commentId: string, content: string, articleId: string, username: string }
 
     404 NOT FOUND { message: e }
 
-    Description: Reverse Indexing content from article. Save in Redis using "word" as key
+    Description: Create Comment
 
-## Tutorial using Postman or other API Platform
+- URL: /articles/:articleId/comments/:commentId
+
+    Method: PUT
+
+    Body: { content: string, username: string}
+
+    Response: 
+
+    200 OK { commentId: string, content: string, articleId: string, username: string }
+
+    404 NOT FOUND { message: e }
+
+    Description: Edit Comment
+
+- URL: /articles/:articleId/comments/:commentId
+
+    Method: GET
+
+    Response: 
+
+    200 OK { commentId: string, articleId: string }
+
+    404 NOT FOUND { message: e }
+
+    Description: Delete Comment
+
+## Tutorial
+- User should be able to run endpoints after building Docker Image
+- The following is the example endpoint calls to test Service using Postman or other API Platform
 - Step 1:
-    POST: http://localhost:4405/search/indexing
+
+    POST: http://localhost:4401/articles/123/comments
+
     Body: 
     {
-        "articleId": "1",
-        "title": "Ipsum"
-        "content": "John Doe"
+        "username": "abc",
+        "content": "content"
     }
 - Step 2:
-    GET: http://localhost:4405/search/John
 
-    Reponse: { "articleId": ["1"] }
+    GET: http://localhost:4401/articles/123/comments/${commentId from above}
 
     GET: http://localhost:4405/search/test
 

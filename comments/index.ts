@@ -113,14 +113,6 @@ app.post('/articles/:articleId/comments/:commentId', async (req: express.Request
 
 app.post('/events', (req: express.Request, res: express.Response) => {
   const event: IEvent = req.body;
-  // switch (event.type) {
-  //   case EventType.ARTICLE_CREATED:
-  //     const articleId: string = event.data.articleId, commentId: string = event.data.commentId;
-  //     axios.post(`http://localhost:4401/articles/:articleId/comments`, event.data).catch((err: Error) => {
-  //       console.log("FAIL TO INIT");
-  //     });
-  // }
-
   res.send({});
 });
 
