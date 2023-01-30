@@ -16,7 +16,7 @@ const SERVICES = [
   "http://image_management:4003",
   "http://articles:4005",
   "http://articleserving:4006",
-  // "http://article_vote:4004",
+  "http://article_vote:4004",
   "http://comments:4401",
   "http://comment_votes:4403",
   "http://search_engine:4405"
