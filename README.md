@@ -2,6 +2,10 @@
 
 Group Project for Fall 2022 COMPSCI 497S Scalable Web Systems @UMass Amherst
 
+The course description can be found [here](https://github.com/scalable-web-systems/497s-F22).
+
+The initial video description of the project can be found [here](https://youtu.be/U_VoATF9HHk).
+
 
 ### Team Overview
 
